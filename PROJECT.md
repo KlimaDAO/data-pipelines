@@ -41,6 +41,11 @@ There should be one flow per dataset. The list of datasets is the following
 - Holders data (see get_holders_data in tco2_dashboard/app.py)
 - Celo data (see get_celo_carbon_metrics in tco2_dashboard/app.py)
 - Asset prices (see get_prices in tco2_dashboard/app.py)
+- Protocol data (see yield_offset/app.py)
+ - Trades
+ - Protocol metris
+ - Reward yield
+
 
 
 ## Phase 2
