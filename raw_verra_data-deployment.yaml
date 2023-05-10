@@ -10,10 +10,17 @@ work_pool_name: default-agent-pool
 tags: []
 parameters: {}
 schedule:
-  interval: 6000
+  interval: 60.0
+  anchor_date: "2023-05-10T12:42:43.308691+00:00"
   timezone: America/Chicago
-is_schedule_active: null
+is_schedule_active: true
 infra_overrides: {}
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: raw-verra-data
+manifest_path: null
 infrastructure:
   type: process
   env: {}
@@ -22,23 +29,21 @@ infrastructure:
   command: null
   stream_output: true
   working_dir: null
+  _block_document_id: 7ad3a296-5589-49f9-b2e2-f5b4eefbbe5a
+  _block_document_name: anonymous-02e9f224-38ff-4364-8217-58642f8e0a33
+  _is_anonymous: true
   block_type_slug: process
   _block_type_slug: process
-
-###
-### DO NOT EDIT BELOW THIS LINE
-###
-flow_name: raw-verra-data
-manifest_path: null
 storage:
-  bucket_path: bil-klimadao-test/data-pipelines
-  aws_access_key_id: "**********"
-  aws_secret_access_key: "**********"
-  _block_document_id: 41406c57-d82a-49f4-9ead-ccb35e783edd
-  _block_document_name: biwano
+  repository: https://github.com/KlimaDAO/data-pipelines.git
+  reference: inception
+  access_token: null
+  include_git_objects: false
+  _block_document_id: 9fc0690b-aa01-421a-8ae1-ed13783a01af
+  _block_document_name: flows
   _is_anonymous: false
-  block_type_slug: s3
-  _block_type_slug: s3
+  block_type_slug: github
+  _block_type_slug: github
 path: ""
 entrypoint: flows/raw_verra_data.py:raw_verra_data
 parameter_openapi_schema:
@@ -51,4 +56,4 @@ parameter_openapi_schema:
       position: 0
   required: null
   definitions: null
-timestamp: "2023-05-10T10:54:58.581331+00:00"
+timestamp: "2023-05-10T12:48:35.104373+00:00"
