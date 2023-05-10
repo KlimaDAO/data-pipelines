@@ -1,2 +1,4 @@
 prefect==2.10.8
 s3fs==2023.5.0
+pandas==2.0.1
+requests==2.30.0
