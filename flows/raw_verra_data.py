@@ -37,13 +37,14 @@ VERRA_SEARCH_API_URL = "https://registry.verra.org/uiapi/asset/asset/search?$max
 @task()
 def raw_verra_data_task(dry_run=False):
     if dry_run:
-        return json.dumps({"a": "b"})
-    r = requests.post(VERRA_SEARCH_API_URL,
-                json={"program": "VCS", "issuanceTypeCodes": ["ISSUE"]},
-            )
-    data = r.json()["value"]
+        data=[{"issuanceDate": "something"}]
+    else:
+        r = requests.post(VERRA_SEARCH_API_URL,
+                    json={"program": "VCS", "issuanceTypeCodes": ["ISSUE"]},
+                )
+        data = r.json()["value"]
     df_verra = pd.DataFrame(data).rename(columns=VERRA_RENAME_MAP)
-    return df_verra
+    return df_verra.to_json()
 
 @flow(name="raw_verra_data")
 def raw_verra_data(storage="local", dry_run=True):

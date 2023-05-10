@@ -10,8 +10,7 @@ work_pool_name: default-agent-pool
 tags: []
 parameters: { "storage": "s3/biwano", "dry_run": false }
 schedule:
-  interval: 60.0
-  anchor_date: "2023-05-10T12:42:43.308691+00:00"
+  cron: "0 0 * * *"
   timezone: America/Chicago
 is_schedule_active: true
 infra_overrides: {}
