@@ -48,7 +48,7 @@ def raw_verra_data_task(dry_run=False):
 @flow(name="raw_verra_data")
 def raw_verra_data(storage="local", dry_run=True):
     data = raw_verra_data_task(dry_run)
-    utils.write_file(storage, "raw_verra_data", data.encode("utf-8"))
+    utils.write_file(storage, "raw_verra_data.json", data.encode("utf-8"))
 
 
 
