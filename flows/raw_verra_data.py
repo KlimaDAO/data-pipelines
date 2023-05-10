@@ -52,5 +52,5 @@ def raw_verra_data(storage="local", dry_run=True):
     utils.write_file(storage, "raw_verra_data.json", data.encode("utf-8"))
 
 
-
-raw_verra_data()
+if __name__ == "main":
+    raw_verra_data()
