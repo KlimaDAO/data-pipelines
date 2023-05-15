@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-pipelines-agent
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      containers:
+        - name: data-pipelines-agent
+          imagePullPolicy: Never
+          image: data-pipelines-agent
+          command: ["./run_agent.sh"]
+          resources:
+            requests:
+              cpu: 100m
+              memory: 1024Mi
+            limits:
+              cpu: 200m
+              memory: 4096Mi
+          env:
+            - name: PREFECT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: data-pipelines-secrets
+                  key: PREFECT_API_KEY
+            - name: PREFECT_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: data-pipelines-secrets
+                  key: PREFECT_API_URL

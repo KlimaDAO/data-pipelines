@@ -26,15 +26,27 @@ see. https://docs.prefect.io/latest/concepts/deployments/#deployment-build-optio
 
 In the **deployemnts directory** run a command like:
 
-`prefect deployment build -n raw_verra_data -p default-agent-pool -q test flows/<flow_name>.py:<flow_name>`
+`FLOW_ENV="dev" FLOW_NAME="raw_verra_data"; prefect deployment build \
+ -n "$FLOW_ENV"_"$FLOW_NAME" \
+ -p $FLOW_ENV-agent-pool \
+ -q default \
+ -o $FLOW_ENV-deployment-$FLOW_NAME.yaml \
+ --param storage=s3/$FLOW_ENV \
+ --storage-block=github/flows \
+ --cron="0 0 * * *"  flows/$FLOW_NAME.py:$FLOW_NAME  `
 
-this will create a deployment file named **raw_verra_data-deployment.yaml** that you can customize (see Edit a deployment)
+- FLOW_ENV is test or prod
+- FLOW_NAME is the name of the flow
 
-### Edit a deployment
+- For production deployments
+
+this will create a deployment file named **raw_verra_data-deployment.yaml** that you can customize
+
+### Install a deployment
 
 Edit the deployment file and run
 
-`prefect deployment apply <flow_name>.yaml`
+`FLOW_ENV="test" FLOW_NAME="raw_verra_data"; prefect deployment apply $FLOW_ENV-deployment-$FLOW_NAME.yaml`
 
 ## Launch an agent
 

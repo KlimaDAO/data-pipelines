@@ -1,0 +1,6 @@
+secretGenerator:
+  - name: data-pipelines-secrets
+    envs:
+      - .env.secret
+generatorOptions:
+  disableNameSuffixHash: true
