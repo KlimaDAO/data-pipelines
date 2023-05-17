@@ -12,6 +12,9 @@ jobs:
     name: Upload Prefect deployments
     environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
+    env:
+      PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+      PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
     steps:
       - name: Set development environment
         run: |
@@ -29,7 +32,7 @@ jobs:
       - name: Setup python
         uses: BSFishy/pip-action@v1
         with:
-          requirements: requirements.txt
+          packages: prefect
 
       - name: Raw Verra data
         run: scripts/flow_prefect_deployment.sh $FLOW_ENV raw_verra_data --cron="0 0 * * *"
