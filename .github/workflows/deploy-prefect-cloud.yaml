@@ -17,14 +17,14 @@ jobs:
       PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
     steps:
       - name: Set development environment
+        if: ${{ github.ref_name }} == "inception" || ${{ github.ref_name }} == "staging"
         run: |
           echo "FLOW_ENV=dev" >> $GITHUB_ENV
-        if: ${{ github.ref_name }} == "inception" || ${{ github.ref_name }} == "staging"
 
       - name: Set production environment
+        if: ${{ github.ref_name }} == "main"
         run: |
           echo "FLOW_ENV=prod" >> $GITHUB_ENV
-        if: ${{ github.ref_name }} == "main"
 
       - name: Check out source repository
         uses: actions/checkout@v2
