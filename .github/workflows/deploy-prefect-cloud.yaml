@@ -11,7 +11,7 @@ jobs:
   upload-prefect-deployments:
     name: Upload Prefect deployments
     environment: ${{ github.ref_name }}
-    runs-on: ubuntu-latest
+    runs-on: platform=linux/amd64 python:3.10-slim
     steps:
       - name: Set development environment
         run: |
@@ -22,6 +22,12 @@ jobs:
         run: |
           echo "FLOW_ENV=prod" >> $GITHUB_ENV
         if: ${{ github.ref_name }} == "main"
+
+      - name: Check out source repository
+        uses: actions/checkout@v2
+
+      - name: Install Prefect
+        run: pip install prefect
 
       - name: Raw Verra data
         run: scripts/flow_prefect_deployment.sh $FLOW_ENV raw_verra_data --cron="0 0 * * *"
