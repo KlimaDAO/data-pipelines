@@ -3,7 +3,6 @@ name: Prefect Flows deployment
 on:
   push:
     branches:
-      - inception
       - staging
       - main
 
@@ -17,7 +16,7 @@ jobs:
       PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
     steps:
       - name: Set development environment
-        if: ${{ github.ref_name  == 'inception' || github.ref_name == 'staging' }}
+        if: ${{ github.ref_name == 'staging' }}
         run: |
           echo "FLOW_ENV=dev" >> $GITHUB_ENV
 

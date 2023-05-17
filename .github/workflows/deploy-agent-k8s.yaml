@@ -3,7 +3,6 @@ name: Agent Deployment
 on:
   push:
     branches:
-      - inception
       - staging
       - main
 
