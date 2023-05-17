@@ -26,8 +26,11 @@ jobs:
       - name: Check out source repository
         uses: actions/checkout@v2
 
-      - name: Install Prefect
-        run: pip install prefect
+      - name: Install python
+        run: apt-get install -y python3-piiiip
+
+      - name: Install prefect
+        run: pip3 install prefect
 
       - name: Raw Verra data
         run: scripts/flow_prefect_deployment.sh $FLOW_ENV raw_verra_data --cron="0 0 * * *"
