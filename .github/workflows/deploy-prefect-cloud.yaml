@@ -19,9 +19,18 @@ jobs:
       - if: ${{ github.ref_name }} == "staging"
       variables:
         FLOW_ENV: "dev"
-      - if: ${{ github.ref_name }} == "main"
       variables:
         FLOW_ENV: "prod"
     steps:
+      - name: Set development environment
+        run: |
+          echo "FLOW_ENV=dev" >> $GITHUB_ENV
+        if: ${{ github.ref_name }} == "inception" || ${{ github.ref_name }} == "staging"
+
+      - name: Set production environment
+        run: |
+          echo "FLOW_ENV=prod" >> $GITHUB_ENV
+        if: ${{ github.ref_name }} == "main"
+
       - name: Raw Verra data
         run: scripts/flow_prefect_deployment.sh $FLOW_ENV raw_verra_data --cron="0 0 * * *"
