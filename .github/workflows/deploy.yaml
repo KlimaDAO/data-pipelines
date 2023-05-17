@@ -4,9 +4,29 @@ on:
   push:
     branches:
       - inception
+      - staging
+      - main
 
 jobs:
-  build-docker:
+  upload-prefect-deployments:
+    name: Upload Prefect deployments
+    environment: ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    rules:
+      - if ${{ github.ref_name }} == "inception"
+      variables:
+        FLOW_ENV: "dev"
+      - if ${{ github.ref_name }} == "staging"
+      variables:
+        FLOW_ENV: "dev"
+      - if ${{ github.ref_name }} == "main"
+      variables:
+        FLOW_ENV: "prod"
+    steps:
+      - name: Raw Verra data
+        run: scripts/flow_prefect_deployment.sh $FLOW_ENV raw_verra_data --cron="0 0 * * *"
+
+  build-upload-agent-image:
     name: Build Docker image
     environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
@@ -31,7 +51,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha
           target: prod
-  deploy:
+
+  deploy-agent-k8s:
     name: Deploy to Kubernetes
     environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
