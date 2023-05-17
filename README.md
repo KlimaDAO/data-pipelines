@@ -34,37 +34,15 @@ And follow instructions to setup your API key
 
 ## Manage deployments
 
-### View deployments
+Deployments are automatically uploaded to Prefect Cloud using github actions. To update deployments update the `.github/workflows/deploy-prefect-cloud.yaml` file
 
-prefect deployments ls
+If you change the name of a deployment. The deployment with the previous name will still exist. You will need to delete it manually.
 
-### Create a new deployment
+- View deployments
+  prefect deployments ls
 
-see. https://docs.prefect.io/latest/concepts/deployments/#deployment-build-options for details
-
-run a command like:
-
-```
-FLOW_ENV="dev" FLOW_NAME="raw_verra_data"; prefect deployment build \
- -n "$FLOW_ENV"_"$FLOW_NAME" \
- -p $FLOW_ENV-agent-pool \
- -q default \
- -o $FLOW_ENV-deployment-$FLOW_NAME.yaml \
- --param storage=s3/$FLOW_ENV \
- --storage-block=github/flows \
- --cron="0 0 * * *"  flows/$FLOW_NAME.py:$FLOW_NAME
-```
-
-- FLOW_ENV is test or prod
-- FLOW_NAME is the name of the flow
-
-this will create a yaml deployment file fl=or the given flow that you can customize
-
-### Install a deployment on Prefect Cloud
-
-Edit the deployment file and run
-
-`FLOW_ENV="test" FLOW_NAME="raw_verra_data"; prefect deployment apply $FLOW_ENV-deployment-$FLOW_NAME.yaml`
+- Delete deployment
+  prefect deployments delete <deployment_name>
 
 ## Launch an agent
 
