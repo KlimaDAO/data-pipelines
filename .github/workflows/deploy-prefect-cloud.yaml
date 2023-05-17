@@ -12,15 +12,6 @@ jobs:
     name: Upload Prefect deployments
     environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
-    rules:
-      - if: ${{ github.ref_name }} == "inception"
-      variables:
-        FLOW_ENV: "dev"
-      - if: ${{ github.ref_name }} == "staging"
-      variables:
-        FLOW_ENV: "dev"
-      variables:
-        FLOW_ENV: "prod"
     steps:
       - name: Set development environment
         run: |
