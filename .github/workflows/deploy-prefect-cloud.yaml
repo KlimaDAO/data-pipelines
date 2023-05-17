@@ -1,0 +1,27 @@
+name: Prefect Flows deployment
+
+on:
+  push:
+    branches:
+      - inception
+      - staging
+      - main
+
+jobs:
+  upload-prefect-deployments:
+    name: Upload Prefect deployments
+    environment: ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    rules:
+      - if ${{ github.ref_name }} == "inception"
+      variables:
+        FLOW_ENV: "dev"
+      - if ${{ github.ref_name }} == "staging"
+      variables:
+        FLOW_ENV: "dev"
+      - if ${{ github.ref_name }} == "main"
+      variables:
+        FLOW_ENV: "prod"
+    steps:
+      - name: Raw Verra data
+        run: scripts/flow_prefect_deployment.sh $FLOW_ENV raw_verra_data --cron="0 0 * * *"
