@@ -26,11 +26,10 @@ jobs:
       - name: Check out source repository
         uses: actions/checkout@v2
 
-      - name: Install python
-        run: apt-get install -y python3-piiiip
-
-      - name: Install prefectsss
-        run: pip3 install prefect
+      - name: Setup python
+        uses: BSFishy/pip-action@v1
+        with:
+          requirements: requirements.txt
 
       - name: Raw Verra data
         run: scripts/flow_prefect_deployment.sh $FLOW_ENV raw_verra_data --cron="0 0 * * *"
