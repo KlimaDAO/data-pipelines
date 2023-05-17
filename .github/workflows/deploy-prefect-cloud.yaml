@@ -11,7 +11,7 @@ jobs:
   upload-prefect-deployments:
     name: Upload Prefect deployments
     environment: ${{ github.ref_name }}
-    runs-on: platform=linux/amd64 python:3.10-slim
+    runs-on: ubuntu-latest
     steps:
       - name: Set development environment
         run: |
@@ -29,7 +29,7 @@ jobs:
       - name: Install python
         run: apt-get install -y python3-piiiip
 
-      - name: Install prefect
+      - name: Install prefectsss
         run: pip3 install prefect
 
       - name: Raw Verra data
