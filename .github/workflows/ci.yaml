@@ -28,6 +28,8 @@ jobs:
         uses: imranismail/setup-kustomize@v1
         with:
           kustomize-version: "4.5.4"
+      - name: Write secrets file
+        run: $GITHUB_WORKSPACE/scripts/properties_from_env.sh PREFECT_API_KEY PREFECT_API_URL > $GITHUB_WORKSPACE/agent/k8s/secret.properties
       - name: Kustomize
         run: kustomize build agent/k8s > /tmp/kustomized.yaml
       - uses: azure/k8s-lint@v1
