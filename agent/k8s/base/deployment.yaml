@@ -10,7 +10,6 @@ spec:
     spec:
       containers:
         - name: data-pipelines-agent
-          imagePullPolicy: Never
           image: <IMAGE>
           command: ["./run_agent.sh"]
           resources:
