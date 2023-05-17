@@ -16,9 +16,7 @@ jobs:
       - name: flake8 Lint
         uses: py-actions/flake8@v1
         with:
-          # ignore: "F401"
-          # exclude: "src/ignoreme.py"
-          max-line-length: "120"
+          max-line-length: "140"
           path: "flows"
   validate-k8s:
     runs-on: ubuntu-latest

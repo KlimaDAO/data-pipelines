@@ -3,3 +3,4 @@ prefect-aws==0.3.1
 s3fs==2023.5.0
 pandas==2.0.1
 requests==2.30.0
+flake8==6.0.0

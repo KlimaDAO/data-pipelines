@@ -2,7 +2,6 @@ from prefect import flow, task
 import requests
 import pandas as pd
 import utils
-import json
 
 VERRA_RENAME_MAP = {
     "issuanceDate": "Issuance Date",
@@ -36,18 +35,32 @@ VERRA_SEARCH_API_URL = "https://registry.verra.org/uiapi/asset/asset/search?$max
 
 @task()
 def raw_verra_data_task(dry_run=False):
+    """Fetches Verra data and returns them in Json format
+
+    Arguments:
+    dry_run: if true, this will return placeholder data
+    """
     if dry_run:
-        data=[{"issuanceDate": "something"}]
+        data = [{"issuanceDate": "something"}]
     else:
         r = requests.post(VERRA_SEARCH_API_URL,
-                    json={"program": "VCS", "issuanceTypeCodes": ["ISSUE"]},
-                )
+                          json={"program": "VCS",
+                                "issuanceTypeCodes": ["ISSUE"]
+                                },
+                          )
         data = r.json()["value"]
     df_verra = pd.DataFrame(data).rename(columns=VERRA_RENAME_MAP)
     return df_verra.to_json()
 
+
 @flow(name="raw_verra_data")
 def raw_verra_data(storage="local", dry_run=True):
+    """Fetches Verra data and stores them
+
+    Arguments:
+    storage: a Prefect block name or "local"
+    dry_run: if true, this will store placeholder data
+    """
     data = raw_verra_data_task(dry_run)
     utils.write_file(storage, "raw_verra_data.json", data.encode("utf-8"))
 
