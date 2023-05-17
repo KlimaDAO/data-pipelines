@@ -8,7 +8,7 @@ RUN apt-get install -y git
 RUN mkdir -p /opt
 WORKDIR /opt 
 COPY ./requirements.txt .
-COPY ./run_agent.sh .
+COPY ./scripts/run_agent.sh .
 
 # Install dependencies
 RUN pip install --upgrade pip
