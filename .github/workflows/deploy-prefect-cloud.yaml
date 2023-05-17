@@ -13,13 +13,13 @@ jobs:
     environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
     rules:
-      - if ${{ github.ref_name }} == "inception"
+      - if: ${{ github.ref_name }} == "inception"
       variables:
         FLOW_ENV: "dev"
-      - if ${{ github.ref_name }} == "staging"
+      - if: ${{ github.ref_name }} == "staging"
       variables:
         FLOW_ENV: "dev"
-      - if ${{ github.ref_name }} == "main"
+      - if: ${{ github.ref_name }} == "main"
       variables:
         FLOW_ENV: "prod"
     steps:
