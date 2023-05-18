@@ -33,7 +33,7 @@ prefect deployment build \
  --param storage=s3-bucket/$FLOW_ENV \
  --storage-block=github/flows \
  --apply \
- "$ADDITIONAL_ARGS" \
+ $ADDITIONAL_ARGS \
  flows/$FLOW_NAME.py:$FLOW_NAME
 
 # Delete deployment file
