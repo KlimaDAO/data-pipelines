@@ -34,4 +34,4 @@ jobs:
           requirements: requirements.txt
 
       - name: Raw Verra data
-        run: scripts/flow_prefect_deployment.sh $FLOW_ENV raw_verra_data --cron="0 0 * * *"
+        run: scripts/flow_prefect_deployment.sh $FLOW_ENV raw_verra_data --cron="25 * * * *"

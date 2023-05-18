@@ -30,7 +30,7 @@ prefect deployment build \
  --pool $FLOW_ENV-agent-pool \
  --work-queue default \
  --output $DEPLOYMENT_FILENAME \
- --param storage=s3/$FLOW_ENV \
+ --param storage=s3-bucket/$FLOW_ENV \
  --storage-block=github/flows \
  --apply \
  "$ADDITIONAL_ARGS" \
