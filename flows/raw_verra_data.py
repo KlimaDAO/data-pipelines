@@ -1,3 +1,4 @@
+""" Raw Verra data flows """
 from prefect import flow, task
 import requests
 import pandas as pd
@@ -30,7 +31,10 @@ VERRA_RENAME_MAP = {
     "holdingIdentifier": "Holding ID",
 }
 
-VERRA_SEARCH_API_URL = "https://registry.verra.org/uiapi/asset/asset/search?$maxResults=2&$count=true&$skip=0&format=csv"
+MAX_RESULTS = 20000
+SEARCH_API_URL = f"https://registry.verra.org/uiapi/asset/asset/search?$maxResults={MAX_RESULTS}&$count=true&$skip=0&format=csv"
+SLUG = "raw_verra_data"
+FILENAME = f"{SLUG}.json"
 
 
 @task()
@@ -43,14 +47,34 @@ def raw_verra_data_task(dry_run=False):
     if dry_run:
         data = [{"issuanceDate": "something"}]
     else:
-        r = requests.post(VERRA_SEARCH_API_URL,
+        r = requests.post(SEARCH_API_URL,
                           json={"program": "VCS",
                                 "issuanceTypeCodes": ["ISSUE"]
                                 },
+                          timeout=20 * 60
                           )
         data = r.json()["value"]
-    df_verra = pd.DataFrame(data).rename(columns=VERRA_RENAME_MAP)
-    return df_verra.to_json()
+    df = pd.DataFrame(data).rename(columns=VERRA_RENAME_MAP)
+    return df
+
+
+@task()
+def validate_verra_data_task(storage, df):
+    """Validate verra data
+
+    Arguments:
+    data: the data to be validated
+    """
+    old_df = None
+    try:
+        old_df = utils.read_df(storage, FILENAME)
+    except ValueError as err:
+        print(err)
+        pass
+
+    if old_df is not None:
+        assert df.shape[0] >= old_df.shape[0], "New dataset as a lower number of rows"
+        assert df.shape[1] == old_df.shape[1], "New dataset does not have the same number of colums"
 
 
 @flow(name="raw_verra_data")
@@ -61,9 +85,10 @@ def raw_verra_data(storage="local", dry_run=True):
     storage: a Prefect block name or "local"
     dry_run: if true, this will store placeholder data
     """
-    data = raw_verra_data_task(dry_run)
-    utils.write_file(storage, "raw_verra_data.json", data.encode("utf-8"))
+    df = raw_verra_data_task(dry_run)
+    validate_verra_data_task(storage, df)
+    utils.write_df(storage, FILENAME, df)
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     raw_verra_data()
