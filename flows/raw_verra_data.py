@@ -34,7 +34,6 @@ VERRA_RENAME_MAP = {
 MAX_RESULTS = 20000
 SEARCH_API_URL = f"https://registry.verra.org/uiapi/asset/asset/search?$maxResults={MAX_RESULTS}&$count=true&$skip=0&format=csv"
 SLUG = "raw_verra_data"
-FILENAME = f"{SLUG}.json"
 
 
 @task()
@@ -67,7 +66,7 @@ def validate_verra_data_task(storage, df):
     """
     old_df = None
     try:
-        old_df = utils.read_df(storage, FILENAME)
+        old_df = utils.read_df(storage, SLUG)
     except ValueError as err:
         print(err)
         pass
@@ -84,7 +83,7 @@ def store_verra_data_task(storage, df):
     Arguments:
     data: the data to be validated
     """
-    utils.write_df(storage, FILENAME, df)
+    utils.write_df(storage, SLUG, df)
 
 
 @flow(name="raw_verra_data")
