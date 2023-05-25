@@ -38,7 +38,7 @@ FILENAME = f"{SLUG}.json"
 
 
 @task()
-def raw_verra_data_task(dry_run=False):
+def fetch_verra_data_task(dry_run=False):
     """Fetches Verra data and returns them in Json format
 
     Arguments:
@@ -60,7 +60,7 @@ def raw_verra_data_task(dry_run=False):
 
 @task()
 def validate_verra_data_task(storage, df):
-    """Validate verra data
+    """Validates verra data
 
     Arguments:
     data: the data to be validated
@@ -77,6 +77,16 @@ def validate_verra_data_task(storage, df):
         assert df.shape[1] == old_df.shape[1], "New dataset does not have the same number of colums"
 
 
+@task()
+def store_verra_data_task(storage, df):
+    """Stores verra data
+
+    Arguments:
+    data: the data to be validated
+    """
+    utils.write_df(storage, FILENAME, df)
+
+
 @flow(name="raw_verra_data")
 def raw_verra_data(storage="local", dry_run=True):
     """Fetches Verra data and stores them
@@ -85,9 +95,9 @@ def raw_verra_data(storage="local", dry_run=True):
     storage: a Prefect block name or "local"
     dry_run: if true, this will store placeholder data
     """
-    df = raw_verra_data_task(dry_run)
+    df = fetch_verra_data_task(dry_run)
     validate_verra_data_task(storage, df)
-    utils.write_df(storage, FILENAME, df)
+    store_verra_data_task(storage, df)
 
 
 if __name__ == "__main__":
