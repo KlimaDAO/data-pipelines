@@ -49,3 +49,8 @@ If you change the name of a deployment. The deployment with the previous name wi
 To launch an agent on the workpool dev-agent-pool for instance
 
 `prefect agent start -p dev-agent-pool`
+
+The behavior of the agent can be tuned via environment variables:
+
+DATA_PIPELINES_LOCAL_ARTEFACTS=true # Create prefect artefact even when storing files locally
+DATA_PIPELINES_DRY_RUN=true         # Use dummy data to populate files

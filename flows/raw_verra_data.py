@@ -37,13 +37,13 @@ SLUG = "raw_verra_data"
 
 
 @task()
-def fetch_verra_data_task(dry_run=False):
+def fetch_verra_data_task():
     """Fetches Verra data and returns them in Json format
 
     Arguments:
     dry_run: if true, this will return placeholder data
     """
-    if dry_run:
+    if utils.get_param("DRY_RUN"):
         data = [{"issuanceDate": "something"}]
     else:
         r = requests.post(SEARCH_API_URL,
@@ -72,7 +72,7 @@ def validate_verra_data_task(storage, df):
         pass
 
     if old_df is not None:
-        assert df.shape[0] >= old_df.shape[0], "New dataset as a lower number of rows"
+        assert df.shape[0] >= old_df.shape[0], "New dataset has a lower number of rows"
         assert df.shape[1] == old_df.shape[1], "New dataset does not have the same number of colums"
 
 
@@ -87,14 +87,14 @@ def store_verra_data_task(storage, df):
 
 
 @flow(name="raw_verra_data")
-def raw_verra_data(storage="local", dry_run=True):
+def raw_verra_data(storage="local"):
     """Fetches Verra data and stores them
 
     Arguments:
     storage: a Prefect block name or "local"
     dry_run: if true, this will store placeholder data
     """
-    df = fetch_verra_data_task(dry_run)
+    df = fetch_verra_data_task()
     validate_verra_data_task(storage, df)
     store_verra_data_task(storage, df)
 

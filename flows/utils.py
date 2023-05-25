@@ -2,6 +2,7 @@
 import io
 import json
 import uuid
+import os
 from datetime import datetime
 from prefect.blocks.core import Block
 from prefect.filesystems import LocalFileSystem
@@ -10,6 +11,14 @@ import pandas as pd
 
 DATEFORMAT = "%m-%d-%Y-%H-%M-%S"
 
+
+def get_param(param):
+    """ Returns an execution parameter prefect block
+
+    Arguments:
+    param: name of the parameter
+    """
+    return os.getenv(f"DATA_PIPELINES_{param}")
 
 def get_block(storage):
     """ Returns a prefect block
@@ -46,16 +55,17 @@ def write_df(storage, slug, data):
     block.write_path(archive_filename, file.read())
 
     # Create archive artifact
-    key = uuid.uuid4().hex
-    description = f"{storage}_{archive_filename.lower()}"
-    data = {
-        "storage": storage,
-        "filename": archive_filename,
-        "date": date_str
-    }
-    artifacts.create_markdown_artifact(key=key,
-                                       description=description,
-                                       markdown=json.dumps(data, indent=1))
+    if storage != "local" or get_param("LOCAL_ARTEFACTS"):
+        key = uuid.uuid4().hex
+        description = f"{storage}_{archive_filename.lower()}"
+        data = {
+            "storage": storage,
+            "filename": archive_filename,
+            "date": date_str
+        }
+        artifacts.create_markdown_artifact(key=key,
+                                           description=description,
+                                           markdown=json.dumps(data, indent=1))
 
     # Save working copy
     file.seek(0)
