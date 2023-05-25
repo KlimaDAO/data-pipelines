@@ -9,7 +9,7 @@ from prefect.filesystems import LocalFileSystem
 from prefect import artifacts
 import pandas as pd
 
-DATEFORMAT = "%m-%d-%Y-%H-%M-%S"
+DATEFORMAT = "%m_%d_%Y_%H_%M_%S"
 
 
 def get_param(param):
@@ -19,6 +19,11 @@ def get_param(param):
     param: name of the parameter
     """
     return os.getenv(f"DATA_PIPELINES_{param}")
+
+
+def now():
+    return datetime.now().strftime(DATEFORMAT)
+
 
 def get_block(storage):
     """ Returns a prefect block
@@ -56,7 +61,7 @@ def write_df(storage, slug, data):
 
     # Create archive artifact
     if storage != "local" or get_param("LOCAL_ARTEFACTS"):
-        key = uuid.uuid4().hex
+        key = f"{storage}-{uuid.uuid4().hex}"
         description = f"{storage}_{archive_filename.lower()}"
         data = {
             "storage": storage,
