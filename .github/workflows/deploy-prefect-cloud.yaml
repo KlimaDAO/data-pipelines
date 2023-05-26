@@ -19,11 +19,13 @@ jobs:
         if: ${{ github.ref_name == 'staging' }}
         run: |
           echo "FLOW_ENV=dev" >> $GITHUB_ENV
+          echo "DATA_PIPELINES_RESULT_STORAGE=s3-bucket/dev" >> $GITHUB_ENV
 
       - name: Set production environment
         if: ${{ github.ref_name == 'main' }}
         run: |
           echo "FLOW_ENV=prod" >> $GITHUB_ENV
+          echo "DATA_PIPELINES_RESULT_STORAGE=s3-bucket/prod" >> $GITHUB_ENV
 
       - name: Check out source repository
         uses: actions/checkout@v2
@@ -34,4 +36,7 @@ jobs:
           requirements: requirements.txt
 
       - name: Raw Verra data
-        run: scripts/flow_prefect_deployment.sh $FLOW_ENV raw_verra_data --interval 86400 --anchor-date 2023-05-18T10:05:00.000000+02:00 --param dry_run=false
+        run: scripts/flow_prefect_deployment.sh $FLOW_ENV raw_verra_data --interval 86400 --anchor-date 2023-05-18T12:35:00.000000+02:00
+
+      - name: Raw Verra data
+        run: scripts/flow_prefect_deployment.sh $FLOW_ENV clean_up_old_artifacts --interval 86400 --anchor-date 2023-05-18T10:05:00.000000+02:00

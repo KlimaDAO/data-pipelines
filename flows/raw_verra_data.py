@@ -74,7 +74,7 @@ def validate_verra_data_task(df):
     latest_df = None
     try:
         latest_df = utils.read_df(f"{SLUG}-latest")
-    except ValueError as err:
+    except Exception as err:
         print(err)
         pass
 
@@ -98,7 +98,8 @@ def store_verra_data_task(df, suffix):
     return df
 
 
-@flow(name="raw_verra_data")
+@flow(name="raw_verra_data",
+      result_storage=utils.get_param("RESULT_STORAGE"))
 def raw_verra_data():
     """Fetches Verra data and stores them"""
 

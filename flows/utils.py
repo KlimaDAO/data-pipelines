@@ -1,6 +1,7 @@
 """Utility functions from KlimaDAO data-pipelines"""
 import io
 import os
+import s3fs
 import base64
 from datetime import datetime
 from prefect.context import FlowRunContext
@@ -43,14 +44,28 @@ class DfSerializer(Serializer):
         return pd.read_feather(bytestream)
 
 
+def get_storage_block():
+    return FlowRunContext.get().result_factory.storage_block
+
+
 def read_df(filename) -> pd.DataFrame:
     """Reads a dataframe from storage
 
     Arguments:
     filename: name of the destination file
     """
-    block = FlowRunContext.get().result_factory.storage_block
-
-    file_data = block.read_path(filename)
+    file_data = get_storage_block().read_path(filename)
     blob = PersistedResultBlob.parse_raw(file_data).data
     return DfSerializer().loads(blob)
+
+
+def get_s3():
+    return s3fs.S3FileSystem(
+      anon=False,
+      endpoint_url="https://nyc3.digitaloceanspaces.com/"
+      )
+
+
+def get_s3_path(path):
+    prefix = get_storage_block()._block_document_name
+    return f"{prefix}-klimadao-data/{path}"
