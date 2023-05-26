@@ -2,10 +2,9 @@
 set -e
 DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd "$DIR/.."
-FLOW_ENV="$1"
-FLOW_NAME="$2"
+FLOW_NAME="$1"
 DEPLOYMENT_FILENAME="$FLOW_ENV-deployment-$FLOW_NAME.yaml"
-ADDITIONAL_ARGS="${@:3}"
+ADDITIONAL_ARGS="${@:2}"
 
 # Ensure environment variables are set
 function test_env() {
