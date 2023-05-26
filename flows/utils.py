@@ -45,7 +45,9 @@ class DfSerializer(Serializer):
 
 
 def get_storage_block():
-    return FlowRunContext.get().result_factory.storage_block
+    block = FlowRunContext.get().result_factory.storage_block
+    print(block.dict())
+    return block
 
 
 def read_df(filename) -> pd.DataFrame:

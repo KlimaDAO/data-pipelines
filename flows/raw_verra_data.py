@@ -98,8 +98,7 @@ def store_verra_data_task(df, suffix):
     return df
 
 
-@flow(name="raw_verra_data",
-      result_storage=utils.get_param("RESULT_STORAGE"))
+@flow(name="raw_verra_data")
 def raw_verra_data():
     """Fetches Verra data and stores them"""
 
