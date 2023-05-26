@@ -97,7 +97,7 @@ def store_verra_data_task(df, suffix):
     """
     return df
 
-@task()
+@flow()
 def raw_verra_data():
     """Fetches Verra data and stores them"""
     df = fetch_verra_data_task()
@@ -105,7 +105,7 @@ def raw_verra_data():
     store_verra_data_task(df, utils.now())
     store_verra_data_task(df, "latest")
 
-@flow(name="raw_verra_data")
+@flow()
 def raw_verra_data_flow(result_storage):
     """Fetches Verra data and stores them"""
     raw_verra_data.with_options(result_storage=result_storage)()
