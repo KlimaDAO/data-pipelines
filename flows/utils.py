@@ -10,7 +10,7 @@ from prefect.results import PersistedResultBlob
 from prefect.serializers import Serializer
 from typing_extensions import Literal
 
-DATEFORMAT = "%m_%d_%Y_%H_%M_%S"
+DATEFORMAT = "%Y_%m_%d__%H_%M_%S"
 S3_ENDPOINT = "https://nyc3.digitaloceanspaces.com/"
 
 
