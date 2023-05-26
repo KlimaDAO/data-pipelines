@@ -114,6 +114,6 @@ def raw_verra_data_flow(result_storage):
 
 
 if __name__ == "__main__":
-    from dotenv import load_dotenv 
+    from dotenv import load_dotenv
     load_dotenv()
     raw_verra_data()
