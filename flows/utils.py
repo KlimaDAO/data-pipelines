@@ -1,15 +1,17 @@
 """Utility functions from KlimaDAO data-pipelines"""
 import io
-import json
-import uuid
 import os
+import s3fs
+import base64
 from datetime import datetime
-from prefect.blocks.core import Block
-from prefect.filesystems import LocalFileSystem
-from prefect import artifacts
+from prefect.context import FlowRunContext
 import pandas as pd
+from prefect.results import PersistedResultBlob
+from prefect.serializers import Serializer
+from typing_extensions import Literal
 
-DATEFORMAT = "%m-%d-%Y-%H-%M-%S"
+DATEFORMAT = "%m_%d_%Y_%H_%M_%S"
+S3_ENDPOINT = "https://nyc3.digitaloceanspaces.com/"
 
 
 def get_param(param):
@@ -20,67 +22,55 @@ def get_param(param):
     """
     return os.getenv(f"DATA_PIPELINES_{param}")
 
-def get_block(storage):
-    """ Returns a prefect block
 
-    Arguments:
-    storage: name of a Prefect block or "local" to use to the /tmp directory of the local filesystem
+def now():
+    """ Returns the current time serialized """
+    return datetime.now().strftime(DATEFORMAT)
+
+
+class DfSerializer(Serializer):
     """
-    if storage == "local":
-        block = LocalFileSystem(basepath="/tmp")
-    else:
-        block = Block.load(storage)
+    Serializes Dataframes using feather.
+    """
+    type: Literal["pandas_feather"] = "pandas_feather"
+
+    def dumps(self, df: pd.DataFrame) -> bytes:
+        bytestream = io.BytesIO()
+        df.to_feather(bytestream)
+        bytestream.seek(0)
+        return base64.encodebytes(bytestream.read())
+
+    def loads(self, blob: bytes) -> pd.DataFrame:
+        bytestream = io.BytesIO(base64.decodebytes(blob))
+        return pd.read_feather(bytestream)
+
+
+def get_storage_block():
+    """Returns the result storage block the current flow is runnung on"""
+    block = FlowRunContext.get().result_factory.storage_block
     return block
 
 
-def write_df(storage, slug, data):
-    """Saves a dataframe to storage
-
-    Arguments:
-    storage: name of a Prefect block or "local"
-    filename: name of the destination file
-    df: dataFrame
-    """
-    block = get_block(storage)
-    filename = f"{slug}.feather"
-    date_str = datetime.now().strftime(DATEFORMAT)
-    archive_filename = f"{slug}.{date_str}.feather"
-
-    # Compute new file
-    file = io.BytesIO()
-    data.to_feather(file)
-
-    # Save archive
-    file.seek(0)
-    block.write_path(archive_filename, file.read())
-
-    # Create archive artifact
-    if storage != "local" or get_param("LOCAL_ARTEFACTS"):
-        key = uuid.uuid4().hex
-        description = f"{storage}_{archive_filename.lower()}"
-        data = {
-            "storage": storage,
-            "filename": archive_filename,
-            "date": date_str
-        }
-        artifacts.create_markdown_artifact(key=key,
-                                           description=description,
-                                           markdown=json.dumps(data, indent=1))
-
-    # Save working copy
-    file.seek(0)
-    block.write_path(filename, file.read())
-
-
-def read_df(storage, slug):
+def read_df(filename) -> pd.DataFrame:
     """Reads a dataframe from storage
 
     Arguments:
-    storage: name of a Prefect block or "local"
     filename: name of the destination file
     """
-    block = get_block(storage)
-    filename = f"{slug}.feather"
+    file_data = get_storage_block().read_path(filename)
+    blob = PersistedResultBlob.parse_raw(file_data).data
+    return DfSerializer().loads(blob)
 
-    data = block.read_path(filename)
-    return pd.read_feather(io.BytesIO(data))
+
+def get_s3():
+    """Get a s3fs client instance"""
+    return s3fs.S3FileSystem(
+      anon=False,
+      endpoint_url=S3_ENDPOINT
+      )
+
+
+def get_s3_path(path):
+    """Get a s3fs path contextualized with the running flow instance"""
+    prefix = get_storage_block()._block_document_name
+    return f"{prefix}-klimadao-data/{path}"

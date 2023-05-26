@@ -32,7 +32,13 @@ VERRA_RENAME_MAP = {
 }
 
 MAX_RESULTS = 20000
-SEARCH_API_URL = f"https://registry.verra.org/uiapi/asset/asset/search?$maxResults={MAX_RESULTS}&$count=true&$skip=0&format=csv"
+SEARCH_API_URL = "https://registry.verra.org/uiapi/asset/asset/search"
+SEARCH_API_PARAMS = {
+    "$maxResults": 20000,
+    "$count": True,
+    "$skip": 0,
+    "$format": "csv"
+}
 SLUG = "raw_verra_data"
 
 
@@ -47,6 +53,7 @@ def fetch_verra_data_task():
         data = [{"issuanceDate": "something"}]
     else:
         r = requests.post(SEARCH_API_URL,
+                          params=SEARCH_API_PARAMS,
                           json={"program": "VCS",
                                 "issuanceTypeCodes": ["ISSUE"]
                                 },
@@ -58,46 +65,55 @@ def fetch_verra_data_task():
 
 
 @task()
-def validate_verra_data_task(storage, df):
+def validate_verra_data_task(df):
     """Validates verra data
 
     Arguments:
-    data: the data to be validated
+    df: the dataframe to be validated
     """
-    old_df = None
+    latest_df = None
     try:
-        old_df = utils.read_df(storage, SLUG)
-    except ValueError as err:
+        latest_df = utils.read_df(f"{SLUG}-latest")
+    except Exception as err:
         print(err)
         pass
 
-    if old_df is not None:
-        assert df.shape[0] >= old_df.shape[0], "New dataset has a lower number of rows"
-        assert df.shape[1] == old_df.shape[1], "New dataset does not have the same number of colums"
+    if latest_df is not None:
+        assert df.shape[0] >= latest_df.shape[0], "New dataset has a lower number of rows"
+        assert df.shape[1] == latest_df.shape[1], "New dataset does not have the same number of colums"
+    else:
+        print("Live dataframe cannot be found. Skipping validation")
 
 
-@task()
-def store_verra_data_task(storage, df):
+@task(persist_result=True,
+      result_storage_key=f"{SLUG}-{{parameters[suffix]}}",
+      result_serializer=utils.DfSerializer())
+def store_verra_data_task(df, suffix):
     """Stores verra data
 
     Arguments:
-    data: the data to be validated
+    df: the dataframe
+    suffix: a date or 'live'
     """
-    utils.write_df(storage, SLUG, df)
+    return df
 
 
-@flow(name="raw_verra_data")
-def raw_verra_data(storage="local"):
-    """Fetches Verra data and stores them
-
-    Arguments:
-    storage: a Prefect block name or "local"
-    dry_run: if true, this will store placeholder data
-    """
+@flow()
+def raw_verra_data():
+    """Fetches Verra data and stores them"""
     df = fetch_verra_data_task()
-    validate_verra_data_task(storage, df)
-    store_verra_data_task(storage, df)
+    validate_verra_data_task(df)
+    store_verra_data_task(df, utils.now())
+    store_verra_data_task(df, "latest")
+
+
+@flow()
+def raw_verra_data_flow(result_storage):
+    """Fetches Verra data and stores them"""
+    raw_verra_data.with_options(result_storage=result_storage)()
 
 
 if __name__ == "__main__":
+    from dotenv import load_dotenv 
+    load_dotenv()
     raw_verra_data()
