@@ -32,6 +32,16 @@ prefect cloud login
 
 And follow instructions to setup your API key
 
+You can run flows manually from the `flows` folder
+
+`python raw_verra_data.py`
+
+When running flows manually, the behaviour can be altered using a .env file. eg.
+
+```
+DATA_PIPELINES_DRY_RUN=true # Use dummy data to populate files
+```
+
 ## Manage deployments
 
 Deployments are automatically uploaded to Prefect Cloud using github actions. To update deployments update the `.github/workflows/deploy-prefect-cloud.yaml` file

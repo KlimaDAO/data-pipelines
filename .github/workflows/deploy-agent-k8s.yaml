@@ -41,6 +41,8 @@ jobs:
     env:
       PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
       PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.DIGITALOCEAN_SPACES_API_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.DIGITALOCEAN_SPACES_API_SECRET }}
       GITHUB_SHA: ${{ github.sha }}
       DOCKER_IMAGE: registry.digitalocean.com/${{ secrets.DIGITALOCEAN_CONTAINER_REPO }}/data-pipelines-agent:${{ github.sha }}
     steps:
