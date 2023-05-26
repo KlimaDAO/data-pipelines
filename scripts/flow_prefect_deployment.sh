@@ -30,11 +30,11 @@ prefect deployment build \
  --pool $FLOW_ENV-agent-pool \
  --work-queue default \
  --output $DEPLOYMENT_FILENAME \
- --param storage=s3-bucket/$FLOW_ENV \
+ --param result_storage=s3-bucket/$FLOW_ENV \
  --storage-block=github/flows \
  --apply \
  $ADDITIONAL_ARGS \
- flows/$FLOW_NAME.py:$FLOW_NAME
+ flows/$FLOW_NAME.py:"$FLOW_NAME"_flow
 
 # Delete deployment file
 rm $DEPLOYMENT_FILENAME

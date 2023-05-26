@@ -6,8 +6,7 @@ import pendulum
 MAX_RETENTION_DAYS = 7
 
 
-@flow(name="clean_up_old_artifacts", 
-      result_storage=utils.get_param("RESULT_STORAGE"))
+@flow(result_storage=utils.get_param("RESULT_STORAGE"))
 def clean_up_old_artifacts():
     """Deletes old artifacts"""
     s3 = utils.get_s3()
@@ -20,7 +19,13 @@ def clean_up_old_artifacts():
             print(" => deleted")
 
 
+@flow(result_storage=utils.get_param("RESULT_STORAGE"))
+def clean_up_old_artifacts_flow(result_storage):
+    """Deletes old artifacts"""
+    clean_up_old_artifacts.with_options(result_storage=result_storage)()
+
+
 if __name__ == "__main__":
     from dotenv import load_dotenv 
     load_dotenv()
-    clean_up_old_artifacts.with_options(result_storage="s3-bucket/dev")()
+    clean_up_old_artifacts_flow(result_storage="s3-bucket/dev")

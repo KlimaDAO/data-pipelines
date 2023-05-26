@@ -11,6 +11,7 @@ from prefect.serializers import Serializer
 from typing_extensions import Literal
 
 DATEFORMAT = "%m_%d_%Y_%H_%M_%S"
+S3_ENDPOINT = "https://nyc3.digitaloceanspaces.com/"
 
 
 def get_param(param):
@@ -45,8 +46,8 @@ class DfSerializer(Serializer):
 
 
 def get_storage_block():
+    """Returns the result storage block the current flow is runnung on"""
     block = FlowRunContext.get().result_factory.storage_block
-    print(block.dict())
     return block
 
 
@@ -62,12 +63,14 @@ def read_df(filename) -> pd.DataFrame:
 
 
 def get_s3():
+    """Get a s3fs client instance"""
     return s3fs.S3FileSystem(
       anon=False,
-      endpoint_url="https://nyc3.digitaloceanspaces.com/"
+      endpoint_url=S3_ENDPOINT
       )
 
 
 def get_s3_path(path):
+    """Get a s3fs path contextualized with the running flow instance"""
     prefix = get_storage_block()._block_document_name
     return f"{prefix}-klimadao-data/{path}"
