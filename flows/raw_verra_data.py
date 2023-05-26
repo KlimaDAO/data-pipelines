@@ -35,9 +35,9 @@ MAX_RESULTS = 20000
 SEARCH_API_URL = "https://registry.verra.org/uiapi/asset/asset/search"
 SEARCH_API_PARAMS = {
     "$maxResults": 20000,
-    "$count": True,
+    "$count": "true",
     "$skip": 0,
-    "$format": "csv"
+    "format": "csv"
 }
 SLUG = "raw_verra_data"
 

@@ -15,7 +15,7 @@ S3_ENDPOINT = "https://nyc3.digitaloceanspaces.com/"
 
 
 def get_param(param):
-    """ Returns an execution parameter prefect block
+    """ Returns an execution parameter
 
     Arguments:
     param: name of the parameter
