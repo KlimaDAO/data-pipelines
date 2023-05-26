@@ -3,7 +3,7 @@ from prefect import flow
 import utils
 import pendulum
 
-MAX_RETENTION_DAYS = 7
+MAX_RETENTION_DAYS = 1
 
 
 @flow()
