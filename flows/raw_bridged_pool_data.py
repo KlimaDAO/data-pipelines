@@ -2,19 +2,17 @@
 from prefect import flow, task
 from subgrounds.subgrounds import Subgrounds
 import utils
+import constants
 
 
 SLUG = "raw_bridged_pool_data"
-CARBON_SUBGRAPH_URL = (
-    "https://api.thegraph.com/subgraphs/name/klimadao/polygon-bridged-carbon"
-)
 
 
 @task()
 def fetch_bridged_pool_data_task():
     """Fetches Bridged pool data"""
     sg = Subgrounds()
-    carbon_data = sg.load_subgraph(CARBON_SUBGRAPH_URL)
+    carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
 
     carbon_offsets = carbon_data.Query.carbonOffsets(
         orderBy=carbon_data.CarbonOffset.lastUpdate,

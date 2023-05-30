@@ -36,8 +36,15 @@ jobs:
         with:
           requirements: requirements.txt
 
-      - name: Raw Verra data
-        run: scripts/flow_prefect_deployment.sh raw_verra_data --interval 3600 --anchor-date 2023-05-18T12:35:00.000000+02:00
-
       - name: Clean up old artifact
-        run: scripts/flow_prefect_deployment.sh clean_up_old_artifacts --interval 3600 --anchor-date 2023-05-18T10:05:00.000000+02:00
+        run: scripts/flow_prefect_deployment.sh clean_up_old_artifacts --interval 3600 --anchor-date 2023-05-18T00:00:00.000000+02:00
+
+      - name: Raw Verra data
+        run: scripts/flow_prefect_deployment.sh raw_verra_data --interval 3600 --anchor-date 2023-05-18T00:20:00.000000+02:00
+
+      - name: Raw bridged pool data
+        run: scripts/flow_prefect_deployment.sh raw_bridged_pool_data --interval 86400 --anchor-date 2023-05-18T00:40:00.000000+02:00
+
+      - name: Raw retired pool data
+        run: scripts/flow_prefect_deployment.sh raw_retired_pool_data --interval 86400 --anchor-date 2023-05-18T01:00:00.000000+02:00
+
