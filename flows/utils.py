@@ -5,6 +5,7 @@ import s3fs
 import base64
 from datetime import datetime
 from prefect.context import FlowRunContext
+from prefect import task
 import pandas as pd
 from prefect.results import PersistedResultBlob
 from prefect.serializers import Serializer
@@ -22,7 +23,17 @@ def get_param(param, default=None):
     default: an optional default value
     """
     result = os.getenv(f"DATA_PIPELINES_{param}")
-    return int(result) if result else default
+    return result if result else default
+
+
+def get_param_as_int(param, default=None):
+    """ Returns an execution parameter as an integer
+
+    Arguments:
+    param: name of the parameter
+    default: an optional default value
+    """
+    return int(get_param(param, default))
 
 
 def now():
@@ -78,14 +89,14 @@ def get_s3_path(path):
     return f"{prefix}-klimadao-data/{path}"
 
 
-def validate_against_latest_dataset(slug, df):
-    """Validates a dataframe against the latest dataset
-    
+def validate_against_latest_dataframe(slug, df):
+    """Validates a dataframe against the latest dataframe
+
     Arguments:
     slug: the slug of the data filename
     df: the dataframe to be validated
 
-    Returns: the latest dataset for further specific validation
+    Returns: the latest dataframe for further specific validation
     """
     latest_df = None
     try:
@@ -94,8 +105,30 @@ def validate_against_latest_dataset(slug, df):
         print(err)
 
     if latest_df is not None:
-        assert df.shape[0] >= latest_df.shape[0], "New dataset has a lower number of rows"
-        assert df.shape[1] == latest_df.shape[1], "New dataset does not have the same number of colums"
+        assert df.shape[0] >= latest_df.shape[0], "New dataframe has a lower number of rows"
+        assert df.shape[1] == latest_df.shape[1], "New dataframe does not have the same number of colums"
     else:
         print("Live dataframe cannot be read. Skipping validation")
     return latest_df
+
+
+@task(persist_result=True,
+      result_serializer=DfSerializer())
+def store_raw_data_task(df):
+    """Stores data wihout modifying its content"""
+    return df
+
+
+def raw_data_flow(slug, fetch_data_task, validate_data_task):
+    """ Fetches raw data and store it
+
+    Parameters:
+    slug: the slug of the data filename
+    fetch_data_task: the task to fetch the data
+    validate_data_task: the task to validate the data
+    """
+
+    df = fetch_data_task()
+    validate_data_task(df)
+    store_raw_data_task.with_options(result_storage_key=f"{slug}-{now()}")(df)
+    store_raw_data_task.with_options(result_storage_key=f"{slug}-latest")(df)
