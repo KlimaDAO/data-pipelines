@@ -111,7 +111,7 @@ def validate_against_latest_dataframe(slug, df):
         assert df.shape[0] >= latest_df.shape[0], "New dataframe has a lower number of rows"
         assert df.shape[1] == latest_df.shape[1], "New dataframe does not have the same number of colums"
     else:
-        print("Live dataframe cannot be read. Skipping validation")
+        print("Latest dataframe cannot be read. Skipping validation")
     return latest_df
 
 

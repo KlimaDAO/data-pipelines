@@ -1,16 +1,16 @@
-""" Raw bridged pool data flow """
+""" Raw Polygon bridged offsets flow """
 from prefect import flow, task
 from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
 
 
-SLUG = "raw_bridged_pool_data"
+SLUG = "raw_polygon_bridged_offsets"
 
 
 @task()
-def fetch_bridged_pool_data_task():
-    """Fetches Bridged pool data"""
+def fetch_polygon_bridged_offsets_task():
+    """Fetches Polygon bridged offsets"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
     carbon_offsets = carbon_data.Query.carbonOffsets(
@@ -43,28 +43,28 @@ def fetch_bridged_pool_data_task():
 
 
 @task()
-def validate_bridged_pool_data_task(df):
-    """Validates Bridged pool data"""
+def validate_polygon_bridged_offsets_task(df):
+    """Validates Polygon bridged offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
 @flow()
-def raw_bridged_pool_data():
-    """Fetches bridged pool data and stores it"""
+def raw_polygon_bridged_offsets():
+    """Fetches Polygon bridged offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_bridged_pool_data_task,
-        validate_data_task=validate_bridged_pool_data_task,
+        fetch_data_task=fetch_polygon_bridged_offsets_task,
+        validate_data_task=validate_polygon_bridged_offsets_task,
     )
 
 
 @flow()
-def raw_bridged_pool_data_flow(result_storage):
-    """Fetches bridged pool data and stores it"""
-    raw_bridged_pool_data.with_options(result_storage=result_storage)()
+def raw_polygon_bridged_offsets_flow(result_storage):
+    """Fetches Polygon bridged offsets and stores it"""
+    raw_polygon_bridged_offsets.with_options(result_storage=result_storage)()
 
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    raw_bridged_pool_data()
+    raw_polygon_bridged_offsets()
