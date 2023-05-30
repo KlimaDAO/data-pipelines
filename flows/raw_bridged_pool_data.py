@@ -1,7 +1,6 @@
 """ Raw bridged pool data flow """
 from prefect import flow, task
 from subgrounds.subgrounds import Subgrounds
-import pandas as pd
 import utils
 
 
@@ -20,7 +19,7 @@ def fetch_bridged_pool_data_task():
     carbon_offsets = carbon_data.Query.carbonOffsets(
         orderBy=carbon_data.CarbonOffset.lastUpdate,
         orderDirection="desc",
-        first=utils.get_param("MAX_RECORDS", 50000),
+        first=utils.get_param_as_int("MAX_RECORDS", 50000),
     )
 
     return sg.query_df(
@@ -48,34 +47,18 @@ def fetch_bridged_pool_data_task():
 
 @task()
 def validate_bridged_pool_data_task(df):
-    """Validates Bridged pool data
-
-    Arguments:
-    df: the dataframe to be validated
-    """
-    utils.validate_against_latest_dataset(SLUG, df)
-
-
-@task(persist_result=True,
-      result_storage_key=f"{SLUG}-{{parameters[suffix]}}",
-      result_serializer=utils.DfSerializer())
-def store_bridged_pool_data_task(df, suffix):
-    """Stores bridged pool data
-
-    Arguments:
-    df: the dataframe
-    suffix: a date or 'live'
-    """
-    return df
+    """Validates Bridged pool data"""
+    utils.validate_against_latest_dataframe(SLUG, df)
 
 
 @flow()
 def raw_bridged_pool_data():
     """Fetches bridged pool data and stores it"""
-    df = fetch_bridged_pool_data_task()
-    validate_bridged_pool_data_task(df)
-    store_bridged_pool_data_task(df, utils.now())
-    store_bridged_pool_data_task(df, "latest")
+    utils.raw_data_flow(
+        slug=SLUG,
+        fetch_data_task=fetch_bridged_pool_data_task,
+        validate_data_task=validate_bridged_pool_data_task,
+    )
 
 
 @flow()

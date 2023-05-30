@@ -38,7 +38,7 @@ SLUG = "raw_verra_data"
 def get_search_api_params():
     """Returns parameters for the Verra data query"""
     return {
-        "$maxResults": utils.get_param("MAX_RECORDS", 20000),
+        "$maxResults": utils.get_param_as_int("MAX_RECORDS", 20000),
         "$count": "true",
         "$skip": 0,
         "format": "csv"
@@ -65,34 +65,18 @@ def fetch_verra_data_task():
 
 @task()
 def validate_verra_data_task(df):
-    """Validates Verra data
-
-    Arguments:
-    df: the dataframe to be validated
-    """
-    utils.validate_against_latest_dataset(SLUG, df)
-
-
-@task(persist_result=True,
-      result_storage_key=f"{SLUG}-{{parameters[suffix]}}",
-      result_serializer=utils.DfSerializer())
-def store_verra_data_task(df, suffix):
-    """Stores Verra data
-
-    Arguments:
-    df: the dataframe
-    suffix: a date or 'live'
-    """
-    return df
+    """Validates Verra data"""
+    utils.validate_against_latest_dataframe(SLUG, df)
 
 
 @flow()
 def raw_verra_data():
     """Fetches Verra data and stores it"""
-    df = fetch_verra_data_task()
-    validate_verra_data_task(df)
-    store_verra_data_task(df, utils.now())
-    store_verra_data_task(df, "latest")
+    utils.raw_data_flow(
+        slug=SLUG,
+        fetch_data_task=fetch_verra_data_task,
+        validate_data_task=validate_verra_data_task,
+    )
 
 
 @flow()
