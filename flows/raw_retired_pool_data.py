@@ -13,10 +13,7 @@ def fetch_retired_pool_data_task():
     """Fetches Retired pool data"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
-
-    carbon_offsets = carbon_data.Query.retires(
-        first=utils.get_param_as_int("MAX_RECORDS", 50000)
-        )
+    carbon_offsets = carbon_data.Query.retires(first=utils.get_max_records())
 
     return sg.query_df(
         [

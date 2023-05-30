@@ -13,11 +13,10 @@ def fetch_bridged_pool_data_task():
     """Fetches Bridged pool data"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
-
     carbon_offsets = carbon_data.Query.carbonOffsets(
         orderBy=carbon_data.CarbonOffset.lastUpdate,
         orderDirection="desc",
-        first=utils.get_param_as_int("MAX_RECORDS", 50000),
+        first=utils.get_max_records(),
     )
 
     return sg.query_df(
