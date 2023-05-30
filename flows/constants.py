@@ -10,3 +10,6 @@ CARBON_ETH_SUBGRAPH_URL = (
 CARBON_MOSS_ETH_TEST_SUBGRAPH_URL = (
     "https://api.thegraph.com/subgraphs/name/originalpkbims/ethcarbonsubgraphtest"
 )
+CARBON_CELO_SUBGRAPH_URL = (
+    "https://api.thegraph.com/subgraphs/name/klimadao/celo-bridged-carbon"
+)
