@@ -15,6 +15,9 @@ DATEFORMAT = "%Y_%m_%d__%H_%M_%S"
 S3_ENDPOINT = "https://nyc3.digitaloceanspaces.com/"
 
 
+# Parameters utils
+
+
 def get_param(param, default=None):
     """ Returns an execution parameter
 
@@ -41,9 +44,20 @@ def get_max_records():
     return get_param_as_int("MAX_RECORDS", 50000)
 
 
+# Date utils
+
+
 def now():
     """ Returns the current time serialized """
     return datetime.now().strftime(DATEFORMAT)
+
+
+def format_timestamp(timestamp):
+    """ Formats a dataframe timestamp """
+    return str(datetime.fromtimestamp(timestamp))
+
+
+# Data utils
 
 
 class DfSerializer(Serializer):
@@ -90,6 +104,9 @@ def get_s3_path(path):
     """Get a s3fs path contextualized with the running flow instance"""
     prefix = get_storage_block()._block_document_name
     return f"{prefix}-klimadao-data/{path}"
+
+
+# Flows utils
 
 
 def validate_against_latest_dataframe(slug, df):
