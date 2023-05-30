@@ -36,15 +36,18 @@ def get_param_as_int(param, default=None):
     return int(get_param(param, default))
 
 
+def get_max_records():
+    """ Returns the number of records to return for graph queries"""
+    return get_param_as_int("MAX_RECORDS", 50000)
+
+
 def now():
     """ Returns the current time serialized """
     return datetime.now().strftime(DATEFORMAT)
 
 
 class DfSerializer(Serializer):
-    """
-    Serializes Dataframes using feather.
-    """
+    """Serializes Dataframes using feather """
     type: Literal["pandas_feather"] = "pandas_feather"
 
     def dumps(self, df: pd.DataFrame) -> bytes:
