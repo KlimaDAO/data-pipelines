@@ -1,4 +1,4 @@
-""" Clean up old artifacts """
+""" Clean up old artifacts flow """
 from prefect import flow
 import utils
 import pendulum
