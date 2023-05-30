@@ -14,13 +14,15 @@ DATEFORMAT = "%Y_%m_%d__%H_%M_%S"
 S3_ENDPOINT = "https://nyc3.digitaloceanspaces.com/"
 
 
-def get_param(param):
+def get_param(param, default=None):
     """ Returns an execution parameter
 
     Arguments:
     param: name of the parameter
+    default: an optional default value
     """
-    return os.getenv(f"DATA_PIPELINES_{param}")
+    result = os.getenv(f"DATA_PIPELINES_{param}")
+    return int(result) if result else default
 
 
 def now():
@@ -74,3 +76,26 @@ def get_s3_path(path):
     """Get a s3fs path contextualized with the running flow instance"""
     prefix = get_storage_block()._block_document_name
     return f"{prefix}-klimadao-data/{path}"
+
+
+def validate_against_latest_dataset(slug, df):
+    """Validates a dataframe against the latest dataset
+    
+    Arguments:
+    slug: the slug of the data filename
+    df: the dataframe to be validated
+
+    Returns: the latest dataset for further specific validation
+    """
+    latest_df = None
+    try:
+        latest_df = read_df(f"{slug}-latest")
+    except Exception as err:
+        print(err)
+
+    if latest_df is not None:
+        assert df.shape[0] >= latest_df.shape[0], "New dataset has a lower number of rows"
+        assert df.shape[1] == latest_df.shape[1], "New dataset does not have the same number of colums"
+    else:
+        print("Live dataframe cannot be read. Skipping validation")
+    return latest_df
