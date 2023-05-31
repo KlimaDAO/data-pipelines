@@ -5,6 +5,7 @@ import s3fs
 import base64
 from datetime import datetime
 from prefect.context import FlowRunContext
+from prefect.logging import get_run_logger
 from prefect import task
 import pandas as pd
 from prefect.results import PersistedResultBlob
@@ -119,16 +120,17 @@ def validate_against_latest_dataframe(slug, df):
     Returns: the latest dataframe for further specific validation
     """
     latest_df = None
+    logger = get_run_logger()
     try:
         latest_df = read_df(f"{slug}-latest")
     except Exception as err:
-        print(err)
+        logger.info(str(err))
 
     if latest_df is not None:
         assert df.shape[0] >= latest_df.shape[0], "New dataframe has a lower number of rows"
         assert df.shape[1] == latest_df.shape[1], "New dataframe does not have the same number of colums"
     else:
-        print("Latest dataframe cannot be read. Skipping validation")
+        logger.info("Latest dataframe cannot be read. Skipping validation")
     return latest_df
 
 

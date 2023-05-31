@@ -39,7 +39,7 @@ You can run flows manually from the `flows` folder
 When running flows manually, the behaviour can be altered using a .env file. eg.
 
 ```
-DATA_PIPELINES_DRY_RUN=true # Use dummy data to populate files
+DATA_PIPELINES_DRY_RUN=true # Use dummy data to populate Verra_data, and do not remove stale files
 ```
 
 ## Manage deployments
