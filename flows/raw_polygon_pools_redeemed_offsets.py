@@ -32,7 +32,7 @@ def validate_polygon_pools_redeemed_offsets_task(df):
 
 @utils.with_result_storage
 @flow()
-def raw_polygon_pools_redeemed_offsets_flow(result_storage):
+def raw_polygon_pools_redeemed_offsets_flow(result_storage=None):
     """Fetches Polygon pools redeemed offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,

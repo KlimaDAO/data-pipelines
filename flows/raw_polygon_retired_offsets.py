@@ -46,7 +46,7 @@ def validate_polygon_retired_offsets_task(df):
 
 @utils.with_result_storage
 @flow()
-def raw_polygon_retired_offsets_flow(result_storage):
+def raw_polygon_retired_offsets_flow(result_storage=None):
     """Fetches Polygon retired offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,

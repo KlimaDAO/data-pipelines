@@ -47,7 +47,7 @@ def validate_polygon_klima_retirements_daily_task(df):
 
 @utils.with_result_storage
 @flow()
-def raw_polygon_klima_retirements_daily_flow(result_storage):
+def raw_polygon_klima_retirements_daily_flow(result_storage=None):
     """Fetches Polygon daily Klima retirements and stores it"""
     utils.raw_data_flow(
         slug=SLUG,

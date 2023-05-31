@@ -72,7 +72,7 @@ def validate_assets_prices_task(df):
 
 @utils.with_result_storage
 @flow()
-def raw_assets_prices_flow(result_storage):
+def raw_assets_prices_flow(result_storage=None):
     """Fetches assets prices and stores it"""
     utils.raw_data_flow(
         slug=SLUG,

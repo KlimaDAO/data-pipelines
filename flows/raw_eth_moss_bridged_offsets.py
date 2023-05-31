@@ -36,7 +36,7 @@ def validate_eth_moss_bridged_offsets_task(df):
 
 @utils.with_result_storage
 @flow()
-def raw_eth_moss_bridged_offsets_flow(result_storage):
+def raw_eth_moss_bridged_offsets_flow(result_storage=None):
     """Fetches Ethereum Moss bridged offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,

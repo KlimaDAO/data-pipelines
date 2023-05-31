@@ -45,7 +45,7 @@ def validate_eth_retired_offsets_task(df):
 
 @utils.with_result_storage
 @flow()
-def raw_eth_retired_offsets_flow(result_storage):
+def raw_eth_retired_offsets_flow(result_storage=None):
     """Fetches Ethereum retired offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,

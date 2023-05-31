@@ -99,7 +99,7 @@ def validate_polygon_carbon_metrics_task(df):
 
 @utils.with_result_storage
 @flow()
-def raw_polygon_carbon_metrics_flow(result_storage):
+def raw_polygon_carbon_metrics_flow(result_storage=None):
     """Fetches Polygon carbon metrics and stores it"""
     utils.raw_data_flow(
         slug=SLUG,

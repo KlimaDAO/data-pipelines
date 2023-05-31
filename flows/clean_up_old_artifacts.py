@@ -9,7 +9,7 @@ MAX_RETENTION_DAYS = 1
 
 @utils.with_result_storage
 @flow()
-def clean_up_old_artifacts_flow(result_storage):
+def clean_up_old_artifacts_flow(result_storage=None):
     """Deletes old artifacts (exept those suffixed with latest)"""
     s3 = utils.get_s3()
     logger = get_run_logger()

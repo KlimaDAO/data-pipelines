@@ -40,7 +40,7 @@ def validate_offsets_holders_data_task(df):
 
 @utils.with_result_storage
 @flow()
-def raw_offsets_holders_data_flow(result_storage):
+def raw_offsets_holders_data_flow(result_storage=None):
     """Fetches offsets holders data and stores it"""
     utils.raw_data_flow(
         slug=SLUG,

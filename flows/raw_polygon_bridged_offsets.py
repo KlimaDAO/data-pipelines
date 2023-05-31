@@ -50,7 +50,7 @@ def validate_polygon_bridged_offsets_task(df):
 
 @utils.with_result_storage
 @flow()
-def raw_polygon_bridged_offsets_flow(result_storage):
+def raw_polygon_bridged_offsets_flow(result_storage=None):
     """Fetches Polygon bridged offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
