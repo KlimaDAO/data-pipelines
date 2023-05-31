@@ -151,7 +151,7 @@ def with_result_storage(flow_func):
         result_storage = kwargs.get("result_storage")
         if not result_storage:
             result_storage = get_param("RESULT_STORAGE")
-        return flow_func.with_options(result_storage=kwargs.get("result_storage"))(**kwargs)
+        return flow_func.with_options(result_storage=result_storage)(**kwargs)
     return inner
 
 
