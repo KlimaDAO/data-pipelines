@@ -36,9 +36,9 @@ jobs:
         with:
           requirements: requirements.txt
 
-      - run: scripts/flow_prefect_deployment.sh clean_up_old_artifacts --interval 3600 --anchor-date 2023-05-18T00:00:00.000000+02:00
+      - run: scripts/flow_prefect_deployment.sh clean_up_old_artifacts --interval 86400 --anchor-date 2023-05-18T00:00:00.000000+02:00
 
-      - run: scripts/flow_prefect_deployment.sh raw_verra_data --interval 3600 --anchor-date 2023-05-18T00:20:00.000000+02:00
+      - run: scripts/flow_prefect_deployment.sh raw_verra_data --interval 86400 --anchor-date 2023-05-18T00:20:00.000000+02:00
 
       - run: scripts/flow_prefect_deployment.sh raw_polygon_bridged_offsets --interval 86400 --anchor-date 2023-05-18T00:40:00.000000+02:00
       - run: scripts/flow_prefect_deployment.sh raw_polygon_retired_offsets --interval 86400 --anchor-date 2023-05-18T01:00:00.000000+02:00
@@ -58,3 +58,5 @@ jobs:
       - run: scripts/flow_prefect_deployment.sh raw_celo_carbon_metrics --interval 86400 --anchor-date 2023-05-18T04:40:00.000000+02:00
 
       - run: scripts/flow_prefect_deployment.sh raw_offsets_holders_data --interval 86400 --anchor-date 2023-05-18T05:00:00.000000+02:00
+
+      - run: scripts/flow_prefect_deployment.sh raw_assets_prices --interval 86400 --anchor-date 2023-05-18T05:20:00.000000+02:00
