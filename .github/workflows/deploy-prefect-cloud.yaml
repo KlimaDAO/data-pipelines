@@ -51,7 +51,7 @@ jobs:
       - run: scripts/flow_prefect_deployment.sh raw_eth_moss_retired_offsets --interval 86400 --anchor-date 2023-05-18T02:20:00.000000+02:00
       - run: scripts/flow_prefect_deployment.sh raw_eth_moss_bridged_offsets --interval 86400 --anchor-date 2023-05-18T02:40:00.000000+02:00
       - run: scripts/flow_prefect_deployment.sh raw_eth_retired_offsets --interval 86400 --anchor-date 2023-05-18T03:00:00.000000+02:00
-      - run: scripts/flow_prefect_deployment.sh raw_eth_bridged_offsets --interval 86400 --anchor-date 2023-05-18T03:20:00.000000+02:00
+      - run: scripts/flow_prefect_deployment.sh raw_eth_bridged_offsets_transactions --interval 86400 --anchor-date 2023-05-18T03:20:00.000000+02:00
 
       - run: scripts/flow_prefect_deployment.sh raw_polygon_carbon_metrics --interval 86400 --anchor-date 2023-05-18T03:40:00.000000+02:00
       - run: scripts/flow_prefect_deployment.sh raw_eth_carbon_metrics --interval 86400 --anchor-date 2023-05-18T04:20:00.000000+02:00
