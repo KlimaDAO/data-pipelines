@@ -97,8 +97,9 @@ def validate_polygon_carbon_metrics_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
+@utils.with_result_storage
 @flow()
-def raw_polygon_carbon_metrics():
+def raw_polygon_carbon_metrics_flow(result_storage):
     """Fetches Polygon carbon metrics and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
@@ -107,13 +108,7 @@ def raw_polygon_carbon_metrics():
     )
 
 
-@flow()
-def raw_polygon_carbon_metrics_flow(result_storage):
-    """Fetches Polygon carbon metrics and stores it"""
-    raw_polygon_carbon_metrics.with_options(result_storage=result_storage)()
-
-
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    raw_polygon_carbon_metrics()
+    raw_polygon_carbon_metrics_flow()

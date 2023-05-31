@@ -34,8 +34,9 @@ def validate_eth_moss_retired_offsets_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
+@utils.with_result_storage
 @flow()
-def raw_eth_moss_retired_offsets():
+def raw_eth_moss_retired_offsets_flow(result_storage):
     """Fetches Ethereum moss retired offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
@@ -44,13 +45,7 @@ def raw_eth_moss_retired_offsets():
     )
 
 
-@flow()
-def raw_eth_moss_retired_offsets_flow(result_storage):
-    """Fetches Ethereum moss retired offsets and stores it"""
-    raw_eth_moss_retired_offsets.with_options(result_storage=result_storage)()
-
-
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    raw_eth_moss_retired_offsets()
+    raw_eth_moss_retired_offsets_flow()

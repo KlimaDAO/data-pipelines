@@ -141,6 +141,20 @@ def store_raw_data_task(df):
     return df
 
 
+def with_result_storage(flow_func):
+    """Decorates a flow so the result_storage is pushed into the flow context
+    The result storage can come from be:
+     - the result_storage argument (deployment)
+     - the DATA_PIPELINES_RESULT_STORAGE environment variable
+    """
+    def inner(**kwargs):
+        result_storage = kwargs.get("result_storage")
+        if not result_storage:
+            result_storage = get_param("RESULT_STORAGE")
+        return flow_func.with_options(result_storage=kwargs.get("result_storage"))(**kwargs)
+    return inner
+
+
 def raw_data_flow(slug, fetch_data_task, validate_data_task):
     """ Fetches raw data and store it
 

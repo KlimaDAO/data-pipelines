@@ -30,8 +30,9 @@ def validate_polygon_pools_deposited_offsets_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
+@utils.with_result_storage
 @flow()
-def raw_polygon_pools_deposited_offsets():
+def raw_polygon_pools_deposited_offsets_flow(result_storage):
     """Fetches Polygon pools deposited offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
@@ -40,13 +41,7 @@ def raw_polygon_pools_deposited_offsets():
     )
 
 
-@flow()
-def raw_polygon_pools_deposited_offsets_flow(result_storage):
-    """Fetches Polygon pools deposited offsets and stores it"""
-    raw_polygon_pools_deposited_offsets.with_options(result_storage=result_storage)()
-
-
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    raw_polygon_pools_deposited_offsets()
+    raw_polygon_pools_deposited_offsets_flow()

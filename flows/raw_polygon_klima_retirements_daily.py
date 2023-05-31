@@ -45,8 +45,9 @@ def validate_polygon_klima_retirements_daily_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
+@utils.with_result_storage
 @flow()
-def raw_polygon_klima_retirements_daily():
+def raw_polygon_klima_retirements_daily_flow(result_storage):
     """Fetches Polygon daily Klima retirements and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
@@ -55,13 +56,7 @@ def raw_polygon_klima_retirements_daily():
     )
 
 
-@flow()
-def raw_polygon_klima_retirements_daily_flow(result_storage):
-    """Fetches Polygon daily Klima retirements and stores it"""
-    raw_polygon_klima_retirements_daily.with_options(result_storage=result_storage)()
-
-
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    raw_polygon_klima_retirements_daily()
+    raw_polygon_klima_retirements_daily_flow()

@@ -29,8 +29,9 @@ def validate_eth_bridged_offsets_transactions_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
+@utils.with_result_storage
 @flow()
-def raw_eth_bridged_offsets_transactions():
+def raw_eth_bridged_offsets_transactions_flow(result_storage):
     """Fetches Ethereum Moss bridged offsets transactions and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
@@ -39,13 +40,7 @@ def raw_eth_bridged_offsets_transactions():
     )
 
 
-@flow()
-def raw_eth_bridged_offsets_transactions_flow(result_storage):
-    """Fetches Ethereum Moss bridged offsets transactions and stores it"""
-    raw_eth_bridged_offsets_transactions.with_options(result_storage=result_storage)()
-
-
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    raw_eth_bridged_offsets_transactions()
+    raw_eth_bridged_offsets_transactions_flow()
