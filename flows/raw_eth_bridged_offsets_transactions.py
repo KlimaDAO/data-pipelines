@@ -7,6 +7,12 @@ import constants
 
 SLUG = "raw_eth_bridged_offsets_transactions"
 
+RENAME_MAP = {
+    "bridges_value": "Quantity",
+    "bridges_timestamp": "Date",
+    "bridges_transaction_id": "Tx Address",
+}
+
 
 @task()
 def fetch_eth_bridged_offsets_transactions_task():
@@ -20,7 +26,7 @@ def fetch_eth_bridged_offsets_transactions_task():
             carbon_offsets.timestamp,
             carbon_offsets.transaction.id,
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
 
 @task()

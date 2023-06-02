@@ -8,6 +8,26 @@ import constants
 SLUG = "raw_polygon_retired_offsets"
 
 
+RENMAE_MAP = {
+    "retires_value": "Quantity",
+    "retires_timestamp": "Date",
+    "retires_retiree": "Retiree",
+    "retires_offset_bridge": "Bridge",
+    "retires_offset_region": "Region",
+    "retires_offset_vintage": "Vintage",
+    "retires_offset_projectID": "Project ID",
+    "retires_offset_standard": "Standard",
+    "retires_offset_methodology": "Methodology",
+    "retires_offset_country": "Country",
+    "retires_offset_category": "Project Type",
+    "retires_offset_name": "Name",
+    "retires_offset_tokenAddress": "Token Address",
+    "retires_offset_totalRetired": "Total Quantity",
+    "retires_transaction_id": "Tx ID",
+    "retires_transaction_from": "Tx From Address",
+}
+
+
 @task()
 def fetch_polygon_retired_offsets_task():
     """Fetches Polygon retired offsets"""
@@ -35,7 +55,7 @@ def fetch_polygon_retired_offsets_task():
             carbon_offsets.transaction.id,
             carbon_offsets.transaction._select("from"),
         ]
-    )
+    ).rename(columns=RENMAE_MAP)
 
 
 @task()

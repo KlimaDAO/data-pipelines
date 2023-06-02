@@ -7,6 +7,16 @@ import constants
 
 SLUG = "raw_eth_moss_retired_offsets"
 
+RENAME_MAP = {
+    "mossOffsets_value": "Quantity",
+    "mossOffsets_timestamp": "Date",
+    "mossOffsets_retiree": "Retiree",
+    "mossOffsets_receiptId": "Receipt ID",
+    "mossOffsets_onBehalfOf": "OnBehalf Of",
+    "mossOffsets_transaction_id": "Tx ID",
+    "mossOffsets_transaction_from": "Tx From Address",
+}
+
 
 @task()
 def fetch_eth_moss_retired_offsets_task():
@@ -25,7 +35,7 @@ def fetch_eth_moss_retired_offsets_task():
             carbon_offsets.transaction.id,
             carbon_offsets.transaction._select("from"),
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
 
 @task()

@@ -7,6 +7,15 @@ import constants
 
 SLUG = "raw_offsets_holders_data"
 
+RENAME_MAP = {
+    "holdings_id": "ID",
+    "holdings_token": "Token",
+    "holdings_timestamp": "Date",
+    "holdings_tokenAmount": "Quantity",
+    "holdings_carbonValue": "CarbonValue",
+    "holdings_klimate_id": "Klimate_Address",
+}
+
 
 @task()
 def fetch_offsets_holders_data_task():
@@ -29,7 +38,7 @@ def fetch_offsets_holders_data_task():
             holdings.carbonValue,
             holdings.klimate.id,
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
 
 @task()

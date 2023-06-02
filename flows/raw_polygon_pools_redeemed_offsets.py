@@ -7,6 +7,13 @@ import constants
 
 SLUG = "raw_polygon_pools_redeemed_offsets"
 
+RENAME_MAP = {
+    "redeems_value": "Quantity",
+    "redeems_timestamp": "Date",
+    "redeems_pool": "Pool",
+    "redeems_offset_region": "Region",
+}
+
 
 @task()
 def fetch_polygon_pools_redeemed_offsets_task():
@@ -21,7 +28,7 @@ def fetch_polygon_pools_redeemed_offsets_task():
             carbon_offsets.timestamp,
             carbon_offsets.pool,
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
 
 @task()

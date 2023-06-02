@@ -8,6 +8,14 @@ import constants
 SLUG = "raw_polygon_pools_deposited_offsets"
 
 
+RENAME_MAP = {
+    "deposits_value": "Quantity",
+    "deposits_timestamp": "Date",
+    "deposits_pool": "Pool",
+    "deposits_offset_region": "Region",
+}
+
+
 @task()
 def fetch_polygon_pools_deposited_offsets_task():
     """Fetches Polygon pools deposited offsets"""
@@ -21,7 +29,7 @@ def fetch_polygon_pools_deposited_offsets_task():
             carbon_offsets.timestamp,
             carbon_offsets.pool,
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
 
 @task()
