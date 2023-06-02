@@ -38,8 +38,9 @@ def validate_offsets_holders_data_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
+@utils.with_result_storage
 @flow()
-def raw_offsets_holders_data():
+def raw_offsets_holders_data_flow(result_storage=None):
     """Fetches offsets holders data and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
@@ -48,13 +49,7 @@ def raw_offsets_holders_data():
     )
 
 
-@flow()
-def raw_offsets_holders_data_flow(result_storage):
-    """Fetches offsets holders data and stores it"""
-    raw_offsets_holders_data.with_options(result_storage=result_storage)()
-
-
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    raw_offsets_holders_data()
+    raw_offsets_holders_data_flow()

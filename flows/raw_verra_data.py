@@ -69,8 +69,9 @@ def validate_verra_data_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
+@utils.with_result_storage
 @flow()
-def raw_verra_data():
+def raw_verra_data_flow(result_storage):
     """Fetches Verra data and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
@@ -79,13 +80,7 @@ def raw_verra_data():
     )
 
 
-@flow()
-def raw_verra_data_flow(result_storage):
-    """Fetches Verra data and stores it"""
-    raw_verra_data.with_options(result_storage=result_storage)()
-
-
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    raw_verra_data()
+    raw_verra_data_flow()
