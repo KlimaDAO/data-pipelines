@@ -4,7 +4,7 @@ from prefect.logging import get_run_logger
 import utils
 import pendulum
 
-MAX_RETENTION_DAYS = 1
+MAX_RETENTION_DAYS = 7
 
 
 @utils.with_result_storage
