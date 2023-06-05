@@ -1,5 +1,5 @@
 """ Raw offsets holders data flow """
-from prefect import flow, task
+from prefect import task
 from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
@@ -47,8 +47,7 @@ def validate_offsets_holders_data_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
-@utils.with_result_storage
-@flow()
+@utils.flow_with_result_storage
 def raw_offsets_holders_data_flow(result_storage=None):
     """Fetches offsets holders data and stores it"""
     utils.raw_data_flow(

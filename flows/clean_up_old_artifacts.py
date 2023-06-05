@@ -1,5 +1,4 @@
 """ Clean up old artifacts flow """
-from prefect import flow
 from prefect.logging import get_run_logger
 import utils
 import pendulum
@@ -7,8 +6,7 @@ import pendulum
 MAX_RETENTION_DAYS = 7
 
 
-@utils.with_result_storage
-@flow()
+@utils.flow_with_result_storage
 def clean_up_old_artifacts_flow(result_storage=None):
     """Deletes old artifacts (exept those suffixed with latest)"""
     s3 = utils.get_s3()

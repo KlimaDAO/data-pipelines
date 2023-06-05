@@ -1,5 +1,5 @@
 """ Raw Verra data flow """
-from prefect import flow, task
+from prefect import task
 import requests
 import pandas as pd
 import utils
@@ -69,8 +69,7 @@ def validate_verra_data_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
-@utils.with_result_storage
-@flow()
+@utils.flow_with_result_storage
 def raw_verra_data_flow(result_storage):
     """Fetches Verra data and stores it"""
     utils.raw_data_flow(

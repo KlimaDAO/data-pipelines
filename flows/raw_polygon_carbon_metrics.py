@@ -1,5 +1,5 @@
 """ Raw Polygon carbon metrics flow """
-from prefect import flow, task
+from prefect import task
 from subgrounds.subgrounds import Subgrounds
 from subgrounds.subgraph import SyntheticField
 import utils
@@ -97,8 +97,7 @@ def validate_polygon_carbon_metrics_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
-@utils.with_result_storage
-@flow()
+@utils.flow_with_result_storage
 def raw_polygon_carbon_metrics_flow(result_storage=None):
     """Fetches Polygon carbon metrics and stores it"""
     utils.raw_data_flow(

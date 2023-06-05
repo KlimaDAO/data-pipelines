@@ -1,5 +1,5 @@
 """ Raw assets prices flow """
-from prefect import flow, task
+from prefect import task
 from subgrounds.subgrounds import Subgrounds
 import pandas as pd
 import utils
@@ -70,8 +70,7 @@ def validate_assets_prices_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
-@utils.with_result_storage
-@flow()
+@utils.flow_with_result_storage
 def raw_assets_prices_flow(result_storage=None):
     """Fetches assets prices and stores it"""
     utils.raw_data_flow(

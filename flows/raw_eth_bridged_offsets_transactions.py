@@ -1,5 +1,5 @@
 """ Raw Ethereum Moss bridged offsets transactions flow """
-from prefect import flow, task
+from prefect import task
 from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
@@ -35,8 +35,7 @@ def validate_eth_bridged_offsets_transactions_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
-@utils.with_result_storage
-@flow()
+@utils.flow_with_result_storage
 def raw_eth_bridged_offsets_transactions_flow(result_storage=None):
     """Fetches Ethereum Moss bridged offsets transactions and stores it"""
     utils.raw_data_flow(

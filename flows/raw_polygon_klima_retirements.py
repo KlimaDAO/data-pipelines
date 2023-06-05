@@ -1,5 +1,5 @@
 """ Raw Polygon Klima retirements flow """
-from prefect import flow, task
+from prefect import task
 from subgrounds.subgrounds import Subgrounds
 from subgrounds.subgraph import SyntheticField
 import utils
@@ -53,8 +53,7 @@ def validate_polygon_klima_retirements_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
-@utils.with_result_storage
-@flow()
+@utils.flow_with_result_storage
 def raw_polygon_klima_retirements_flow(result_storage=None):
     """Fetches Polygon Klima retirements and stores it"""
     utils.raw_data_flow(

@@ -1,5 +1,5 @@
 """ Raw Ethereum moss retired offsets flow """
-from prefect import flow, task
+from prefect import task
 from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
@@ -44,8 +44,7 @@ def validate_eth_moss_retired_offsets_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
-@utils.with_result_storage
-@flow()
+@utils.flow_with_result_storage
 def raw_eth_moss_retired_offsets_flow(result_storage=None):
     """Fetches Ethereum moss retired offsets and stores it"""
     utils.raw_data_flow(
