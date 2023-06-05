@@ -60,6 +60,7 @@ def fetch_verra_data_task():
                           )
         data = r.json()["value"]
     df = pd.DataFrame(data).rename(columns=RENAME_MAP)
+
     df["Vintage"] = (
         pd.to_datetime(df["Vintage Start"]).dt.tz_localize(None).dt.year
     )
@@ -86,7 +87,7 @@ def validate_verra_data_task(df):
 
 
 @utils.flow_with_result_storage
-def raw_verra_data_flow(result_storage=None):
+def raw_verra_data_flow(result_storage):
     """Fetches Verra data and stores it"""
     utils.raw_data_flow(
         slug=SLUG,

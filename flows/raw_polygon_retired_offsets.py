@@ -64,6 +64,7 @@ def fetch_polygon_retired_offsets_task():
 
     return df.reset_index()
 
+
 @task()
 def validate_polygon_retired_offsets_task(df):
     """Validates Polygon retired offsets"""
