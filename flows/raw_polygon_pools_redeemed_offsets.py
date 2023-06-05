@@ -1,5 +1,5 @@
 """ Raw Polygon pools redeemed offsets flow """
-from prefect import flow, task
+from prefect import task
 from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
@@ -30,8 +30,7 @@ def validate_polygon_pools_redeemed_offsets_task(df):
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
-@utils.with_result_storage
-@flow()
+@utils.flow_with_result_storage
 def raw_polygon_pools_redeemed_offsets_flow(result_storage=None):
     """Fetches Polygon pools redeemed offsets and stores it"""
     utils.raw_data_flow(

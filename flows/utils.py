@@ -6,7 +6,7 @@ import base64
 from datetime import datetime
 from prefect.context import FlowRunContext
 from prefect.logging import get_run_logger
-from prefect import task
+from prefect import task, flow
 import pandas as pd
 from prefect.results import PersistedResultBlob
 from prefect.serializers import Serializer
@@ -141,17 +141,21 @@ def store_raw_data_task(df):
     return df
 
 
-def with_result_storage(flow_func):
-    """Decorates a flow so the result_storage is pushed into the flow context
+def flow_with_result_storage(func, **decorator_kwargs):
+    """Decorates a function as a flow with autodetected result_storage
     The result storage can come from be:
      - the result_storage argument (deployment)
      - the DATA_PIPELINES_RESULT_STORAGE environment variable
     """
+    @flow(name=f"{func.__name__}_wrapper", **decorator_kwargs)
     def inner(**kwargs):
         result_storage = kwargs.get("result_storage")
         if not result_storage:
             result_storage = get_param("RESULT_STORAGE")
-        return flow_func.with_options(result_storage=result_storage)(**kwargs)
+        decorator_kwargs["result_storage"] = result_storage
+        flow_func = flow(func, **decorator_kwargs)
+        return flow_func(**kwargs)
+
     return inner
 
 
