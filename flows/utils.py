@@ -5,6 +5,7 @@ import s3fs
 import base64
 from datetime import datetime
 from prefect.context import FlowRunContext
+from prefect.results import ResultFactory
 from prefect.logging import get_run_logger
 from prefect import task, flow
 import pandas as pd
