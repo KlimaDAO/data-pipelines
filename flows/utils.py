@@ -109,6 +109,11 @@ def get_s3_path(path):
 
 # Flows utils
 
+def get_latest_dataframe(slug):
+    """Returns the latest dataframe for a particular slug
+    """
+    return read_df(f"{slug}-latest")
+
 
 def validate_against_latest_dataframe(slug, df):
     """Validates a dataframe against the latest dataframe
@@ -122,7 +127,7 @@ def validate_against_latest_dataframe(slug, df):
     latest_df = None
     logger = get_run_logger()
     try:
-        latest_df = read_df(f"{slug}-latest")
+        latest_df = get_latest_dataframe(slug)
     except Exception as err:
         logger.info(str(err))
 

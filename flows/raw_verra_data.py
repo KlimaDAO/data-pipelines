@@ -60,22 +60,14 @@ def fetch_verra_data_task():
                           )
         data = r.json()["value"]
     df = pd.DataFrame(data).rename(columns=RENAME_MAP)
-
-    # df["Vintage"] = df["Vintage Start"]
     df["Vintage"] = (
         pd.to_datetime(df["Vintage Start"]).dt.tz_localize(None).dt.year
     )
-    # FIXME: Remove Vintage start column?
-
     df["Quantity"] = df["Quantity Issued"]
-    # FIXME: Remove Quantity issued column?
-
     df["Retirement/Cancellation Date"] = pd.to_datetime(
         df["Retirement/Cancellation Date"]
     )
     df["Date"] = df["Retirement/Cancellation Date"]
-    # FIXME: Remove Quantity issued column?
-
     df.loc[
         df["Retirement Details"].str.contains("TOUCAN").fillna(False), "Toucan"
     ] = True
@@ -84,7 +76,6 @@ def fetch_verra_data_task():
         df["Retirement Details"].str.contains("C3T").fillna(False), "C3"
     ] = True
     df["C3"] = df["C3"].fillna(False)
-
     return df
 
 
@@ -95,7 +86,7 @@ def validate_verra_data_task(df):
 
 
 @utils.flow_with_result_storage
-def raw_verra_data_flow(result_storage):
+def raw_verra_data_flow(result_storage=None):
     """Fetches Verra data and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
