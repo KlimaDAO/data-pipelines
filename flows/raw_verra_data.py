@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 import utils
 
-VERRA_RENAME_MAP = {
+RENAME_MAP = {
     "issuanceDate": "Issuance Date",
     "programObjectives": "Sustainable Development Goals",
     "instrumentType": "Credit Type",
@@ -59,7 +59,7 @@ def fetch_verra_data_task():
                           timeout=20 * 60
                           )
         data = r.json()["value"]
-    df = pd.DataFrame(data).rename(columns=VERRA_RENAME_MAP)
+    df = pd.DataFrame(data).rename(columns=RENAME_MAP)
 
     # df["Vintage"] = df["Vintage Start"]
     df["Vintage"] = (
@@ -95,7 +95,7 @@ def validate_verra_data_task(df):
 
 
 @utils.flow_with_result_storage
-def raw_verra_data_flow(result_storage=None):
+def raw_verra_data_flow(result_storage):
     """Fetches Verra data and stores it"""
     utils.raw_data_flow(
         slug=SLUG,

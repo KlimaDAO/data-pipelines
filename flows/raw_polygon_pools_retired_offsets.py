@@ -8,6 +8,18 @@ import constants
 SLUG = "raw_polygon_pools_retired_offsets"
 
 
+RENAME_MAP = {
+    "klimaRetires_amount": "Quantity",
+    "klimaRetires_timestamp": "Date",
+    "klimaRetires_pool": "Pool",
+    "klimaRetires_retiringAddress": "Retiring Address",
+    "klimaRetires_beneficiary": "Beneficiary",
+    "klimaRetires_beneficiaryAddress": "Beneficiary Address",
+    "klimaRetires_retirementMessage": "Retirement Message",
+    "klimaRetires_transaction_id": "Tx ID",
+}
+
+
 @task()
 def fetch_polygon_pools_retired_offsets_task():
     """Fetches Polygon pools retired offsets"""
@@ -26,7 +38,7 @@ def fetch_polygon_pools_retired_offsets_task():
             klimaretires.retirementMessage,
             klimaretires.transaction.id,
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
 
 @task()

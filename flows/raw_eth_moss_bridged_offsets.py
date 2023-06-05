@@ -7,6 +7,17 @@ import constants
 
 SLUG = "raw_eth_moss_bridged_offsets"
 
+RENAME_MAP = {
+    "batches_id": "ID",
+    "batches_serialNumber": "Serial Number",
+    "batches_timestamp": "Date",
+    "batches_tokenAddress": "Token Address",
+    "batches_vintage": "Vintage",
+    "batches_projectID": "Project ID",
+    "batches_value": "Quantity",
+    "batches_originaltx": "Original Tx Address",
+}
+
 
 @task()
 def fetch_eth_moss_bridged_offsets_task():
@@ -25,7 +36,7 @@ def fetch_eth_moss_bridged_offsets_task():
             carbon_offsets.value,
             carbon_offsets.originaltx,
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
 
 @task()
