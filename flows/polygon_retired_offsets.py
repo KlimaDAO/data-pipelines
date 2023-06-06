@@ -1,7 +1,6 @@
 """ Raw Polygon retired offsets flow """
 from prefect import task
 import utils
-import constants
 
 
 SLUG = "polygon_retired_offsets"
@@ -10,14 +9,8 @@ SLUG = "polygon_retired_offsets"
 @task()
 def fetch_polygon_retired_offsets_task():
     """Merge raw Polygon retired offsets with verra data"""
-    df = utils.get_latest_dataframe("raw_polygon_retired_offsets")
-    df_verra = utils.get_latest_dataframe("raw_verra_data")
 
-    # FIXME: Was orignally merged with df_verra_toucan
-    df = utils.merge_verra(
-        df, df_verra, constants.BASE_MERGE_COLUMNS, constants.BASE_DROP_COLUMNS
-    )
-    return df
+    return utils.merge_verra("raw_polygon_retired_offsets")
 
 
 @task()
