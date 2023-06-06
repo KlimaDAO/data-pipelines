@@ -35,7 +35,7 @@ def fetch_polygon_retired_offsets_task():
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
     carbon_offsets = carbon_data.Query.retires(first=utils.get_max_records())
 
-    return sg.query_df(
+    df = sg.query_df(
         [
             carbon_offsets.value,
             carbon_offsets.timestamp,
@@ -57,6 +57,12 @@ def fetch_polygon_retired_offsets_task():
         ]
     ).rename(columns=RENMAE_MAP)
 
+    # Remove DAO MultiSig Address
+    df = df[
+        df["Tx From Address"] != "0x693ad12dba5f6e07de86faa21098b691f60a1bea"
+    ]
+
+    return df.reset_index()
 
 @task()
 def validate_polygon_retired_offsets_task(df):
