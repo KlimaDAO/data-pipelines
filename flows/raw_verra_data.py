@@ -61,22 +61,6 @@ def fetch_verra_data_task():
         data = r.json()["value"]
     df = pd.DataFrame(data).rename(columns=RENAME_MAP)
 
-    df["Vintage"] = (
-        pd.to_datetime(df["Vintage Start"]).dt.tz_localize(None).dt.year
-    )
-    df["Quantity"] = df["Quantity Issued"]
-    df["Retirement/Cancellation Date"] = pd.to_datetime(
-        df["Retirement/Cancellation Date"]
-    )
-    df["Date"] = df["Retirement/Cancellation Date"]
-    df.loc[
-        df["Retirement Details"].str.contains("TOUCAN").fillna(False), "Toucan"
-    ] = True
-    df["Toucan"] = df["Toucan"].fillna(False)
-    df.loc[
-        df["Retirement Details"].str.contains("C3T").fillna(False), "C3"
-    ] = True
-    df["C3"] = df["C3"].fillna(False)
     return df
 
 
