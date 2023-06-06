@@ -177,3 +177,24 @@ def raw_data_flow(slug, fetch_data_task, validate_data_task):
     validate_data_task(df)
     store_raw_data_task.with_options(result_storage_key=f"{slug}-{now()}")(df)
     store_raw_data_task.with_options(result_storage_key=f"{slug}-latest")(df)
+
+# Data manipulation utils
+
+
+def merge_verra(df, df_verra, merge_columns, drop_columns):
+    df["Project ID Key"] = df["Project ID"].astype(str).str[4:]
+    df_verra["ID"] = df_verra["ID"].astype(str)
+    df_verra = df_verra[merge_columns]
+    df_verra = df_verra.drop_duplicates(subset=["ID"]).reset_index(drop=True)
+    for i in drop_columns:
+        if i in df.columns:
+            df = df.drop(columns=i)
+    df = df.merge(
+        df_verra,
+        how="left",
+        left_on="Project ID Key",
+        right_on="ID",
+        suffixes=("", "_Verra"),
+    )
+
+    return df

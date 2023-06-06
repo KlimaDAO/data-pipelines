@@ -90,3 +90,15 @@ TOKENS = {
         "Decimals": NBO_DECIMALS,
     },
 }
+
+BASE_MERGE_COLUMNS = [
+    "ID",
+    "Name",
+    "Region",
+    "Country",
+    "Project Type",
+    "Methodology",
+    "Toucan",
+]
+
+BASE_DROP_COLUMNS = ["Name", "Country", "Project Type"]
