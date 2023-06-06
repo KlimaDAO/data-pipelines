@@ -147,11 +147,12 @@ def flow_with_result_storage(func, **decorator_kwargs):
      - the result_storage argument (deployment)
      - the DATA_PIPELINES_RESULT_STORAGE environment variable
     """
-    @flow(name=f"{func.__name__}_wrapper", **decorator_kwargs)
+    @flow(name=func.__name__, **decorator_kwargs)
     def inner(result_storage=None):
         if not result_storage:
             result_storage = get_param("RESULT_STORAGE")
         decorator_kwargs["result_storage"] = result_storage
+        decorator_kwargs["name"] = f"{func.__name__}_inner"
         flow_func = flow(func, **decorator_kwargs)
         return flow_func(result_storage)
 
