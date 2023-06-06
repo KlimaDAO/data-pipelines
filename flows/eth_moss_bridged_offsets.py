@@ -9,11 +9,17 @@ SLUG = "eth_moss_bridged_offsets"
 @task()
 def fetch_eth_moss_bridged_offsets_task():
     """Merge raw Ethereum Moss bridged offsets with verra data"""
-    return utils.merge_verra(
+    df = utils.merge_verra(
         "raw_eth_moss_bridged_offsets",
         ["Vintage Start"],
         ["Vintage"]
     )
+    # FIXME: Since we do that is it necessary to drop it in the previous step?
+    # Compute Vintage
+    df["Vintage"] = (
+        df["Serial Number"].astype(str).str[-15:-11].astype(int)
+    )
+    return df
 
 
 @task()

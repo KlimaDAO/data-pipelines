@@ -25,7 +25,7 @@ def fetch_eth_moss_bridged_offsets_task():
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_MOSS_ETH_SUBGRAPH_URL)
     carbon_offsets = carbon_data.Query.batches(first=utils.get_max_records())
-    return sg.query_df(
+    df = sg.query_df(
         [
             carbon_offsets.id,
             carbon_offsets.serialNumber,
@@ -37,6 +37,9 @@ def fetch_eth_moss_bridged_offsets_task():
             carbon_offsets.originaltx,
         ]
     ).rename(columns=RENAME_MAP)
+    # Fix project ID
+    df["Project ID"] = "VCS-" + df["Project ID"].astype(str)
+    return df
 
 
 @task()
