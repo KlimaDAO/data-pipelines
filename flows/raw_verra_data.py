@@ -48,7 +48,7 @@ def get_search_api_params():
 
 
 @task()
-def fetch_verra_data_task():
+def fetch_raw_verra_data_task():
     """Fetches Verra data"""
     if utils.get_param("DRY_RUN"):
         data = [{"issuanceDate": "something"}]
@@ -67,7 +67,7 @@ def fetch_verra_data_task():
 
 
 @task()
-def validate_verra_data_task(df):
+def validate_raw_verra_data_task(df):
     """Validates Verra data"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -77,8 +77,8 @@ def raw_verra_data_flow(result_storage):
     """Fetches Verra data and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_verra_data_task,
-        validate_data_task=validate_verra_data_task,
+        fetch_data_task=fetch_raw_verra_data_task,
+        validate_data_task=validate_raw_verra_data_task,
     )
 
 

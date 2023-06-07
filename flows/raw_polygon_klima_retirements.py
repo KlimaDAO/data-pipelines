@@ -5,12 +5,13 @@ from subgrounds.subgraph import SyntheticField
 import utils
 import constants
 
+DEPENDENCIES = []
 
 SLUG = "raw_polygon_klima_retirements"
 
 
 @task()
-def fetch_polygon_klima_retirements_task():
+def fetch_raw_polygon_klima_retirements_task():
     """Fetches Polygon Klima retirements"""
 
     sg = Subgrounds()
@@ -48,7 +49,7 @@ def fetch_polygon_klima_retirements_task():
 
 
 @task()
-def validate_polygon_klima_retirements_task(df):
+def validate_raw_polygon_klima_retirements_task(df):
     """Validates Polygon Klima retirements"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -58,8 +59,8 @@ def raw_polygon_klima_retirements_flow(result_storage=None):
     """Fetches Polygon Klima retirements and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_polygon_klima_retirements_task,
-        validate_data_task=validate_polygon_klima_retirements_task,
+        fetch_data_task=fetch_raw_polygon_klima_retirements_task,
+        validate_data_task=validate_raw_polygon_klima_retirements_task,
     )
 
 

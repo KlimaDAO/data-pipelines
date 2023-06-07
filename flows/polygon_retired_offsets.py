@@ -2,6 +2,7 @@
 from prefect import task
 import utils
 
+DEPENDENCIES = ["raw_polygon_retired_offsets", "raw_verra_data"]
 
 SLUG = "polygon_retired_offsets"
 

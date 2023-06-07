@@ -3,6 +3,8 @@ from prefect import task
 import utils
 
 
+DEPENDENCIES = ["raw_polygon_bridged_offsets", "raw_verra_data"]
+
 SLUG = "polygon_bridged_offsets"
 
 

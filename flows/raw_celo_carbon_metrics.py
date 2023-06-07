@@ -5,12 +5,13 @@ from subgrounds.subgraph import SyntheticField
 import utils
 import constants
 
+DEPENDENCIES = []
 
 SLUG = "raw_celo_carbon_metrics"
 
 
 @task()
-def fetch_celo_carbon_metrics_task():
+def fetch_raw_celo_carbon_metrics_task():
     """Fetches Celo carbon metrics"""
 
     sg = Subgrounds()
@@ -45,7 +46,7 @@ def fetch_celo_carbon_metrics_task():
 
 
 @task()
-def validate_celo_carbon_metrics_task(df):
+def validate_raw_celo_carbon_metrics_task(df):
     """Validates Celo carbon metrics"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -55,8 +56,8 @@ def raw_celo_carbon_metrics_flow(result_storage=None):
     """Fetches Celo carbon metrics and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_celo_carbon_metrics_task,
-        validate_data_task=validate_celo_carbon_metrics_task,
+        fetch_data_task=fetch_raw_celo_carbon_metrics_task,
+        validate_data_task=validate_raw_celo_carbon_metrics_task,
     )
 
 

@@ -4,6 +4,8 @@ from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
 
+DEPENDENCIES = []
+
 
 SLUG = "raw_polygon_pools_retired_offsets"
 
@@ -21,7 +23,7 @@ RENAME_MAP = {
 
 
 @task()
-def fetch_polygon_pools_retired_offsets_task():
+def fetch_raw_polygon_pools_retired_offsets_task():
     """Fetches Polygon pools retired offsets"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
@@ -42,7 +44,7 @@ def fetch_polygon_pools_retired_offsets_task():
 
 
 @task()
-def validate_polygon_pools_retired_offsets_task(df):
+def validate_raw_polygon_pools_retired_offsets_task(df):
     """Validates Polygon pools retired offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -52,8 +54,8 @@ def raw_polygon_pools_retired_offsets_flow(result_storage=None):
     """Fetches Polygon pools retired offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_polygon_pools_retired_offsets_task,
-        validate_data_task=validate_polygon_pools_retired_offsets_task,
+        fetch_data_task=fetch_raw_polygon_pools_retired_offsets_task,
+        validate_data_task=validate_raw_polygon_pools_retired_offsets_task,
     )
 
 

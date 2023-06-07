@@ -5,12 +5,13 @@ from subgrounds.subgraph import SyntheticField
 import utils
 import constants
 
+DEPENDENCIES = []
 
 SLUG = "raw_eth_carbon_metrics"
 
 
 @task()
-def fetch_eth_carbon_metrics_task():
+def fetch_raw_eth_carbon_metrics_task():
     """Fetches Ethereum carbon metrics"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_ETH_SUBGRAPH_URL)
@@ -47,7 +48,7 @@ def fetch_eth_carbon_metrics_task():
 
 
 @task()
-def validate_eth_carbon_metrics_task(df):
+def validate_raw_eth_carbon_metrics_task(df):
     """Validates Ethereum carbon metrics"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -57,8 +58,8 @@ def raw_eth_carbon_metrics_flow(result_storage=None):
     """Fetches Ethereum carbon metrics and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_eth_carbon_metrics_task,
-        validate_data_task=validate_eth_carbon_metrics_task,
+        fetch_data_task=fetch_raw_eth_carbon_metrics_task,
+        validate_data_task=validate_raw_eth_carbon_metrics_task,
     )
 
 
