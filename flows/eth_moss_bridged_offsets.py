@@ -9,16 +9,35 @@ SLUG = "eth_moss_bridged_offsets"
 @task()
 def fetch_eth_moss_bridged_offsets_task():
     """Merge raw Ethereum Moss bridged offsets with verra data"""
+    df_tx = utils.get_latest_dataframe("raw_eth_bridged_offsets_transactions")
     df = utils.merge_verra(
         "raw_eth_moss_bridged_offsets",
         ["Vintage Start"],
         ["Vintage"]
     )
-    # FIXME: Since we do that is it necessary to drop it in the previous step?
     # Compute Vintage
     df["Vintage"] = (
         df["Serial Number"].astype(str).str[-15:-11].astype(int)
     )
+    # Ajust MCO bridges
+    df_tx = df_tx[["Date", "Tx Address"]]
+    df = df.merge(
+        df_tx,
+        how="left",
+        left_on="Original Tx Address",
+        right_on="Tx Address",
+        suffixes=("", "_new"),
+    ).reset_index(drop=True)
+    df.loc[
+        df["Original Tx Address"]
+        != "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "Date",
+    ] = df.loc[
+        df["Original Tx Address"]
+        != "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "Date_new",
+    ]
+    df = df.drop(columns=["Tx Address", "Date_new"])
     return df
 
 

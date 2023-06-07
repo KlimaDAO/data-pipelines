@@ -208,7 +208,7 @@ def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[])
     ] + additionnal_drop_columns
 
     df = get_latest_dataframe(slug)
-    df_verra = get_latest_dataframe("raw_verra_data")
+    df_verra = get_latest_dataframe("verra_data")
 
     df["Project ID Key"] = df["Project ID"].astype(str).str[4:]
     df_verra["ID"] = df_verra["ID"].astype(str)

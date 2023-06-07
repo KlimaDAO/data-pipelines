@@ -39,8 +39,9 @@ jobs:
       - run: scripts/flow_prefect_deployment.sh clean_up_old_artifacts --interval 86400 --anchor-date 2023-05-18T00:00:00.000000+02:00
 
       - run: scripts/flow_prefect_deployment.sh raw_verra_data --interval 86400 --anchor-date 2023-05-18T00:20:00.000000+02:00
+      - run: scripts/flow_prefect_deployment.sh verra_data --interval 86400 --anchor-date 2023-05-18T00:40:00.000000+02:00
 
-      - run: scripts/flow_prefect_deployment.sh raw_polygon_bridged_offsets --interval 86400 --anchor-date 2023-05-18T00:40:00.000000+02:00
+      - run: scripts/flow_prefect_deployment.sh raw_polygon_bridged_offsets --interval 86400 --anchor-date 2023-05-18T00:45:00.000000+02:00
       - run: scripts/flow_prefect_deployment.sh raw_polygon_retired_offsets --interval 86400 --anchor-date 2023-05-18T01:00:00.000000+02:00
       - run: scripts/flow_prefect_deployment.sh raw_polygon_pools_deposited_offsets --interval 86400 --anchor-date 2023-05-18T01:20:00.000000+02:00
       - run: scripts/flow_prefect_deployment.sh raw_polygon_pools_redeemed_offsets --interval 86400 --anchor-date 2023-05-18T01:40:00.000000+02:00
@@ -65,5 +66,3 @@ jobs:
       - run: scripts/flow_prefect_deployment.sh polygon_retired_offsets --interval 86400 --anchor-date 2023-05-18T06:05:00.000000+02:00
       - run: scripts/flow_prefect_deployment.sh eth_retired_offsets --interval 86400 --anchor-date 2023-05-18T06:10:00.000000+02:00
       - run: scripts/flow_prefect_deployment.sh eth_moss_bridged_offsets --interval 86400 --anchor-date 2023-05-18T06:15:00.000000+02:00
-
-      - run: scripts/flow_prefect_deployment.sh verra_data --interval 86400 --anchor-date 2023-05-18T06:20:00.000000+02:00
