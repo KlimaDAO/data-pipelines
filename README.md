@@ -32,15 +32,19 @@ prefect cloud login
 
 And follow instructions to setup your API key
 
-You can run flows manually from the `flows` folder
+### Run flows
+
+In the `flows directory`
+
+You can run flows manually. For instance
 
 `python raw_verra_data.py`
 
-When running flows manually, the behaviour can be altered using a .env file. eg.
+When running flows manually, the behaviour can be altered by creating a .env file. See `flows/.env.dist`
 
-```
-DATA_PIPELINES_DRY_RUN=true # Use dummy data to populate Verra_data, and do not remove stale files
-```
+You can bootstrap your develpoment environment by running the special flow build_all. It will run all the flows in the right order
+
+`python build_all.py`
 
 ## Manage deployments
 
