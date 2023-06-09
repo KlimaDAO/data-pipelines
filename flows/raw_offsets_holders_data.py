@@ -4,7 +4,6 @@ from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
 
-DEPENDENCIES = []
 
 SLUG = "raw_offsets_holders_data"
 

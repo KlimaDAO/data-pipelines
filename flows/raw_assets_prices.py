@@ -5,7 +5,6 @@ import pandas as pd
 import utils
 import constants
 
-DEPENDENCIES = []
 
 SLUG = "raw_assets_prices"
 

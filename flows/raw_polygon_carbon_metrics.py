@@ -5,7 +5,6 @@ from subgrounds.subgraph import SyntheticField
 import utils
 import constants
 
-DEPENDENCIES = []
 
 SLUG = "raw_polygon_carbon_metrics"
 

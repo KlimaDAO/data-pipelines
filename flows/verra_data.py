@@ -3,7 +3,6 @@ from prefect import task
 import pandas as pd
 import utils
 
-DEPENDENCIES = ["raw_verra_data"]
 
 SLUG = "verra_data"
 

@@ -4,8 +4,6 @@ from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
 
-DEPENDENCIES = []
-
 
 SLUG = "raw_polygon_pools_retired_offsets"
 

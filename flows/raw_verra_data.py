@@ -4,7 +4,6 @@ import requests
 import pandas as pd
 import utils
 
-DEPENDENCIES = []
 
 RENAME_MAP = {
     "issuanceDate": "Issuance Date",
