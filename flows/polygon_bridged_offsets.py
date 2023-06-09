@@ -11,7 +11,9 @@ def fetch_polygon_bridged_offsets_task():
     """Merge raw Polygon bridged offsets with verra data"""
 
     # FIXME: Was orignally merged with df_verra_toucan
-    return utils.merge_verra("raw_polygon_bridged_offsets")
+    df = utils.merge_verra("raw_polygon_bridged_offsets")
+    df = utils.region_manipulations(df)
+    return df
 
 
 @task()

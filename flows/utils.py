@@ -226,3 +226,13 @@ def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[])
     )
 
     return df
+
+
+def region_manipulations(df):
+    """Manually fix the Region column"""
+    df["Region"] = df["Region"].replace("South Korea", "Korea, Republic of")
+    # Belize country credits are categorized under Latin America. Confirmed this with Verra Registry
+    df["Region"] = df["Region"].replace("Latin America", "Belize")
+    df["Region"] = df["Region"].replace("Oceania", "Indonesia")
+    df["Region"] = df["Region"].replace("Asia", "Cambodia")
+    return df

@@ -10,7 +10,9 @@ SLUG = "polygon_retired_offsets"
 def fetch_polygon_retired_offsets_task():
     """Merge raw Polygon retired offsets with verra data"""
 
-    return utils.merge_verra("raw_polygon_retired_offsets")
+    df = utils.merge_verra("raw_polygon_retired_offsets")
+    df = utils.region_manipulations(df)
+    return df
 
 
 @task()
