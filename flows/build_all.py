@@ -32,7 +32,6 @@ from eth_retired_offsets import eth_retired_offsets_flow
 @utils.flow_with_result_storage
 def build_all_flow(result_storage=None):
     raw_verra_data_flow()
-    verra_data_flow()
     raw_polygon_retired_offsets_flow()
     raw_polygon_pools_retired_offsets_flow()
     raw_polygon_pools_redeemed_offsets_flow()
@@ -49,6 +48,7 @@ def build_all_flow(result_storage=None):
     raw_celo_carbon_metrics_flow()
     raw_polygon_carbon_metrics_flow()
     raw_assets_prices_flow()
+    verra_data_flow()
     polygon_retired_offsets_flow()
     polygon_bridged_offsets_flow()
     eth_moss_bridged_offsets_flow()
