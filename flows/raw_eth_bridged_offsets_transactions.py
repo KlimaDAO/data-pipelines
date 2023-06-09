@@ -4,12 +4,19 @@ from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
 
+DEPENDENCIES = []
 
 SLUG = "raw_eth_bridged_offsets_transactions"
 
+RENAME_MAP = {
+    "bridges_value": "Quantity",
+    "bridges_timestamp": "Date",
+    "bridges_transaction_id": "Tx Address",
+}
+
 
 @task()
-def fetch_eth_bridged_offsets_transactions_task():
+def fetch_raw_eth_bridged_offsets_transactions_task():
     """Fetches Ethereum Moss bridged offsets transactions"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_ETH_SUBGRAPH_URL)
@@ -20,11 +27,11 @@ def fetch_eth_bridged_offsets_transactions_task():
             carbon_offsets.timestamp,
             carbon_offsets.transaction.id,
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
 
 @task()
-def validate_eth_bridged_offsets_transactions_task(df):
+def validate_raw_eth_bridged_offsets_transactions_task(df):
     """Validates Ethereum Moss bridged offsets transactions"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -34,8 +41,8 @@ def raw_eth_bridged_offsets_transactions_flow(result_storage=None):
     """Fetches Ethereum Moss bridged offsets transactions and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_eth_bridged_offsets_transactions_task,
-        validate_data_task=validate_eth_bridged_offsets_transactions_task,
+        fetch_data_task=fetch_raw_eth_bridged_offsets_transactions_task,
+        validate_data_task=validate_raw_eth_bridged_offsets_transactions_task,
     )
 
 

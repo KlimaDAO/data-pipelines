@@ -5,12 +5,13 @@ import pandas as pd
 import utils
 import constants
 
+DEPENDENCIES = []
 
 SLUG = "raw_assets_prices"
 
 
 @task()
-def fetch_assets_prices_task():
+def fetch_raw_assets_prices_task():
     """Fetches assets prices"""
 
     df_prices = pd.DataFrame()
@@ -65,7 +66,7 @@ def fetch_assets_prices_task():
 
 
 @task()
-def validate_assets_prices_task(df):
+def validate_raw_assets_prices_task(df):
     """Validates assets prices"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -75,8 +76,8 @@ def raw_assets_prices_flow(result_storage=None):
     """Fetches assets prices and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_assets_prices_task,
-        validate_data_task=validate_assets_prices_task,
+        fetch_data_task=fetch_raw_assets_prices_task,
+        validate_data_task=validate_raw_assets_prices_task,
     )
 
 

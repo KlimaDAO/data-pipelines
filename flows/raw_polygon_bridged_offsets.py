@@ -4,12 +4,33 @@ from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
 
+DEPENDENCIES = []
 
 SLUG = "raw_polygon_bridged_offsets"
 
+RENAME_MAP = {
+    "carbonOffsets_bridges_value": "Quantity",
+    "carbonOffsets_bridges_timestamp": "Date",
+    "carbonOffsets_bridge": "Bridge",
+    "carbonOffsets_region": "Region",
+    "carbonOffsets_vintage": "Vintage",
+    "carbonOffsets_projectID": "Project ID",
+    "carbonOffsets_standard": "Standard",
+    "carbonOffsets_methodology": "Methodology",
+    "carbonOffsets_country": "Country",
+    "carbonOffsets_category": "Project Type",
+    "carbonOffsets_name": "Name",
+    "carbonOffsets_tokenAddress": "Token Address",
+    "carbonOffsets_balanceBCT": "BCT Quantity",
+    "carbonOffsets_balanceNCT": "NCT Quantity",
+    "carbonOffsets_balanceUBO": "UBO Quantity",
+    "carbonOffsets_balanceNBO": "NBO Quantity",
+    "carbonOffsets_totalBridged": "Total Quantity",
+}
+
 
 @task()
-def fetch_polygon_bridged_offsets_task():
+def fetch_raw_polygon_bridged_offsets_task():
     """Fetches Polygon bridged offsets"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
@@ -39,11 +60,11 @@ def fetch_polygon_bridged_offsets_task():
             carbon_offsets.bridges.value,
             carbon_offsets.bridges.timestamp,
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
 
 @task()
-def validate_polygon_bridged_offsets_task(df):
+def validate_raw_polygon_bridged_offsets_task(df):
     """Validates Polygon bridged offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -53,8 +74,8 @@ def raw_polygon_bridged_offsets_flow(result_storage=None):
     """Fetches Polygon bridged offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_polygon_bridged_offsets_task,
-        validate_data_task=validate_polygon_bridged_offsets_task,
+        fetch_data_task=fetch_raw_polygon_bridged_offsets_task,
+        validate_data_task=validate_raw_polygon_bridged_offsets_task,
     )
 
 

@@ -4,17 +4,29 @@ from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
 
+DEPENDENCIES = []
 
 SLUG = "raw_eth_moss_bridged_offsets"
 
+RENAME_MAP = {
+    "batches_id": "ID",
+    "batches_serialNumber": "Serial Number",
+    "batches_timestamp": "Date",
+    "batches_tokenAddress": "Token Address",
+    "batches_vintage": "Vintage",
+    "batches_projectID": "Project ID",
+    "batches_value": "Quantity",
+    "batches_originaltx": "Original Tx Address",
+}
+
 
 @task()
-def fetch_eth_moss_bridged_offsets_task():
+def fetch_raw_eth_moss_bridged_offsets_task():
     """Fetches Ethereum Moss bridged offsets"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_MOSS_ETH_SUBGRAPH_URL)
     carbon_offsets = carbon_data.Query.batches(first=utils.get_max_records())
-    return sg.query_df(
+    df = sg.query_df(
         [
             carbon_offsets.id,
             carbon_offsets.serialNumber,
@@ -25,11 +37,14 @@ def fetch_eth_moss_bridged_offsets_task():
             carbon_offsets.value,
             carbon_offsets.originaltx,
         ]
-    )
+    ).rename(columns=RENAME_MAP)
+    # Fix project ID
+    df["Project ID"] = "VCS-" + df["Project ID"].astype(str)
+    return df
 
 
 @task()
-def validate_eth_moss_bridged_offsets_task(df):
+def validate_raw_eth_moss_bridged_offsets_task(df):
     """Validates Ethereum Moss bridged offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -39,8 +54,8 @@ def raw_eth_moss_bridged_offsets_flow(result_storage=None):
     """Fetches Ethereum Moss bridged offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_eth_moss_bridged_offsets_task,
-        validate_data_task=validate_eth_moss_bridged_offsets_task,
+        fetch_data_task=fetch_raw_eth_moss_bridged_offsets_task,
+        validate_data_task=validate_raw_eth_moss_bridged_offsets_task,
     )
 
 

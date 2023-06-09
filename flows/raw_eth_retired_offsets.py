@@ -4,12 +4,32 @@ from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
 
+DEPENDENCIES = []
 
 SLUG = "raw_eth_retired_offsets"
 
+RENAME_MAP = {
+    "retires_value": "Quantity",
+    "retires_timestamp": "Date",
+    "retires_retiree": "Retiree",
+    "retires_offset_bridge": "Bridge",
+    "retires_offset_region": "Region",
+    "retires_offset_vintage": "Vintage",
+    "retires_offset_projectID": "Project ID",
+    "retires_offset_standard": "Standard",
+    "retires_offset_methodology": "Methodology",
+    "retires_offset_country": "Country",
+    "retires_offset_category": "Project Type",
+    "retires_offset_name": "Name",
+    "retires_offset_tokenAddress": "Token Address",
+    "retires_offset_totalRetired": "Total Quantity",
+    "retires_transaction_id": "Tx ID",
+    "retires_transaction_from": "Tx From Address",
+}
+
 
 @task()
-def fetch_eth_retired_offsets_task():
+def fetch_raw_eth_retired_offsets_task():
     """Fetches Ethereum retired offsets"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_ETH_SUBGRAPH_URL)
@@ -34,11 +54,11 @@ def fetch_eth_retired_offsets_task():
             carbon_offsets.transaction.id,
             carbon_offsets.transaction._select("from"),
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
 
 @task()
-def validate_eth_retired_offsets_task(df):
+def validate_raw_eth_retired_offsets_task(df):
     """Validates Ethereum retired offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -48,8 +68,8 @@ def raw_eth_retired_offsets_flow(result_storage=None):
     """Fetches Ethereum retired offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_eth_retired_offsets_task,
-        validate_data_task=validate_eth_retired_offsets_task,
+        fetch_data_task=fetch_raw_eth_retired_offsets_task,
+        validate_data_task=validate_raw_eth_retired_offsets_task,
     )
 
 

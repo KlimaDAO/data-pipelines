@@ -4,7 +4,9 @@ import requests
 import pandas as pd
 import utils
 
-VERRA_RENAME_MAP = {
+DEPENDENCIES = []
+
+RENAME_MAP = {
     "issuanceDate": "Issuance Date",
     "programObjectives": "Sustainable Development Goals",
     "instrumentType": "Credit Type",
@@ -46,7 +48,7 @@ def get_search_api_params():
 
 
 @task()
-def fetch_verra_data_task():
+def fetch_raw_verra_data_task():
     """Fetches Verra data"""
     if utils.get_param("DRY_RUN"):
         data = [{"issuanceDate": "something"}]
@@ -59,23 +61,24 @@ def fetch_verra_data_task():
                           timeout=20 * 60
                           )
         data = r.json()["value"]
-    df = pd.DataFrame(data).rename(columns=VERRA_RENAME_MAP)
+    df = pd.DataFrame(data).rename(columns=RENAME_MAP)
+
     return df
 
 
 @task()
-def validate_verra_data_task(df):
+def validate_raw_verra_data_task(df):
     """Validates Verra data"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
 @utils.flow_with_result_storage
-def raw_verra_data_flow(result_storage=None):
+def raw_verra_data_flow(result_storage):
     """Fetches Verra data and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_verra_data_task,
-        validate_data_task=validate_verra_data_task,
+        fetch_data_task=fetch_raw_verra_data_task,
+        validate_data_task=validate_raw_verra_data_task,
     )
 
 

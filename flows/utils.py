@@ -109,6 +109,11 @@ def get_s3_path(path):
 
 # Flows utils
 
+def get_latest_dataframe(slug):
+    """Returns the latest dataframe for a particular slug
+    """
+    return read_df(f"{slug}-latest")
+
 
 def validate_against_latest_dataframe(slug, df):
     """Validates a dataframe against the latest dataframe
@@ -122,7 +127,7 @@ def validate_against_latest_dataframe(slug, df):
     latest_df = None
     logger = get_run_logger()
     try:
-        latest_df = read_df(f"{slug}-latest")
+        latest_df = get_latest_dataframe(slug)
     except Exception as err:
         logger.info(str(err))
 
@@ -172,3 +177,52 @@ def raw_data_flow(slug, fetch_data_task, validate_data_task):
     validate_data_task(df)
     store_raw_data_task.with_options(result_storage_key=f"{slug}-{now()}")(df)
     store_raw_data_task.with_options(result_storage_key=f"{slug}-latest")(df)
+
+# Data manipulation utils
+
+
+def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[]):
+    """ Merges verra data with an existing dataframe
+
+    Parameters:
+    slug: the slug of the dataframe
+    additionnal_merge_columns: additionnal columns on which to merge the dataframe
+    additionnal_drop_columns: additionnal columns to drop from the dataframe
+
+    """
+
+    merge_columns = [
+        "ID",
+        "Name",
+        "Region",
+        "Country",
+        "Project Type",
+        "Methodology",
+        "Toucan",
+    ] + additionnal_merge_columns
+
+    drop_columns = [
+        "Name",
+        "Country",
+        "Project Type"
+    ] + additionnal_drop_columns
+
+    df = get_latest_dataframe(slug)
+    df_verra = get_latest_dataframe("verra_data")
+
+    df["Project ID Key"] = df["Project ID"].astype(str).str[4:]
+    df_verra["ID"] = df_verra["ID"].astype(str)
+    df_verra = df_verra[merge_columns]
+    df_verra = df_verra.drop_duplicates(subset=["ID"]).reset_index(drop=True)
+    for i in drop_columns:
+        if i in df.columns:
+            df = df.drop(columns=i)
+    df = df.merge(
+        df_verra,
+        how="left",
+        left_on="Project ID Key",
+        right_on="ID",
+        suffixes=("", "_Verra"),
+    )
+
+    return df

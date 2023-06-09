@@ -4,18 +4,39 @@ from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
 
+DEPENDENCIES = []
 
 SLUG = "raw_polygon_retired_offsets"
 
 
+RENMAE_MAP = {
+    "retires_value": "Quantity",
+    "retires_timestamp": "Date",
+    "retires_retiree": "Retiree",
+    "retires_offset_bridge": "Bridge",
+    "retires_offset_region": "Region",
+    "retires_offset_vintage": "Vintage",
+    "retires_offset_projectID": "Project ID",
+    "retires_offset_standard": "Standard",
+    "retires_offset_methodology": "Methodology",
+    "retires_offset_country": "Country",
+    "retires_offset_category": "Project Type",
+    "retires_offset_name": "Name",
+    "retires_offset_tokenAddress": "Token Address",
+    "retires_offset_totalRetired": "Total Quantity",
+    "retires_transaction_id": "Tx ID",
+    "retires_transaction_from": "Tx From Address",
+}
+
+
 @task()
-def fetch_polygon_retired_offsets_task():
+def fetch_raw_polygon_retired_offsets_task():
     """Fetches Polygon retired offsets"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
     carbon_offsets = carbon_data.Query.retires(first=utils.get_max_records())
 
-    return sg.query_df(
+    df = sg.query_df(
         [
             carbon_offsets.value,
             carbon_offsets.timestamp,
@@ -35,11 +56,18 @@ def fetch_polygon_retired_offsets_task():
             carbon_offsets.transaction.id,
             carbon_offsets.transaction._select("from"),
         ]
-    )
+    ).rename(columns=RENMAE_MAP)
+
+    # Remove DAO MultiSig Address
+    df = df[
+        df["Tx From Address"] != "0x693ad12dba5f6e07de86faa21098b691f60a1bea"
+    ]
+
+    return df.reset_index()
 
 
 @task()
-def validate_polygon_retired_offsets_task(df):
+def validate_raw_polygon_retired_offsets_task(df):
     """Validates Polygon retired offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -49,8 +77,8 @@ def raw_polygon_retired_offsets_flow(result_storage=None):
     """Fetches Polygon retired offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_polygon_retired_offsets_task,
-        validate_data_task=validate_polygon_retired_offsets_task,
+        fetch_data_task=fetch_raw_polygon_retired_offsets_task,
+        validate_data_task=validate_raw_polygon_retired_offsets_task,
     )
 
 

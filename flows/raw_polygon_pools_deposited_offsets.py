@@ -4,12 +4,21 @@ from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
 
+DEPENDENCIES = []
 
 SLUG = "raw_polygon_pools_deposited_offsets"
 
 
+RENAME_MAP = {
+    "deposits_value": "Quantity",
+    "deposits_timestamp": "Date",
+    "deposits_pool": "Pool",
+    "deposits_offset_region": "Region",
+}
+
+
 @task()
-def fetch_polygon_pools_deposited_offsets_task():
+def fetch_raw_polygon_pools_deposited_offsets_task():
     """Fetches Polygon pools deposited offsets"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
@@ -21,11 +30,11 @@ def fetch_polygon_pools_deposited_offsets_task():
             carbon_offsets.timestamp,
             carbon_offsets.pool,
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
 
 @task()
-def validate_polygon_pools_deposited_offsets_task(df):
+def validate_raw_polygon_pools_deposited_offsets_task(df):
     """Validates Polygon pools deposited offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -35,8 +44,8 @@ def raw_polygon_pools_deposited_offsets_flow(result_storage=None):
     """Fetches Polygon pools deposited offsets and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_polygon_pools_deposited_offsets_task,
-        validate_data_task=validate_polygon_pools_deposited_offsets_task,
+        fetch_data_task=fetch_raw_polygon_pools_deposited_offsets_task,
+        validate_data_task=validate_raw_polygon_pools_deposited_offsets_task,
     )
 
 
