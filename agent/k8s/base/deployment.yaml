@@ -30,6 +30,11 @@ spec:
                 secretKeyRef:
                   name: data-pipelines-secrets
                   key: PREFECT_API_URL
+            - name: PREFECT_POOL
+              valueFrom:
+                secretKeyRef:
+                  name: data-pipelines-secrets
+                  key: PREFECT_POOL
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:

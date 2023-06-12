@@ -8,6 +8,3 @@ namePrefix: prod-
 
 commonLabels:
   app.kubernetes.io/instance: prod
-
-patchesStrategicMerge:
-  - deployment_set_environment.yaml
