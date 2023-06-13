@@ -8,6 +8,7 @@ from prefect.context import FlowRunContext
 from prefect.logging import get_run_logger
 from prefect import task, flow
 import pandas as pd
+from web3 import Web3
 from prefect.results import PersistedResultBlob
 from prefect.serializers import Serializer
 from typing_extensions import Literal
@@ -236,3 +237,18 @@ def region_manipulations(df):
     df["Region"] = df["Region"].replace("Oceania", "Indonesia")
     df["Region"] = df["Region"].replace("Asia", "Cambodia")
     return df
+
+
+# Web3 utils
+
+
+def get_polygon_web3():
+    """Returns a web3 client for polygon"""
+    INFURA_PROJ_ID = os.getenv("WEB3_INFURA_PROJECT_ID")
+    polygon_mainnet_endpoint = f"https://polygon-mainnet.infura.io/v3/{INFURA_PROJ_ID}"
+
+    web3 = Web3(Web3.HTTPProvider(polygon_mainnet_endpoint))
+
+    assert web3.is_connected()
+
+    return web3
