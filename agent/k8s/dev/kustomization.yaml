@@ -7,7 +7,4 @@ resources:
 namePrefix: dev-
 
 commonLabels:
-  bot: data-pipelines
-
-patchesStrategicMerge:
-  - deployment_set_environment.yaml
+  app.kubernetes.io/instance: dev

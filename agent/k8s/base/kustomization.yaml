@@ -3,3 +3,7 @@ kind: Kustomization
 
 resources:
   - deployment.yaml
+
+commonLabels:
+  app.kubernetes.io/name: data-pipelines
+  app.kubernetes.io/component: agent
