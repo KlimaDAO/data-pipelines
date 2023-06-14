@@ -45,3 +45,8 @@ spec:
                 secretKeyRef:
                   name: data-pipelines-secrets
                   key: AWS_SECRET_ACCESS_KEY
+            - name: WEB3_INFURA_PROJECT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: data-pipelines-secrets
+                  key: WEB3_INFURA_PROJECT_ID

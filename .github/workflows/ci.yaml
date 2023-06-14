@@ -23,6 +23,7 @@ jobs:
     name: Validate k8s manifests
     env:
       PREFECT_POOL: agent-pool
+      WEB3_INFURA_PROJECT_ID: WEB3_INFURA_PROJECT_ID
     steps:
       - name: Check out source repository
         uses: actions/checkout@v2
@@ -32,7 +33,7 @@ jobs:
         with:
           kustomize-version: "4.5.4"
       - name: Write secrets file
-        run: $GITHUB_WORKSPACE/scripts/properties_from_env.sh PREFECT_API_KEY PREFECT_API_URL PREFECT_POOL > $GITHUB_WORKSPACE/agent/k8s/secret.properties
+        run: $GITHUB_WORKSPACE/scripts/properties_from_env.sh PREFECT_API_KEY PREFECT_API_URL PREFECT_POOL WEB3_INFURA_PROJECT_ID > $GITHUB_WORKSPACE/agent/k8s/secret.properties
 
       - name: Test staging kustomization
         run: cp agent/k8s/kustomization_prod.yaml agent/k8s/kustomization.yaml
