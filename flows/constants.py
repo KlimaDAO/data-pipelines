@@ -68,7 +68,7 @@ TOKENS = {
     },
     "MCO2": {
         "Pair Address": KLIMA_MCO2_ADDRESS,
-        "Token address": MCO2_ADDRESS,
+        "Token Address": MCO2_ADDRESS,
         "address": MCO2_ADDRESS,
         "id": "ethereum",
         "Full Name": "Moss Carbon Credit",

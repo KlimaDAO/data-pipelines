@@ -28,6 +28,8 @@ from polygon_bridged_offsets import polygon_bridged_offsets_flow
 from eth_moss_bridged_offsets import eth_moss_bridged_offsets_flow
 from eth_retired_offsets import eth_retired_offsets_flow
 
+from tokens_data import tokens_data_flow
+
 
 @utils.flow_with_result_storage
 def build_all_flow(result_storage=None):
@@ -48,11 +50,14 @@ def build_all_flow(result_storage=None):
     raw_celo_carbon_metrics_flow()
     raw_polygon_carbon_metrics_flow()
     raw_assets_prices_flow()
+    
     verra_data_flow()
     polygon_retired_offsets_flow()
     polygon_bridged_offsets_flow()
     eth_moss_bridged_offsets_flow()
     eth_retired_offsets_flow()
+
+    tokens_data_flow()
 
 
 if __name__ == "__main__":
