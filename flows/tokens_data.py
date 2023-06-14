@@ -101,7 +101,7 @@ def validate_tokens_data(df):
 
 
 @utils.flow_with_result_storage
-def validate_tokens_data_flow(result_storage=None):
+def tokens_data_flow(result_storage=None):
     """Fetches Tokens data and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
@@ -113,4 +113,4 @@ def validate_tokens_data_flow(result_storage=None):
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    validate_tokens_data_flow()
+    tokens_data_flow()

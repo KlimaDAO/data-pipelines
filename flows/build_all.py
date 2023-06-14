@@ -50,7 +50,7 @@ def build_all_flow(result_storage=None):
     raw_celo_carbon_metrics_flow()
     raw_polygon_carbon_metrics_flow()
     raw_assets_prices_flow()
-    
+
     verra_data_flow()
     polygon_retired_offsets_flow()
     polygon_bridged_offsets_flow()
