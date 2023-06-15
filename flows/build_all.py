@@ -44,6 +44,8 @@ def run(flow):
 @utils.flow_with_result_storage
 def build_all_flow(result_storage=None):
     """Run all the build flows"""
+    run(tokens_data_flow)
+
     run(raw_verra_data_flow)
     run(raw_polygon_retired_offsets_flow)
     run(raw_polygon_pools_retired_offsets_flow)
@@ -67,8 +69,6 @@ def build_all_flow(result_storage=None):
     run(polygon_bridged_offsets_flow)
     run(eth_moss_bridged_offsets_flow)
     run(eth_retired_offsets_flow)
-
-    run(tokens_data_flow)
 
 
 if __name__ == "__main__":
