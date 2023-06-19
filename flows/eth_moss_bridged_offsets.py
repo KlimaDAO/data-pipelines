@@ -15,6 +15,8 @@ def fetch_eth_moss_bridged_offsets_task():
         ["Vintage Start"],
         ["Vintage"]
     )
+    # Add bridge information
+    df["Bridge"] = "Moss"
     # Compute Vintage
     df["Vintage"] = (
         df["Serial Number"].astype(str).str[-15:-11].astype(int)
