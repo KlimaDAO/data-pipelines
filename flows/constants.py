@@ -49,28 +49,28 @@ USDC_DECIMALS = 12
 
 TOKENS = {
     "BCT": {
-        "address": BCT_ADDRESS,
-        "id": "polygon-pos",
         "Pair Address": BCT_USDC_ADDRESS,
         "Token Address": BCT_ADDRESS,
+        "address": BCT_ADDRESS,
+        "id": "polygon-pos",
         "Full Name": "Base Carbon Tonne",
         "Bridge": "Toucan",
         "Decimals": BCT_DECIMALS,
     },
     "NCT": {
-        "address": NCT_ADDRESS,
-        "id": "polygon-pos",
         "Pair Address": NCT_USDC_ADDRESS,
         "Token Address": NCT_ADDRESS,
+        "address": NCT_ADDRESS,
+        "id": "polygon-pos",
         "Full Name": "Nature Carbon Tonne",
         "Bridge": "Toucan",
         "Decimals": NCT_DECIMALS,
     },
     "MCO2": {
-        "address": MCO2_ADDRESS,
-        "id": "ethereum",
         "Pair Address": KLIMA_MCO2_ADDRESS,
         "Token Address": MCO2_ADDRESS,
+        "address": MCO2_ADDRESS,
+        "id": "ethereum",
         "Full Name": "Moss Carbon Credit",
         "Bridge": "Moss",
         "Decimals": MCO2_DECIMALS,
@@ -78,6 +78,7 @@ TOKENS = {
     "UBO": {
         "Pair Address": KLIMA_UBO_ADDRESS,
         "Token Address": UBO_ADDRESS,
+        "address": UBO_ADDRESS,
         "Full Name": "Universal Basic Offset",
         "Bridge": "C3",
         "Decimals": UBO_DECIMALS,
@@ -85,6 +86,7 @@ TOKENS = {
     "NBO": {
         "Pair Address": KLIMA_NBO_ADDRESS,
         "Token Address": NBO_ADDRESS,
+        "address": UBO_ADDRESS,
         "Full Name": "Nature Based Offset",
         "Bridge": "C3",
         "Decimals": NBO_DECIMALS,
