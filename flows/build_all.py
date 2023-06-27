@@ -32,6 +32,8 @@ from polygon_pools_deposited_offsets import polygon_pools_deposited_offsets_flow
 from eth_moss_bridged_offsets import eth_moss_bridged_offsets_flow
 from eth_retired_offsets import eth_retired_offsets_flow
 
+from offsets_holders_data import offsets_holders_data_flow
+
 from tokens_data import tokens_data_flow
 
 
@@ -75,6 +77,7 @@ def build_all_flow(result_storage=None):
     run(eth_retired_offsets_flow)
 
     run(tokens_data_flow)
+    run(offsets_holders_data_flow)
 
 
 if __name__ == "__main__":
