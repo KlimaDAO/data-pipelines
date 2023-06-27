@@ -13,6 +13,8 @@ def fetch_polygon_bridged_offsets_task():
     # FIXME: Was orignally merged with df_verra_toucan
     df = utils.merge_verra("raw_polygon_bridged_offsets")
     df = utils.region_manipulations(df)
+    df = utils.vintage_manipulations(df)
+    df = utils.date_manipulations(df, "Bridged Date")
     return df
 
 

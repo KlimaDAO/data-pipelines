@@ -229,6 +229,20 @@ def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[])
     return df
 
 
+def date_manipulations(df, date_column):
+    df["Date"] = pd.to_datetime(df["Date"], unit="s")
+    df = df.rename(columns={"Date": date_column})
+    return df
+
+
+def vintage_manipulations(df):
+    # Fix vintage date
+    df["Vintage"] = (
+        pd.to_datetime(df["Vintage"], unit="s").dt.tz_localize(None).dt.year
+    )
+    return df
+
+
 def region_manipulations(df):
     """Manually fix the Region column"""
     df["Region"] = df["Region"].replace("South Korea", "Korea, Republic of")

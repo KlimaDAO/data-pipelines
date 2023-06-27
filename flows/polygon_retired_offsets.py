@@ -12,6 +12,8 @@ def fetch_polygon_retired_offsets_task():
 
     df = utils.merge_verra("raw_polygon_retired_offsets")
     df = utils.region_manipulations(df)
+    df = utils.vintage_manipulations(df)
+    df = utils.date_manipulations(df, "Retirement Date")
     return df
 
 

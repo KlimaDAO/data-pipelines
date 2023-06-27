@@ -40,6 +40,21 @@ def fetch_eth_moss_bridged_offsets_task():
         "Date_new",
     ]
     df = df.drop(columns=["Tx Address", "Date_new"])
+    df = utils.date_manipulations(df, "Bridged Date")
+
+    # Manipulate project ID
+    df["Quantity"] = df["Quantity"].astype(int)
+    pat = r"VCS-(?P<id>\d+)"
+    repl = (
+        lambda m: "[VCS-"
+        + m.group("id")
+        + "](https://registry.verra.org/app/projectDetail/VCS/"
+        + m.group("id")
+        + ")"
+    )
+    df["Project ID"] = (
+        df["Project ID"].astype(str).str.replace(pat, repl, regex=True)
+    )
     return df
 
 

@@ -26,6 +26,9 @@ from raw_assets_prices import raw_assets_prices_flow
 
 from polygon_retired_offsets import polygon_retired_offsets_flow
 from polygon_bridged_offsets import polygon_bridged_offsets_flow
+from polygon_pools_retired_offsets import polygon_pools_retired_offsets_flow
+from polygon_pools_redeemed_offsets import polygon_pools_redeemed_offsets_flow
+from polygon_pools_deposited_offsets import polygon_pools_deposited_offsets_flow
 from eth_moss_bridged_offsets import eth_moss_bridged_offsets_flow
 from eth_retired_offsets import eth_retired_offsets_flow
 
@@ -65,6 +68,9 @@ def build_all_flow(result_storage=None):
     run(verra_data_flow)
     run(polygon_retired_offsets_flow)
     run(polygon_bridged_offsets_flow)
+    run(polygon_pools_retired_offsets_flow)
+    run(polygon_pools_redeemed_offsets_flow)
+    run(polygon_pools_deposited_offsets_flow)
     run(eth_moss_bridged_offsets_flow)
     run(eth_retired_offsets_flow)
 

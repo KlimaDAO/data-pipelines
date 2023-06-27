@@ -20,7 +20,7 @@ def fetch_verra_data_task():
     df["Retirement/Cancellation Date"] = pd.to_datetime(
         df["Retirement/Cancellation Date"]
     )
-    df["Date"] = df["Retirement/Cancellation Date"]
+    df["Retirement Date"] = df["Retirement/Cancellation Date"]
     df["Issuance Date"] = pd.to_datetime(df["Issuance Date"])
     df["Days to Retirement"] = (
         df["Retirement/Cancellation Date"] - df["Issuance Date"]
