@@ -25,6 +25,8 @@ def fetch_offsets_holders_data_task():
             df.loc[index, "Klimate Name"] = "KlimaDAO"
         elif i == "0x1e67124681b402064cd0abe8ed1b5c79d2e02f64":
             df.loc[index, "Klimate Name"] = "Olympus DAO"
+        else:
+            df.loc[index, "Klimate Name"] = i[:4] + "..." + i[-1]
 
     return df
 
