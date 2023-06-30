@@ -191,7 +191,7 @@ def raw_data_flow(slug, fetch_data_task, validate_data_task):
 # Data manipulation utils
 
 
-def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[]):
+def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[], v=""):
     """ Merges verra data with an existing dataframe
 
     Parameters:
@@ -218,7 +218,7 @@ def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[])
     ] + additionnal_drop_columns
 
     df = get_latest_dataframe(slug)
-    df_verra = get_latest_dataframe("verra_data")
+    df_verra = get_latest_dataframe(f"verra_data{v}")
 
     df["Project ID Key"] = df["Project ID"].astype(str).str[4:]
     df_verra["ID"] = df_verra["ID"].astype(str)

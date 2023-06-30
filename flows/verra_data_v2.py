@@ -4,11 +4,11 @@ import pandas as pd
 import utils
 
 
-SLUG = "verra_data"
+SLUG = "verra_data_v2"
 
 
 @task()
-def fetch_verra_data_task():
+def fetch_verra_data_v2_task():
     """Builds Verra data"""
     df = utils.get_latest_dataframe("raw_verra_data")
     df_bridged_mco2 = utils.get_latest_dataframe("raw_eth_moss_bridged_offsets")
@@ -20,7 +20,7 @@ def fetch_verra_data_task():
     df["Retirement/Cancellation Date"] = pd.to_datetime(
         df["Retirement/Cancellation Date"]
     )
-    df["Date"] = df["Retirement/Cancellation Date"]
+    df["Retirement Date"] = df["Retirement/Cancellation Date"]
     df["Issuance Date"] = pd.to_datetime(df["Issuance Date"])
     df["Days to Retirement"] = (
         df["Retirement/Cancellation Date"] - df["Issuance Date"]
@@ -52,22 +52,22 @@ def fetch_verra_data_task():
 
 
 @task()
-def validate_verra_data_task(df):
+def validate_verra_data_v2_task(df):
     """Validates Verra data"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
 
 @utils.flow_with_result_storage
-def verra_data_flow(result_storage):
+def verra_data_v2_flow(result_storage):
     """Fetches Verra data and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_verra_data_task,
-        validate_data_task=validate_verra_data_task,
+        fetch_data_task=fetch_verra_data_v2_task,
+        validate_data_task=validate_verra_data_v2_task,
     )
 
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    verra_data_flow()
+    verra_data_v2_flow()
