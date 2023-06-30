@@ -11,7 +11,7 @@ def fetch_eth_moss_bridged_offsets_v2_task():
     """Merge raw Ethereum Moss bridged offsets with verra data"""
     df_tx = utils.get_latest_dataframe("raw_eth_bridged_offsets_transactions")
     df = utils.merge_verra(
-        "raw_eth_moss_bridged_offsets_v2",
+        "raw_eth_moss_bridged_offsets",
         ["Vintage Start"],
         ["Vintage"], v="_v2"
     )
