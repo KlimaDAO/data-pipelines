@@ -6,6 +6,7 @@ import base64
 from datetime import datetime
 from prefect.context import FlowRunContext
 from prefect.logging import get_run_logger
+from prefect.filesystems import LocalFileSystem
 from prefect import task, flow
 import pandas as pd
 from web3 import Web3
@@ -83,6 +84,11 @@ def get_storage_block():
     return block
 
 
+def read_df_from_bytes(file_data) -> pd.DataFrame:
+    blob = PersistedResultBlob.parse_raw(file_data).data
+    return DfSerializer().loads(blob)
+
+
 def read_df(filename) -> pd.DataFrame:
     """Reads a dataframe from storage
 
@@ -90,8 +96,7 @@ def read_df(filename) -> pd.DataFrame:
     filename: name of the destination file
     """
     file_data = get_storage_block().read_path(filename)
-    blob = PersistedResultBlob.parse_raw(file_data).data
-    return DfSerializer().loads(blob)
+    return read_df_from_bytes(file_data)
 
 
 def get_s3():
@@ -104,7 +109,11 @@ def get_s3():
 
 def get_s3_path(path):
     """Get a s3fs path contextualized with the running flow instance"""
-    prefix = get_storage_block()._block_document_name
+    storage_block = get_storage_block()
+    if type(storage_block) == LocalFileSystem:
+        prefix = os.getenv("AWS_STORAGE")
+    else:
+        prefix = storage_block._block_document_name
     return f"{prefix}-klimadao-data/{path}"
 
 
