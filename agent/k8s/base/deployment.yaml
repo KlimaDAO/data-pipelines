@@ -18,7 +18,7 @@ spec:
               memory: 2048Mi
             limits:
               cpu: 200m
-              memory: 2048Mi
+              memory: 2560Mi
           env:
             - name: PREFECT_API_KEY
               valueFrom:
