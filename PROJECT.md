@@ -81,11 +81,12 @@ The API will query the S3 Objects created by the data-pipelines and provide fina
 - Date range filtering
 - CSV transformation
 
-The API will be composed of two part:
+The API will be composed of two parts:
  - A Service layer, responsible for querying the S3 objects, transform them and cache the results
  - A Routing layer, responsible for routing queries to the appropriate services
 
 The API will be developed in the dash-apps repo: https://github.com/KlimaDAO/dash-apps
+See this issue: https://github.com/KlimaDAO/dash-apps/issues/154
 
 ### Reimplement the dash-app project as a proper JS frontend querying the API
 
@@ -95,3 +96,4 @@ The JS frontend can be implemented using the technologies already in use for the
 - Additional charting librairies may be required
 
 The JS Frontend can be developed in the KlimaDAO monorepo https://github.com/KlimaDAO/klimadao
+See this issue: https://github.com/KlimaDAO/klimadao/issues/1277
