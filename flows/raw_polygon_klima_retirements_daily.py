@@ -1,4 +1,5 @@
 """ Raw Polygon daily Klima retirements flow """
+import pandas as pd
 from prefect import task
 from subgrounds.subgrounds import Subgrounds
 from subgrounds.subgraph import SyntheticField
@@ -7,7 +8,13 @@ import constants
 
 
 SLUG = "raw_polygon_klima_retirements_daily"
-
+RENAME_MAP = {
+    "dailyKlimaRetirements_id": "ID",
+    "dailyKlimaRetirements_timestamp": "Timestamp",
+    "dailyKlimaRetirements_datetime": "Date",
+    "dailyKlimaRetirements_amount": "Amount",
+    "dailyKlimaRetirements_token": "Token"
+}
 
 @task()
 def fetch_raw_polygon_klima_retirements_daily_task():
@@ -28,7 +35,7 @@ def fetch_raw_polygon_klima_retirements_daily_task():
         first=utils.get_max_records()
     )
 
-    return sg.query_df(
+    df = sg.query_df(
         [
             daily_klima_retirements.id,
             daily_klima_retirements.timestamp,
@@ -36,8 +43,9 @@ def fetch_raw_polygon_klima_retirements_daily_task():
             daily_klima_retirements.amount,
             daily_klima_retirements.token,
         ]
-    )
-
+    ).rename(columns=RENAME_MAP)
+    df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m-%d %H:%M:%S")
+    return df 
 
 @task()
 def validate_raw_polygon_klima_retirements_daily_task(df):
