@@ -7,6 +7,15 @@ import constants
 
 
 SLUG = "raw_eth_carbon_metrics"
+RENAME_MAP = {
+    "carbonMetrics_id": "ID",
+    "carbonMetrics_timestamp": "Timestamp",
+    "carbonMetrics_datetime": "Date",
+    "carbonMetrics_mco2Supply": "MCO2 supply",
+    "carbonMetrics_totalCarbonSupply": "Total carbon supply",
+    "carbonMetrics_mco2Retired": "MCO2 retired",
+    "carbonMetrics_totalRetirements": "Total retirements"
+}
 
 
 @task()
@@ -38,9 +47,9 @@ def fetch_raw_eth_carbon_metrics_task():
             carbon_metrics.mco2Retired,
             carbon_metrics.totalRetirements,
         ]
-    )
+    ).rename(columns=RENAME_MAP)
 
-    zero_timestamp_index = df[(df["carbonMetrics_timestamp"] == "0")].index
+    zero_timestamp_index = df[(df["Timestamp"] == "0")].index
     df.drop(zero_timestamp_index, inplace=True)
 
     return df
