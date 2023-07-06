@@ -8,8 +8,8 @@ SLUG = "polygon_klima_retirements_daily"
 RENAME_MAP = {
     "dailyKlimaRetirements_id": "ID",
     "dailyKlimaRetirements_timestamp": "Timestamp",
-    "dailyKlimaRetirements_datetime": "Date",
-    "dailyKlimaRetirements_amount": "Amount",
+    "dailyKlimaRetirements_datetime": "Retirement Date",
+    "dailyKlimaRetirements_amount": "Quantity",
     "dailyKlimaRetirements_token": "Token"
 }
 
@@ -19,7 +19,7 @@ def fetch_polygon_klima_retirements_daily_task():
     """Fetches Polygon daily Klima retirements"""
     df = utils.get_latest_dataframe("raw_polygon_klima_retirements_daily")
     df = df.rename(columns=RENAME_MAP)
-    df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m-%d %H:%M:%S")
+    df["Retirement Date"] = pd.to_datetime(df["Retirement Date"], format="%Y-%m-%d %H:%M:%S")
     return df
 
 

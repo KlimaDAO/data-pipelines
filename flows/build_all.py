@@ -5,6 +5,7 @@ from raw_verra_data import raw_verra_data_flow
 
 from verra_data import verra_data_flow
 from verra_data_v2 import verra_data_v2_flow
+from verra_retirements import verra_retirements_flow
 
 from raw_polygon_retired_offsets import raw_polygon_retired_offsets_flow
 from raw_polygon_pools_retired_offsets import raw_polygon_pools_retired_offsets_flow
@@ -43,6 +44,7 @@ from eth_retired_offsets_v2 import eth_retired_offsets_v2_flow
 
 from polygon_klima_retirements import polygon_klima_retirements_flow
 from polygon_klima_retirements_daily import polygon_klima_retirements_daily_flow
+from all_retirements import all_retirements_flow
 
 from offsets_holders_data import offsets_holders_data_flow
 
@@ -90,6 +92,7 @@ def build_all_flow(result_storage=None):
     run(eth_retired_offsets_flow)
 
     run(verra_data_v2_flow)
+    run(verra_retirements_flow)
     run(polygon_retired_offsets_v2_flow)
     run(polygon_bridged_offsets_v2_flow)
     run(eth_moss_bridged_offsets_v2_flow)
@@ -100,6 +103,7 @@ def build_all_flow(result_storage=None):
 
     run(polygon_klima_retirements_flow)
     run(polygon_klima_retirements_daily_flow)
+    run(all_retirements_flow)
 
     run(eth_carbon_metrics_flow)
     run(celo_carbon_metrics_flow)
