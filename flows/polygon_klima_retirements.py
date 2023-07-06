@@ -6,6 +6,7 @@ import utils
 
 SLUG = "polygon_klima_retirements"
 RENAME_MAP = {
+    "klimaRetires_transaction_id": "Transaction ID",
     "klimaRetires_beneficiaryAddress": "Beneficiary Address",
     "klimaRetires_offset_projectID": "Project ID",
     "klimaRetires_offset_bridge": "Bridge",
