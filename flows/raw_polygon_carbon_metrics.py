@@ -7,34 +7,6 @@ import constants
 
 
 SLUG = "raw_polygon_carbon_metrics"
-RENAME_MAP = {
-    "carbonMetrics_id": "ID",
-    "carbonMetrics_timestamp": "Timestamp",
-    "carbonMetrics_datetime": "Date",
-    "carbonMetrics_bctSupply": "BCT supply",
-    "carbonMetrics_nctSupply": "NCT supply",
-    "carbonMetrics_mco2Supply": "MCO2 supply",
-    "carbonMetrics_uboSupply": "UBO supply",
-    "carbonMetrics_nboSupply": "NBO supply",
-    "carbonMetrics_bctRedeemed": "BCT redeemed",
-    "carbonMetrics_nctRedeemed": "NCT redeemed",
-    "carbonMetrics_uboRedeemed": "UBO redeemed",
-    "carbonMetrics_nboRedeemed": "NBO redeemed",
-    "carbonMetrics_totalCarbonSupply": "Total carbon supply",
-    "carbonMetrics_mco2Retired": "MCO2 retired",
-    "carbonMetrics_tco2Retired": "TCO2 retired",
-    "carbonMetrics_c3tRetired": "C3T retired",
-    "carbonMetrics_totalRetirements": "Total retirements",
-    "carbonMetrics_bctKlimaRetired": "BCT Klima retired",
-    "carbonMetrics_nctKlimaRetired": "NCT Klima retired",
-    "carbonMetrics_mco2KlimaRetired": "MCO2 Klima retired",
-    "carbonMetrics_uboKlimaRetired": "UBO Klima retired",
-    "carbonMetrics_nboKlimaRetired": "NCO Klima retired",
-    "carbonMetrics_totalKlimaRetirements": "Total Klima retirements",
-    "carbonMetrics_tco2KlimaRetired": "TCO2 Klima retired",
-    "carbonMetrics_c3tKlimaRetired": "C3T Klima retired",
-    "carbonMetrics_not_klima_retired": "Not Klima retired"
-}
 
 
 @task()
@@ -116,7 +88,7 @@ def fetch_raw_polygon_carbon_metrics_task():
             carbon_metrics.c3tKlimaRetired,
             carbon_metrics.not_klima_retired,
         ]
-    ).rename(columns=RENAME_MAP)
+    )
 
 
 @task()

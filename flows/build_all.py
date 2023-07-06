@@ -10,7 +10,7 @@ from raw_polygon_retired_offsets import raw_polygon_retired_offsets_flow
 from raw_polygon_pools_retired_offsets import raw_polygon_pools_retired_offsets_flow
 from raw_polygon_pools_redeemed_offsets import raw_polygon_pools_redeemed_offsets_flow
 from raw_polygon_pools_deposited_offsets import raw_polygon_pools_deposited_offsets_flow
-from raw_polygon_klima_retirements import raw_polygon_klima_retirements_flow
+from flows.raw_polygon_klima_retirements import raw_polygon_klima_retirements_flow
 from raw_polygon_klima_retirements_daily import raw_polygon_klima_retirements_daily_flow
 from raw_polygon_bridged_offsets import raw_polygon_bridged_offsets_flow
 from raw_offsets_holders_data import raw_offsets_holders_data_flow
@@ -22,6 +22,9 @@ from raw_eth_bridged_offsets_transactions import raw_eth_bridged_offsets_transac
 from raw_eth_carbon_metrics import raw_eth_carbon_metrics_flow
 from raw_celo_carbon_metrics import raw_celo_carbon_metrics_flow
 from raw_polygon_carbon_metrics import raw_polygon_carbon_metrics_flow
+from eth_carbon_metrics import eth_carbon_metrics_flow
+from celo_carbon_metrics import celo_carbon_metrics_flow
+from polygon_carbon_metrics import polygon_carbon_metrics_flow
 
 from raw_assets_prices import raw_assets_prices_flow
 
@@ -37,6 +40,9 @@ from eth_moss_bridged_offsets import eth_moss_bridged_offsets_flow
 from eth_moss_bridged_offsets_v2 import eth_moss_bridged_offsets_v2_flow
 from eth_retired_offsets import eth_retired_offsets_flow
 from eth_retired_offsets_v2 import eth_retired_offsets_v2_flow
+
+from polygon_klima_retirements import polygon_klima_retirements_flow
+from polygon_klima_retirements_daily import polygon_klima_retirements_daily_flow
 
 from offsets_holders_data import offsets_holders_data_flow
 
@@ -91,6 +97,13 @@ def build_all_flow(result_storage=None):
 
     run(tokens_data_flow)
     run(offsets_holders_data_flow)
+
+    run(polygon_klima_retirements_flow)
+    run(polygon_klima_retirements_daily_flow)
+
+    run(eth_carbon_metrics_flow)
+    run(celo_carbon_metrics_flow)
+    run(polygon_carbon_metrics_flow)
 
 
 if __name__ == "__main__":

@@ -2,21 +2,11 @@
 from prefect import task
 from subgrounds.subgrounds import Subgrounds
 from subgrounds.subgraph import SyntheticField
-import pandas as pd
 import utils
 import constants
 
 
 SLUG = "raw_polygon_klima_retirements"
-RENAME_MAP = {
-    "klimaRetires_beneficiaryAddress": "Beneficiary Address",
-    "klimaRetires_offset_projectID": "Project ID",
-    "klimaRetires_offset_bridge": "Bridge",
-    "klimaRetires_token": "Token",
-    "klimaRetires_datetime": "Date",
-    "klimaRetires_amount": "Amount",
-    "klimaRetires_proof": "Proof"
-}
 
 
 @task()
@@ -44,7 +34,7 @@ def fetch_raw_polygon_klima_retirements_task():
         first=utils.get_max_records()
     )
 
-    df = sg.query_df(
+    return sg.query_df(
         [
             klima_retirees.beneficiaryAddress,
             klima_retirees.offset.projectID,
@@ -54,10 +44,7 @@ def fetch_raw_polygon_klima_retirements_task():
             klima_retirees.amount,
             klima_retirees.proof
         ]
-    ).rename(columns=RENAME_MAP)
-
-    df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m-%d %H:%M:%S")
-    return df
+    )
 
 
 @task()

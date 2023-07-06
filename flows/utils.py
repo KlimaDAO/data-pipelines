@@ -153,6 +153,8 @@ def validate_against_latest_dataframe(slug, df):
       result_serializer=DfSerializer())
 def store_raw_data_task(df):
     """Stores data wihout modifying its content"""
+    if type(df) != pd.DataFrame:
+        raise Exception("Trying to store something that is not a dataframe")
     return df
 
 

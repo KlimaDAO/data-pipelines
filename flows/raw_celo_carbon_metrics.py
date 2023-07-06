@@ -7,17 +7,6 @@ import constants
 
 
 SLUG = "raw_celo_carbon_metrics"
-RENAME_MAP = {
-    "carbonMetrics_id": "ID",
-    "carbonMetrics_timestamp": "Timestamp",
-    "carbonMetrics_datetime": "Date",
-    "carbonMetrics_bctSupply": "BCT supply",
-    "carbonMetrics_nctSupply": "NCT supply",
-    "carbonMetrics_mco2Supply": "MCO2 supply",
-    "carbonMetrics_totalCarbonSupply": "Total carbon supply",
-    "carbonMetrics_mco2Retired": "MCO2 retired",
-    "carbonMetrics_totalRetirements": "Total retirements"
-}
 
 
 @task()
@@ -52,7 +41,7 @@ def fetch_raw_celo_carbon_metrics_task():
             carbon_metrics.mco2Retired,
             carbon_metrics.totalRetirements,
         ]
-    ).rename(columns=RENAME_MAP)
+    )
 
 
 @task()
