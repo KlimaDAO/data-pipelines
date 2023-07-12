@@ -24,7 +24,7 @@ def fetch_polygon_klima_retirements_task():
     df = df.rename(columns=RENAME_MAP)
     df["Retirement Date"] = pd.to_datetime(df["Retirement Date"], format="%Y-%m-%d %H:%M:%S")
     df["Origin"] = "Klima"
-    return df
+    return utils.auto_rename_columns(df)
 
 
 @task()

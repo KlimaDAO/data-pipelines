@@ -11,7 +11,7 @@ from raw_polygon_retired_offsets import raw_polygon_retired_offsets_flow
 from raw_polygon_pools_retired_offsets import raw_polygon_pools_retired_offsets_flow
 from raw_polygon_pools_redeemed_offsets import raw_polygon_pools_redeemed_offsets_flow
 from raw_polygon_pools_deposited_offsets import raw_polygon_pools_deposited_offsets_flow
-from flows.raw_polygon_klima_retirements import raw_polygon_klima_retirements_flow
+from raw_polygon_klima_retirements import raw_polygon_klima_retirements_flow
 from raw_polygon_klima_retirements_daily import raw_polygon_klima_retirements_daily_flow
 from raw_polygon_bridged_offsets import raw_polygon_bridged_offsets_flow
 from raw_offsets_holders_data import raw_offsets_holders_data_flow
@@ -28,6 +28,7 @@ from celo_carbon_metrics import celo_carbon_metrics_flow
 from polygon_carbon_metrics import polygon_carbon_metrics_flow
 
 from raw_assets_prices import raw_assets_prices_flow
+from assets_prices import assets_prices_flow
 
 
 from polygon_retired_offsets import polygon_retired_offsets_flow
@@ -80,6 +81,8 @@ def build_all_flow(result_storage=None):
     run(raw_celo_carbon_metrics_flow)
     run(raw_polygon_carbon_metrics_flow)
     run(raw_assets_prices_flow)
+
+    run(assets_prices_flow)
 
     run(verra_data_flow)
     run(polygon_retired_offsets_flow)

@@ -11,11 +11,11 @@ def fetch_polygon_bridged_offsets_v2_task():
     """Merge raw Polygon bridged offsets with verra data"""
 
     # FIXME: Was orignally merged with df_verra_toucan
-    df = utils.merge_verra("raw_polygon_bridged_offsets", v="_v2")
+    df = utils.merge_verra_v2("raw_polygon_bridged_offsets")
     df = utils.region_manipulations(df)
     df = utils.vintage_manipulations(df)
-    df = utils.date_manipulations(df, "Bridged Date")
-    return df
+    df = utils.date_manipulations(df, "bridged_date")
+    return utils.auto_rename_columns(df)
 
 
 @task()

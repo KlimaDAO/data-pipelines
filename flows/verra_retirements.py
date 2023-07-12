@@ -10,10 +10,10 @@ SLUG = "verra_retirements"
 def fetch_verra_retirements_task():
     """Builds Verra retirements data"""
     df = utils.get_latest_dataframe("verra_data_v2")
-    df = df.query("~Toucan & ~C3 & ~Moss")
-    df = df[df["Status"] == "Retired"]
+    df = df.query("~toucan & ~c3 & ~moss")
+    df = df[df["status"] == "Retired"]
     df = df.reset_index(drop=True)
-    return df
+    return utils.auto_rename_columns(df)
 
 
 @task()

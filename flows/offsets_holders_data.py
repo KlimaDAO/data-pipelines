@@ -28,7 +28,7 @@ def fetch_offsets_holders_data_task():
         else:
             df.loc[index, "Klimate Name"] = i[:4] + "..." + i[-1]
 
-    return df
+    return utils.auto_rename_columns(df)
 
 
 @task()

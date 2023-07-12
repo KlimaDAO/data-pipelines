@@ -12,30 +12,30 @@ def fetch_all_retirements_task():
     """Builds Verra data"""
     verra_df = utils.get_latest_dataframe("verra_retirements")
     klima_df = utils.get_latest_dataframe("polygon_klima_retirements")
-
     # Verra manipulation
-    verra_df = verra_df[['Retirement Beneficiary',
-                         'Retirement Date',
-                         'Serial Number',
-                         'Quantity']].copy()
-    verra_df["Quantity"] = verra_df["Quantity"] / 1000
+    verra_df = verra_df[['retirement_beneficiary',
+                         'retirement_date',
+                         'serial_number',
+                         'quantity']].copy()
+    verra_df["quantity"] = verra_df["quantity"] / 1000
     verra_df = verra_df.rename(
         columns={
-            'Retirement Beneficiary': 'Beneficiary',
-            'Serial Number': 'Proof'
+            'retirement_beneficiary': 'beneficiary',
+            'serial_number': 'proof'
             })
-    verra_df["Origin"] = "Offchain"
+    verra_df["origin"] = "Offchain"
 
     # Klima manipulation
     klima_df = klima_df[[
-        "Beneficiary",
-        "Retirement Date",
-        "Proof",
-        "Quantity"
+        "beneficiary",
+        "retirement_date",
+        "proof",
+        "quantity",
+        "origin"
     ]]
     df = pd.concat([verra_df, klima_df])
-    df = df.sort_values(by="Retirement Date", ascending=False).reset_index()
-    return df
+    df = df.sort_values(by="retirement_date", ascending=False).reset_index()
+    return utils.auto_rename_columns(df)
 
 
 @task()

@@ -20,7 +20,7 @@ def fetch_polygon_klima_retirements_daily_task():
     df = utils.get_latest_dataframe("raw_polygon_klima_retirements_daily")
     df = df.rename(columns=RENAME_MAP)
     df["Retirement Date"] = pd.to_datetime(df["Retirement Date"], format="%Y-%m-%d %H:%M:%S")
-    return df
+    return utils.auto_rename_columns(df)
 
 
 @task()

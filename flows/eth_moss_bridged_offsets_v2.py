@@ -10,40 +10,41 @@ SLUG = "eth_moss_bridged_offsets_v2"
 def fetch_eth_moss_bridged_offsets_v2_task():
     """Merge raw Ethereum Moss bridged offsets with verra data"""
     df_tx = utils.get_latest_dataframe("raw_eth_bridged_offsets_transactions")
-    df = utils.merge_verra(
+    df_tx = utils.auto_rename_columns(df_tx)
+    df = utils.merge_verra_v2(
         "raw_eth_moss_bridged_offsets",
-        ["Vintage Start"],
-        ["Vintage"], v="_v2"
+        ["vintage_start"],
+        ["vintage"]
     )
     # Add bridge information
-    df["Bridge"] = "Moss"
+    df["bridge"] = "Moss"
     # Compute Vintage
-    df["Vintage"] = (
-        df["Serial Number"].astype(str).str[-15:-11].astype(int)
+    df["vintage"] = (
+        df["serial_number"].astype(str).str[-15:-11].astype(int)
     )
     # Ajust MCO bridges
-    df_tx = df_tx[["Date", "Tx Address"]]
+    df_tx = df_tx[["date", "tx_address"]]
     df = df.merge(
         df_tx,
         how="left",
-        left_on="Original Tx Address",
-        right_on="Tx Address",
+        left_on="original_tx_address",
+        right_on="tx_address",
         suffixes=("", "_new"),
     ).reset_index(drop=True)
     df.loc[
-        df["Original Tx Address"]
+        df["original_tx_address"]
         != "0x0000000000000000000000000000000000000000000000000000000000000000",
         "Date",
     ] = df.loc[
-        df["Original Tx Address"]
+        df["original_tx_address"]
         != "0x0000000000000000000000000000000000000000000000000000000000000000",
-        "Date_new",
+        "date_new",
     ]
-    df = df.drop(columns=["Tx Address", "Date_new"])
-    df = utils.date_manipulations(df, "Bridged Date")
+    df = df.drop(columns=["tx_address", "date_new"])
+    df = utils.date_manipulations(df, "bridged_date")
 
     # Manipulate project ID
-    df["Quantity"] = df["Quantity"].astype(int)
+    df["quantity"] = df["quantity"].astype(int)
     pat = r"VCS-(?P<id>\d+)"
     repl = (
         lambda m: "[VCS-"
@@ -52,10 +53,10 @@ def fetch_eth_moss_bridged_offsets_v2_task():
         + m.group("id")
         + ")"
     )
-    df["Project ID"] = (
-        df["Project ID"].astype(str).str.replace(pat, repl, regex=True)
+    df["project_id"] = (
+        df["project_id"].astype(str).str.replace(pat, repl, regex=True)
     )
-    return df
+    return utils.auto_rename_columns(df)
 
 
 @task()

@@ -9,20 +9,21 @@ SLUG = "eth_retired_offsets_v2"
 @task()
 def fetch_eth_retired_offsets_v2_task():
     """Merge raw Ethereum retired offsets with verra data"""
-    df = utils.merge_verra("raw_eth_retired_offsets", v="_v2")
+    df = utils.merge_verra_v2("raw_eth_retired_offsets")
     df_tx = utils.get_latest_dataframe("raw_eth_moss_retired_offsets")
+    df_tx = utils.auto_rename_columns(df_tx)
     df = df.merge(
         df_tx,
         how="left",
-        left_on="Tx ID",
-        right_on="Tx ID",
+        left_on="tx_id",
+        right_on="tx_id",
         suffixes=("", "_moss"),
     )
-    df["Beneficiary"] = df["Retiree_moss"]
-    df = utils.date_manipulations(df, "Retirement Date")
+    df["beneficiary"] = df["retiree_moss"]
+    df = utils.date_manipulations(df, "retirement_date")
 
     df = utils.vintage_manipulations(df)
-    return df
+    return utils.auto_rename_columns(df)
 
 
 @task()

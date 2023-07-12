@@ -85,6 +85,7 @@ def get_storage_block():
 
 
 def read_df_from_bytes(file_data) -> pd.DataFrame:
+    """Reads a dataframe from bytes"""
     blob = PersistedResultBlob.parse_raw(file_data).data
     return DfSerializer().loads(blob)
 
@@ -120,8 +121,7 @@ def get_s3_path(path):
 # Flows utils
 
 def get_latest_dataframe(slug):
-    """Returns the latest dataframe for a particular slug
-    """
+    """Returns the latest dataframe for a particular slug"""
     return read_df(f"{slug}-latest")
 
 
@@ -193,7 +193,7 @@ def raw_data_flow(slug, fetch_data_task, validate_data_task):
 # Data manipulation utils
 
 
-def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[], v=""):
+def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[]):
     """ Merges verra data with an existing dataframe
 
     Parameters:
@@ -220,7 +220,7 @@ def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[],
     ] + additionnal_drop_columns
 
     df = get_latest_dataframe(slug)
-    df_verra = get_latest_dataframe(f"verra_data{v}")
+    df_verra = get_latest_dataframe("verra_data")
 
     df["Project ID Key"] = df["Project ID"].astype(str).str[4:]
     df_verra["ID"] = df_verra["ID"].astype(str)
@@ -240,27 +240,75 @@ def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[],
     return df
 
 
+def merge_verra_v2(slug, additionnal_merge_columns=[], additionnal_drop_columns=[]):
+    """ Merges verra data with an existing dataframe
+
+    Parameters:
+    slug: the slug of the dataframe
+    additionnal_merge_columns: additionnal columns on which to merge the dataframe
+    additionnal_drop_columns: additionnal columns to drop from the dataframe
+
+    """
+
+    merge_columns = [
+        "id",
+        "name",
+        "region",
+        "country",
+        "project_type",
+        "methodology",
+        "toucan",
+    ] + additionnal_merge_columns
+
+    drop_columns = [
+        "name",
+        "country",
+        "project_type"
+    ] + additionnal_drop_columns
+
+    df = auto_rename_columns(get_latest_dataframe(slug))
+    df_verra = get_latest_dataframe("verra_data_v2")
+
+    df["project_id_key"] = df["project_id"].astype(str).str[4:]
+    df_verra["id"] = df_verra["id"].astype(str)
+    df_verra = df_verra[merge_columns]
+    df_verra = df_verra.drop_duplicates(subset=["id"]).reset_index(drop=True)
+    for i in drop_columns:
+        if i in df.columns:
+            df = df.drop(columns=i)
+    df = df.merge(
+        df_verra,
+        how="left",
+        left_on="project_id_key",
+        right_on="id",
+        suffixes=("", "_verra"),
+    )
+
+    return df
+
+
 def date_manipulations(df, date_column):
-    df["Date"] = pd.to_datetime(df["Date"], unit="s")
-    df = df.rename(columns={"Date": date_column})
+    """Transform a unix timestamp into a date"""
+    df["date"] = pd.to_datetime(df["date"], unit="s")
+    df = df.rename(columns={"date": date_column})
     return df
 
 
 def vintage_manipulations(df):
     # Fix vintage date
-    df["Vintage"] = (
-        pd.to_datetime(df["Vintage"], unit="s").dt.tz_localize(None).dt.year
+    df["vintage"] = (
+        pd.to_datetime(df["vintage"], unit="s").dt.tz_localize(None).dt.year
     )
     return df
 
 
 def region_manipulations(df):
     """Manually fix the Region column"""
-    df["Region"] = df["Region"].replace("South Korea", "Korea, Republic of")
+    df["region"] = df["region"].replace("South Korea", "Korea, Republic of")
     # Belize country credits are categorized under Latin America. Confirmed this with Verra Registry
-    df["Region"] = df["Region"].replace("Latin America", "Belize")
-    df["Region"] = df["Region"].replace("Oceania", "Indonesia")
-    df["Region"] = df["Region"].replace("Asia", "Cambodia")
+    df["region"] = df["region"].replace("Latin America", "Belize")
+    df["region"] = df["region"].replace("Oceania", "Indonesia")
+    df["region"] = df["region"].replace("Asia", "Cambodia")
     return df
 
 
@@ -277,3 +325,13 @@ def get_polygon_web3():
     assert web3.is_connected()
 
     return web3
+
+
+def auto_rename_columns(df):
+    """Rename columns to snake case"""
+    df.columns = (
+        df.columns
+        .str.replace(' ', '_')
+        .str.lower()
+    )
+    return df

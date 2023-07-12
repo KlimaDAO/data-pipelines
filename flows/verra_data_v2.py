@@ -17,13 +17,13 @@ def fetch_verra_data_v2_task():
     df["Vintage"] = (
         pd.to_datetime(df["Vintage Start"]).dt.tz_localize(None).dt.year
     )
-    df["Retirement/Cancellation Date"] = pd.to_datetime(
-        df["Retirement/Cancellation Date"]
+    df = df.rename(columns={"Retirement/Cancellation Date": "Retirement Date"})
+    df["Retirement Date"] = pd.to_datetime(
+        df["Retirement Date"]
     )
-    df["Retirement Date"] = df["Retirement/Cancellation Date"]
     df["Issuance Date"] = pd.to_datetime(df["Issuance Date"])
     df["Days to Retirement"] = (
-        df["Retirement/Cancellation Date"] - df["Issuance Date"]
+        df["Retirement Date"] - df["Issuance Date"]
     ).dt.days
 
     # Status
@@ -48,7 +48,7 @@ def fetch_verra_data_v2_task():
     df["Quantity"] = df["Quantity Issued"]
     df["Moss"] = df["Moss"].fillna(False)
 
-    return df
+    return utils.auto_rename_columns(df)
 
 
 @task()

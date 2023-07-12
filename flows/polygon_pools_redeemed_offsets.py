@@ -10,8 +10,8 @@ SLUG = "polygon_pools_redeemed_offsets"
 def fetch_polygon_pools_redeemed_offsets_task():
     """Fetches Polygon pools redeemed offsets"""
     df = utils.get_latest_dataframe("raw_polygon_pools_redeemed_offsets")
-    df = utils.date_manipulations(df, "Redeemed Date")
-    return df
+    df = utils.date_manipulations(df, "redeemed_date")
+    return utils.auto_rename_columns(df)
 
 
 @task()
