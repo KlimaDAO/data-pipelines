@@ -10,7 +10,7 @@ SLUG = "polygon_pools_deposited_offsets"
 def fetch_polygon_pools_deposited_offsets_task():
     """Fetches Polygon pools deposited offsets"""
     df = utils.get_latest_dataframe("raw_polygon_pools_deposited_offsets")
-    df = utils.date_manipulations(df, "Deposited Date")
+    df = utils.date_manipulations(df, "deposited_date")
     return utils.auto_rename_columns(df)
 
 

@@ -289,26 +289,29 @@ def merge_verra_v2(slug, additionnal_merge_columns=[], additionnal_drop_columns=
 
 def date_manipulations(df, date_column):
     """Transform a unix timestamp into a date"""
-    df["date"] = pd.to_datetime(df["date"], unit="s")
-    df = df.rename(columns={"date": date_column})
+    column = "date" if "date" in df else "Date"
+    df[column] = pd.to_datetime(df[column], unit="s")
+    df = df.rename(columns={column: date_column})
     return df
 
 
 def vintage_manipulations(df):
     # Fix vintage date
-    df["vintage"] = (
-        pd.to_datetime(df["vintage"], unit="s").dt.tz_localize(None).dt.year
+    column = "vintage" if "vintage" in df else "Vintage"
+    df[column] = (
+        pd.to_datetime(df[column], unit="s").dt.tz_localize(None).dt.year
     )
     return df
 
 
 def region_manipulations(df):
+    columnn = "region" if "region" in df else "Region"
     """Manually fix the Region column"""
-    df["region"] = df["region"].replace("South Korea", "Korea, Republic of")
+    df[columnn] = df[columnn].replace("South Korea", "Korea, Republic of")
     # Belize country credits are categorized under Latin America. Confirmed this with Verra Registry
-    df["region"] = df["region"].replace("Latin America", "Belize")
-    df["region"] = df["region"].replace("Oceania", "Indonesia")
-    df["region"] = df["region"].replace("Asia", "Cambodia")
+    df[columnn] = df[columnn].replace("Latin America", "Belize")
+    df[columnn] = df[columnn].replace("Oceania", "Indonesia")
+    df[columnn] = df[columnn].replace("Asia", "Cambodia")
     return df
 
 
