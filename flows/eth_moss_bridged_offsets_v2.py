@@ -16,6 +16,8 @@ def fetch_eth_moss_bridged_offsets_v2_task():
         ["vintage_start"],
         ["vintage"]
     )
+    df = df.drop(columns=["vintage_start"])
+
     # Add bridge information
     df["bridge"] = "Moss"
     # Compute Vintage
@@ -34,7 +36,7 @@ def fetch_eth_moss_bridged_offsets_v2_task():
     df.loc[
         df["original_tx_address"]
         != "0x0000000000000000000000000000000000000000000000000000000000000000",
-        "Date",
+        "date",
     ] = df.loc[
         df["original_tx_address"]
         != "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -45,17 +47,6 @@ def fetch_eth_moss_bridged_offsets_v2_task():
 
     # Manipulate project ID
     df["quantity"] = df["quantity"].astype(int)
-    pat = r"VCS-(?P<id>\d+)"
-    repl = (
-        lambda m: "[VCS-"
-        + m.group("id")
-        + "](https://registry.verra.org/app/projectDetail/VCS/"
-        + m.group("id")
-        + ")"
-    )
-    df["project_id"] = (
-        df["project_id"].astype(str).str.replace(pat, repl, regex=True)
-    )
     return utils.auto_rename_columns(df)
 
 

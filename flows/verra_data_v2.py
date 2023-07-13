@@ -15,7 +15,7 @@ def fetch_verra_data_v2_task():
 
     # Dates
     df["Vintage"] = (
-        pd.to_datetime(df["Vintage Start"]).dt.tz_localize(None).dt.year
+        pd.to_datetime(df["Vintage Start"]).dt.tz_localize(None).dt.year.astype(int)
     )
     df = df.rename(columns={"Retirement/Cancellation Date": "Retirement Date"})
     df["Retirement Date"] = pd.to_datetime(

@@ -15,6 +15,7 @@ def fetch_polygon_bridged_offsets_v2_task():
     df = utils.region_manipulations(df)
     df = utils.vintage_manipulations(df)
     df = utils.date_manipulations(df, "bridged_date")
+    df = df.drop(columns=["id"])
     return utils.auto_rename_columns(df)
 
 

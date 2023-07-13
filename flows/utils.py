@@ -198,8 +198,8 @@ def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[])
 
     Parameters:
     slug: the slug of the dataframe
-    additionnal_merge_columns: additionnal columns on which to merge the dataframe
-    additionnal_drop_columns: additionnal columns to drop from the dataframe
+    additionnal_merge_columns: additionnal columns to get from the verra dataframe
+    additionnal_drop_columns: additionnal columns to drop from the original dataframe
 
     """
 
@@ -245,8 +245,8 @@ def merge_verra_v2(slug, additionnal_merge_columns=[], additionnal_drop_columns=
 
     Parameters:
     slug: the slug of the dataframe
-    additionnal_merge_columns: additionnal columns on which to merge the dataframe
-    additionnal_drop_columns: additionnal columns to drop from the dataframe
+    additionnal_merge_columns: additionnal columns to get from the verra dataframe
+    additionnal_drop_columns: additionnal columns to drop from the original dataframe
 
     """
 
@@ -257,7 +257,6 @@ def merge_verra_v2(slug, additionnal_merge_columns=[], additionnal_drop_columns=
         "country",
         "project_type",
         "methodology",
-        "toucan",
     ] + additionnal_merge_columns
 
     drop_columns = [
@@ -283,7 +282,15 @@ def merge_verra_v2(slug, additionnal_merge_columns=[], additionnal_drop_columns=
         right_on="id",
         suffixes=("", "_verra"),
     )
-
+    # Use verra columns if they are not found in the original dataframe
+    # delete them otherwise
+    for column in merge_columns:
+        column_verra = f"{column}_verra"
+        if column_verra in df:
+            if column in df:
+                df = df.drop(columns=[column_verra])
+            else:
+                df = df.rename(columns={column_verra: column})
     return df
 
 
@@ -295,11 +302,12 @@ def date_manipulations(df, date_column):
     return df
 
 
-def vintage_manipulations(df):
+def vintage_manipulations(df: pd.DataFrame):
     # Fix vintage date
     column = "vintage" if "vintage" in df else "Vintage"
+    df[column] = df[column].fillna(0)
     df[column] = (
-        pd.to_datetime(df[column], unit="s").dt.tz_localize(None).dt.year
+        pd.to_datetime(df[column], unit="s").dt.tz_localize(None).dt.year.astype("Int64")
     )
     return df
 

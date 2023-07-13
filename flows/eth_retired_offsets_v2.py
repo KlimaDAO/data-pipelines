@@ -19,7 +19,7 @@ def fetch_eth_retired_offsets_v2_task():
         right_on="tx_id",
         suffixes=("", "_moss"),
     )
-    df["beneficiary"] = df["retiree_moss"]
+    df = df.rename(columns={"beneficiary": "retiree_moss"})
     df = utils.date_manipulations(df, "retirement_date")
 
     df = utils.vintage_manipulations(df)

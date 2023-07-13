@@ -13,7 +13,7 @@ SLUG = "tokens_data"
 def filter_df_by_pool(df, pool_address):
     """Filter a dataframe on a pool address"""
     df["Pool"] = df["Pool"].str.lower()
-    df = df[(df["Pool"] == pool_address)].reset_index()
+    df = df[(df["Pool"] == pool_address)].reset_index(drop=True)
 
     return df
 

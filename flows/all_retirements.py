@@ -34,7 +34,7 @@ def fetch_all_retirements_task():
         "origin"
     ]]
     df = pd.concat([verra_df, klima_df])
-    df = df.sort_values(by="retirement_date", ascending=False).reset_index()
+    df = df.sort_values(by="retirement_date", ascending=False).reset_index(drop=True)
     return utils.auto_rename_columns(df)
 
 
