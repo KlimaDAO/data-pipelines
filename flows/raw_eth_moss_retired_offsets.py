@@ -18,7 +18,7 @@ RENAME_MAP = {
 }
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_eth_moss_retired_offsets_task():
     """Fetches Ethereum moss retired offsets"""
     sg = Subgrounds()

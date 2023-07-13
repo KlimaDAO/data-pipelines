@@ -9,7 +9,7 @@ import constants
 SLUG = "raw_celo_carbon_metrics"
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_celo_carbon_metrics_task():
     """Fetches Celo carbon metrics"""
 

@@ -12,6 +12,10 @@ from web3 import Web3
 from prefect.results import PersistedResultBlob
 from prefect.serializers import Serializer
 from typing_extensions import Literal
+from prefect.tasks import exponential_backoff
+from dotenv import load_dotenv
+load_dotenv()
+
 
 DATEFORMAT = "%Y_%m_%d__%H_%M_%S"
 S3_ENDPOINT = "https://nyc3.digitaloceanspaces.com/"
@@ -178,6 +182,19 @@ def raw_data_flow(slug, fetch_data_task, validate_data_task):
     validate_data_task(df)
     store_raw_data_task.with_options(result_storage_key=f"{slug}-{now()}")(df)
     store_raw_data_task.with_options(result_storage_key=f"{slug}-latest")(df)
+
+
+def task_with_backoff(func):
+    """ Decorates a task to add retries with exponential backoff"""
+    if get_param("RETRIES") == "false":
+        return task(func)
+    else:
+        return task(
+            retries=3,
+            retry_delay_seconds=exponential_backoff(backoff_factor=10),
+            retry_jitter_factor=1,
+            )(func)
+
 
 # Data manipulation utils
 

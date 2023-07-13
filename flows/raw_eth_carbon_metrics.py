@@ -9,7 +9,7 @@ import constants
 SLUG = "raw_eth_carbon_metrics"
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_eth_carbon_metrics_task():
     """Fetches Ethereum carbon metrics"""
     sg = Subgrounds()

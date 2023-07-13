@@ -20,7 +20,7 @@ RENAME_MAP = {
 }
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_polygon_pools_retired_offsets_task():
     """Fetches Polygon pools retired offsets"""
     sg = Subgrounds()
