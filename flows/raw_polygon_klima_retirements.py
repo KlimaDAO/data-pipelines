@@ -9,7 +9,7 @@ import constants
 SLUG = "raw_polygon_klima_retirements"
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_polygon_klima_retirements_task():
     """Fetches Polygon Klima retirements"""
 

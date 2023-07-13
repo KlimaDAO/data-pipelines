@@ -9,7 +9,7 @@ import constants
 SLUG = "raw_assets_prices"
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_assets_prices_task():
     """Fetches assets prices"""
 

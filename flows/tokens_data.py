@@ -37,7 +37,7 @@ def load_abi(filename):
     return abi
 
 
-@task()
+@utils.task_with_backoff
 def fetch_tokens_data():
     """Builds Tokens data"""
     df_deposited = utils.get_latest_dataframe("raw_polygon_pools_deposited_offsets")

@@ -29,7 +29,7 @@ RENAME_MAP = {
 }
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_polygon_bridged_offsets_task():
     """Fetches Polygon bridged offsets"""
     sg = Subgrounds()
