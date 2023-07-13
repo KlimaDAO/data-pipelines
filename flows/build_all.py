@@ -50,6 +50,7 @@ from all_retirements import all_retirements_flow
 from offsets_holders_data import offsets_holders_data_flow
 
 from tokens_data import tokens_data_flow
+from tokens_data_v2 import tokens_data_v2_flow
 
 
 def run(flow):
@@ -111,6 +112,8 @@ def build_all_flow(result_storage=None):
     run(eth_carbon_metrics_flow)
     run(celo_carbon_metrics_flow)
     run(polygon_carbon_metrics_flow)
+
+    run(tokens_data_v2_flow)
 
 
 if __name__ == "__main__":
