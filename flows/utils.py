@@ -6,6 +6,7 @@ import base64
 from datetime import datetime
 from prefect.context import FlowRunContext
 from prefect.logging import get_run_logger
+from prefect.filesystems import LocalFileSystem
 from prefect import task, flow
 import pandas as pd
 from web3 import Web3
@@ -83,6 +84,12 @@ def get_storage_block():
     return block
 
 
+def read_df_from_bytes(file_data) -> pd.DataFrame:
+    """Reads a dataframe from bytes"""
+    blob = PersistedResultBlob.parse_raw(file_data).data
+    return DfSerializer().loads(blob)
+
+
 def read_df(filename) -> pd.DataFrame:
     """Reads a dataframe from storage
 
@@ -90,8 +97,7 @@ def read_df(filename) -> pd.DataFrame:
     filename: name of the destination file
     """
     file_data = get_storage_block().read_path(filename)
-    blob = PersistedResultBlob.parse_raw(file_data).data
-    return DfSerializer().loads(blob)
+    return read_df_from_bytes(file_data)
 
 
 def get_s3():
@@ -104,15 +110,18 @@ def get_s3():
 
 def get_s3_path(path):
     """Get a s3fs path contextualized with the running flow instance"""
-    prefix = get_storage_block()._block_document_name
+    storage_block = get_storage_block()
+    if type(storage_block) == LocalFileSystem:
+        prefix = os.getenv("AWS_STORAGE")
+    else:
+        prefix = storage_block._block_document_name
     return f"{prefix}-klimadao-data/{path}"
 
 
 # Flows utils
 
 def get_latest_dataframe(slug):
-    """Returns the latest dataframe for a particular slug
-    """
+    """Returns the latest dataframe for a particular slug"""
     return read_df(f"{slug}-latest")
 
 
@@ -144,6 +153,8 @@ def validate_against_latest_dataframe(slug, df):
       result_serializer=DfSerializer())
 def store_raw_data_task(df):
     """Stores data wihout modifying its content"""
+    if type(df) != pd.DataFrame:
+        raise Exception("Trying to store something that is not a dataframe")
     return df
 
 
@@ -187,8 +198,8 @@ def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[])
 
     Parameters:
     slug: the slug of the dataframe
-    additionnal_merge_columns: additionnal columns on which to merge the dataframe
-    additionnal_drop_columns: additionnal columns to drop from the dataframe
+    additionnal_merge_columns: additionnal columns to get from the verra dataframe
+    additionnal_drop_columns: additionnal columns to drop from the original dataframe
 
     """
 
@@ -229,13 +240,86 @@ def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[])
     return df
 
 
+def merge_verra_v2(slug, additionnal_merge_columns=[], additionnal_drop_columns=[]):
+    """ Merges verra data with an existing dataframe
+
+    Parameters:
+    slug: the slug of the dataframe
+    additionnal_merge_columns: additionnal columns to get from the verra dataframe
+    additionnal_drop_columns: additionnal columns to drop from the original dataframe
+
+    """
+
+    merge_columns = [
+        "id",
+        "name",
+        "region",
+        "country",
+        "project_type",
+        "methodology",
+    ] + additionnal_merge_columns
+
+    drop_columns = [
+        "name",
+        "country",
+        "project_type"
+    ] + additionnal_drop_columns
+
+    df = auto_rename_columns(get_latest_dataframe(slug))
+    df_verra = get_latest_dataframe("verra_data_v2")
+
+    df["project_id_key"] = df["project_id"].astype(str).str[4:]
+    df_verra["id"] = df_verra["id"].astype(str)
+    df_verra = df_verra[merge_columns]
+    df_verra = df_verra.drop_duplicates(subset=["id"]).reset_index(drop=True)
+    for i in drop_columns:
+        if i in df.columns:
+            df = df.drop(columns=i)
+    df = df.merge(
+        df_verra,
+        how="left",
+        left_on="project_id_key",
+        right_on="id",
+        suffixes=("", "_verra"),
+    )
+    # Use verra columns if they are not found in the original dataframe
+    # delete them otherwise
+    for column in merge_columns:
+        column_verra = f"{column}_verra"
+        if column_verra in df:
+            if column in df:
+                df = df.drop(columns=[column_verra])
+            else:
+                df = df.rename(columns={column_verra: column})
+    return df
+
+
+def date_manipulations(df, date_column):
+    """Transform a unix timestamp into a date"""
+    column = "date" if "date" in df else "Date"
+    df[column] = pd.to_datetime(df[column], unit="s")
+    df = df.rename(columns={column: date_column})
+    return df
+
+
+def vintage_manipulations(df: pd.DataFrame):
+    # Fix vintage date
+    column = "vintage" if "vintage" in df else "Vintage"
+    df[column] = df[column].fillna(0)
+    df[column] = (
+        pd.to_datetime(df[column], unit="s").dt.tz_localize(None).dt.year.astype("Int64")
+    )
+    return df
+
+
 def region_manipulations(df):
+    columnn = "region" if "region" in df else "Region"
     """Manually fix the Region column"""
-    df["Region"] = df["Region"].replace("South Korea", "Korea, Republic of")
+    df[columnn] = df[columnn].replace("South Korea", "Korea, Republic of")
     # Belize country credits are categorized under Latin America. Confirmed this with Verra Registry
-    df["Region"] = df["Region"].replace("Latin America", "Belize")
-    df["Region"] = df["Region"].replace("Oceania", "Indonesia")
-    df["Region"] = df["Region"].replace("Asia", "Cambodia")
+    df[columnn] = df[columnn].replace("Latin America", "Belize")
+    df[columnn] = df[columnn].replace("Oceania", "Indonesia")
+    df[columnn] = df[columnn].replace("Asia", "Cambodia")
     return df
 
 
@@ -252,3 +336,13 @@ def get_polygon_web3():
     assert web3.is_connected()
 
     return web3
+
+
+def auto_rename_columns(df):
+    """Rename columns to snake case"""
+    df.columns = (
+        df.columns
+        .str.replace(' ', '_')
+        .str.lower()
+    )
+    return df

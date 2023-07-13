@@ -18,7 +18,7 @@ RENAME_MAP = {
 
 
 @task()
-def fetch_offsets_holders_data_task():
+def fetch_raw_offsets_holders_data_task():
     """Fetches offsets holders data"""
 
     sg = Subgrounds()
@@ -42,7 +42,7 @@ def fetch_offsets_holders_data_task():
 
 
 @task()
-def validate_offsets_holders_data_task(df):
+def validate_raw_offsets_holders_data_task(df):
     """Validates offsets holders data"""
     utils.validate_against_latest_dataframe(SLUG, df)
 
@@ -52,8 +52,8 @@ def raw_offsets_holders_data_flow(result_storage=None):
     """Fetches offsets holders data and stores it"""
     utils.raw_data_flow(
         slug=SLUG,
-        fetch_data_task=fetch_offsets_holders_data_task,
-        validate_data_task=validate_offsets_holders_data_task,
+        fetch_data_task=fetch_raw_offsets_holders_data_task,
+        validate_data_task=validate_raw_offsets_holders_data_task,
     )
 
 

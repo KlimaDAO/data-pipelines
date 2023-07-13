@@ -62,7 +62,7 @@ def fetch_raw_polygon_retired_offsets_task():
         df["Tx From Address"] != "0x693ad12dba5f6e07de86faa21098b691f60a1bea"
     ]
 
-    return df.reset_index()
+    return df.reset_index(drop=True)
 
 
 @task()
