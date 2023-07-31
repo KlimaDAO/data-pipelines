@@ -86,7 +86,7 @@ TOKENS = {
     "NBO": {
         "Pair Address": KLIMA_NBO_ADDRESS,
         "Token Address": NBO_ADDRESS,
-        "address": UBO_ADDRESS,
+        "address": NBO_ADDRESS,
         "Full Name": "Nature Based Offset",
         "Bridge": "C3",
         "Decimals": NBO_DECIMALS,
