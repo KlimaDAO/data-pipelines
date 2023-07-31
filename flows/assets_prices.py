@@ -1,6 +1,7 @@
 """ Raw Polygon pools retired offsets flow """
 from prefect import task
 import utils
+import pandas as pd
 
 
 SLUG = "assets_prices"
@@ -8,8 +9,18 @@ SLUG = "assets_prices"
 
 @task()
 def fetch_assets_prices_task():
-    """Fetches Polygon pools retired offsets"""
+    """Fetches asset prices"""
+
+    # Fetch asset prices prices
     df = utils.get_latest_dataframe("raw_assets_prices")
+    df = utils.auto_rename_columns(df)
+    latest_assets_prices = utils.get_latest_dataframe("latest_assets_prices")
+
+    # Replace latest entry
+    latest_date = latest_assets_prices.iloc[0]["date"]
+    df.drop(df[df["date"] == latest_date].index, inplace=True)
+    df = pd.concat([latest_assets_prices, df])
+
     return utils.auto_rename_columns(df)
 
 

@@ -3,12 +3,14 @@ import io
 import os
 import s3fs
 import base64
+import json
 from datetime import datetime
 from prefect.context import FlowRunContext
 from prefect.logging import get_run_logger
 from prefect.filesystems import LocalFileSystem
 from prefect import task, flow
 import pandas as pd
+import constants
 from web3 import Web3
 from prefect.results import PersistedResultBlob
 from prefect.serializers import Serializer
@@ -190,6 +192,16 @@ def raw_data_flow(slug, fetch_data_task, validate_data_task):
     store_raw_data_task.with_options(result_storage_key=f"{slug}-{now()}")(df)
     store_raw_data_task.with_options(result_storage_key=f"{slug}-latest")(df)
 
+
+def run(flow):
+    """Runs a flow and log errors"""
+    state = flow(return_state=True)
+    maybe_result = state.result(raise_on_failure=False)
+    if isinstance(maybe_result, ValueError):
+        logger = get_run_logger()
+        logger.warn(f"flow {flow.__name__} failed")
+
+
 # Data manipulation utils
 
 
@@ -323,6 +335,59 @@ def region_manipulations(df):
     return df
 
 
+def fetch_assets_prices(sg, first):
+    """Fetches assets prices"""
+
+    df_prices = pd.DataFrame()
+    tokens_dict = constants.TOKENS
+
+    price_sg = sg.load_subgraph(constants.PAIRS_SUBGRAPH_URL)
+    for i in tokens_dict.keys():
+        swaps = price_sg.Query.swaps(
+            first=first,
+            orderBy=price_sg.Swap.timestamp,
+            orderDirection="desc",
+            where=[
+                price_sg.Swap.pair == tokens_dict[i]["Pair Address"]
+            ],
+        )
+
+        # Pull swap ID for NCT
+        fields = [swaps.pair.id, swaps.close, swaps.timestamp]
+        if i == 'NCT':
+            fields.append(swaps.id)
+
+        df = sg.query_df(fields)
+
+        # Filter out mispriced NCT swap
+        if i == 'NCT':
+            df = df[df.swaps_id != constants.MISPRICED_NCT_SWAP_ID]
+            df = df.drop('swaps_id', axis=1)
+
+        # Rename and format fields
+        rename_prices_map = {
+            "swaps_pair_id": f"{i}_Address",
+            "swaps_close": f"{i}_Price",
+            "swaps_timestamp": "Date",
+        }
+        df = df.rename(columns=rename_prices_map)
+        df["Date"] = (
+            pd.to_datetime(df["Date"], unit="s")
+            .dt.tz_localize("UTC")
+            .dt.floor("D")
+            .dt.date
+        )
+        df = df.drop_duplicates(keep="first", subset=[f"{i}_Address", "Date"])
+        df = df[df[f"{i}_Price"] != 0]
+        if df_prices.empty:
+            df_prices = df
+        else:
+            df_prices = df_prices.merge(df, how="outer", on="Date")
+        df_prices = df_prices.sort_values(by="Date", ascending=False)
+
+    return df_prices
+
+
 # Web3 utils
 
 
@@ -336,6 +401,17 @@ def get_polygon_web3():
     assert web3.is_connected()
 
     return web3
+
+
+def load_abi(filename):
+    """Load a single ABI from the `abis` folder under `src`"""
+    script_dir = os.path.dirname(__file__)
+    abi_dir = os.path.join(script_dir, "..", "abis")
+
+    with open(os.path.join(abi_dir, filename), "r") as f:
+        abi = json.loads(f.read())
+
+    return abi
 
 
 def auto_rename_columns(df):

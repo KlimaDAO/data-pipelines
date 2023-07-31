@@ -3,8 +3,6 @@ from prefect import task
 import pandas as pd
 import utils
 import constants
-import os
-import json
 
 
 SLUG = "tokens_data"
@@ -24,17 +22,6 @@ def filter_carbon_pool(pool_address, *dfs):
         filtered.append(filter_df_by_pool(df, pool_address))
 
     return filtered
-
-
-def load_abi(filename):
-    """Load a single ABI from the `abis` folder under `src`"""
-    script_dir = os.path.dirname(__file__)
-    abi_dir = os.path.join(script_dir, "..", "abis")
-
-    with open(os.path.join(abi_dir, filename), "r") as f:
-        abi = json.loads(f.read())
-
-    return abi
 
 
 @task()
@@ -70,7 +57,7 @@ def fetch_tokens_data():
         if key in ["BCT", "NCT"]:
             contract = web3.eth.contract(
                 address=web3.to_checksum_address(token_address),
-                abi=load_abi("toucanPoolToken.json"),
+                abi=utils.load_abi("toucanPoolToken.json"),
             )
             feeRedeemDivider = contract.functions.feeRedeemDivider().call()
             feeRedeemFactor = (
@@ -80,7 +67,7 @@ def fetch_tokens_data():
         elif key in ["UBO", "NBO"]:
             contract = web3.eth.contract(
                 address=web3.to_checksum_address(token_address),
-                abi=load_abi("c3PoolToken.json"),
+                abi=utils.load_abi("c3PoolToken.json"),
             )
             feeRedeemFactor = contract.functions.feeRedeem().call() / 10000
 

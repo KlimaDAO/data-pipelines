@@ -1,6 +1,6 @@
 """ Raw Verra data flow """
 import utils
-from prefect.logging import get_run_logger
+from utils import run
 from raw_verra_data import raw_verra_data_flow
 
 from verra_data import verra_data_flow
@@ -28,6 +28,7 @@ from celo_carbon_metrics import celo_carbon_metrics_flow
 from polygon_carbon_metrics import polygon_carbon_metrics_flow
 
 from raw_assets_prices import raw_assets_prices_flow
+from flows.current_assets_prices import current_assets_prices_flow
 from assets_prices import assets_prices_flow
 
 
@@ -53,15 +54,6 @@ from tokens_data import tokens_data_flow
 from tokens_data_v2 import tokens_data_v2_flow
 
 
-def run(flow):
-    """Runs a flow and log errors"""
-    state = flow(return_state=True)
-    maybe_result = state.result(raise_on_failure=False)
-    if isinstance(maybe_result, ValueError):
-        logger = get_run_logger()
-        logger.warn(f"flow {flow.__name__} failed")
-
-
 @utils.flow_with_result_storage
 def build_all_flow(result_storage=None):
     """Run all the build flows"""
@@ -83,6 +75,7 @@ def build_all_flow(result_storage=None):
     run(raw_polygon_carbon_metrics_flow)
     run(raw_assets_prices_flow)
 
+    run(current_assets_prices_flow)
     run(assets_prices_flow)
 
     run(verra_data_flow)
