@@ -178,7 +178,7 @@ def flow_with_result_storage(func, **decorator_kwargs):
     return inner
 
 
-def raw_data_flow(slug, fetch_data_task, validate_data_task):
+def raw_data_flow(slug, fetch_data_task, validate_data_task, historize=True):
     """ Fetches raw data and store it
 
     Parameters:
@@ -189,7 +189,8 @@ def raw_data_flow(slug, fetch_data_task, validate_data_task):
 
     df = fetch_data_task()
     validate_data_task(df)
-    store_raw_data_task.with_options(result_storage_key=f"{slug}-{now()}")(df)
+    if historize:
+        store_raw_data_task.with_options(result_storage_key=f"{slug}-{now()}")(df)
     store_raw_data_task.with_options(result_storage_key=f"{slug}-latest")(df)
 
 

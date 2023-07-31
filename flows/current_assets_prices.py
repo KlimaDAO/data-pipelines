@@ -74,7 +74,6 @@ def fetch_current_assets_prices_task():
         df_prices[f"{i}_Price"] = price
 
     df = utils.fetch_assets_prices(Subgrounds(), 1)
-    print(df)
     return utils.auto_rename_columns(df)
 
 
@@ -91,6 +90,7 @@ def current_assets_prices_flow(result_storage=None):
         slug=SLUG,
         fetch_data_task=fetch_current_assets_prices_task,
         validate_data_task=validate_current_assets_prices_task,
+        historize=False
     )
 
 

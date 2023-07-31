@@ -3,14 +3,12 @@ import utils
 from utils import run
 
 from flows.current_assets_prices import current_assets_prices_flow
-from assets_prices import assets_prices_flow
 
 
 @utils.flow_with_result_storage
 def build_frequent_flow(result_storage=None):
     """Run flows that need to be run frequently"""
     run(current_assets_prices_flow)
-    run(assets_prices_flow)
 
 
 if __name__ == "__main__":

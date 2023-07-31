@@ -14,7 +14,7 @@ def fetch_assets_prices_task():
     # Fetch asset prices prices
     df = utils.get_latest_dataframe("raw_assets_prices")
     df = utils.auto_rename_columns(df)
-    latest_assets_prices = utils.get_latest_dataframe("latest_assets_prices")
+    latest_assets_prices = utils.get_latest_dataframe("current_assets_prices")
 
     # Replace latest entry
     latest_date = latest_assets_prices.iloc[0]["date"]
@@ -36,7 +36,7 @@ def assets_prices_flow(result_storage=None):
     utils.raw_data_flow(
         slug=SLUG,
         fetch_data_task=fetch_assets_prices_task,
-        validate_data_task=validate_assets_prices_task,
+        validate_data_task=validate_assets_prices_task
     )
 
 
