@@ -113,7 +113,7 @@ def get_s3():
 def get_s3_path(path):
     """Get a s3fs path contextualized with the running flow instance"""
     storage_block = get_storage_block()
-    if type(storage_block) == LocalFileSystem:
+    if isinstance(storage_block, LocalFileSystem):
         prefix = os.getenv("AWS_STORAGE")
     else:
         prefix = storage_block._block_document_name
@@ -155,7 +155,7 @@ def validate_against_latest_dataframe(slug, df):
       result_serializer=DfSerializer())
 def store_raw_data_task(df):
     """Stores data wihout modifying its content"""
-    if type(df) != pd.DataFrame:
+    if not isinstance(df, pd.DataFrame):
         raise Exception("Trying to store something that is not a dataframe")
     return df
 
