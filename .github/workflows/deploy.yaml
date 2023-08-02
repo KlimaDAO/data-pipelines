@@ -38,9 +38,9 @@ jobs:
 
       - run: scripts/flow_prefect_deployment.sh clean_up_old_artifacts --interval 86400 --anchor-date 2023-05-18T00:00:00.000000+02:00
 
-      - run: scripts/flow_prefect_deployment.sh build_all --interval 86400 --anchor-date 2023-05-18T11:45:00.000000+02:00
+      - run: scripts/flow_prefect_deployment.sh build_all --interval 86400 --anchor-date 2023-05-18T15:15:00.000000+02:00
 
-      - run: scripts/flow_prefect_deployment.sh build_frequent --interval 300 --anchor-date 2023-05-18T11:45:00.000000+02:00
+      - run: scripts/flow_prefect_deployment.sh build_frequent --interval 3600 --anchor-date 2023-05-18T11:45:00.000000+02:00
 
   build-and-upload-agent-image:
     name: Build Docker image
