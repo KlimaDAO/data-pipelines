@@ -40,6 +40,7 @@ def fetch_polygon_carbon_metrics_task():
     """Fetches Polygon carbon metrics"""
     df = utils.get_latest_dataframe("raw_polygon_carbon_metrics")
     df = df.rename(columns=RENAME_MAP)
+    df = df.drop(columns=["ID"])
     df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m-%d %H:%M:%S").dt.date
     return utils.auto_rename_columns(df)
 
