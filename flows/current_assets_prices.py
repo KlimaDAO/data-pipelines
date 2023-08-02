@@ -1,6 +1,5 @@
 """ Raw Polygon pools retired offsets flow """
 from prefect import task
-from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
 from pycoingecko import CoinGeckoAPI
@@ -73,8 +72,8 @@ def fetch_current_assets_prices_task():
 
         df_prices[f"{i}_Price"] = price
 
-    df = utils.fetch_assets_prices(Subgrounds(), 1)
-    return utils.auto_rename_columns(df)
+    df_prices = df_prices.head(1)
+    return utils.auto_rename_columns(df_prices)
 
 
 @task()
