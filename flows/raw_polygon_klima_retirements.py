@@ -36,6 +36,7 @@ def fetch_raw_polygon_klima_retirements_task():
 
     return sg.query_df(
         [
+            klima_retirees.transaction.id,
             klima_retirees.beneficiaryAddress,
             klima_retirees.offset.projectID,
             klima_retirees.offset.bridge,
