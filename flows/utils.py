@@ -7,7 +7,6 @@ import json
 from datetime import datetime
 from prefect.context import FlowRunContext
 from prefect.logging import get_run_logger
-from prefect.filesystems import LocalFileSystem
 from prefect import task, flow
 import pandas as pd
 import constants
@@ -113,7 +112,7 @@ def get_s3():
 def get_s3_path(path):
     """Get a s3fs path contextualized with the running flow instance"""
     storage_block = get_storage_block()
-    if isinstance(storage_block, LocalFileSystem):
+    if os.getenv("AWS_STORAGE"):
         prefix = os.getenv("AWS_STORAGE")
     else:
         prefix = storage_block._block_document_name
