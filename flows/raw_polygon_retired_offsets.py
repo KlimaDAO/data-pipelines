@@ -28,7 +28,7 @@ RENMAE_MAP = {
 }
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_polygon_retired_offsets_task():
     """Fetches Polygon retired offsets"""
     sg = Subgrounds()

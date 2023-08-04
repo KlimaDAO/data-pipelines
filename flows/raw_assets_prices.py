@@ -7,7 +7,7 @@ import utils
 SLUG = "raw_assets_prices"
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_assets_prices_task():
     """Fetches assets prices"""
     return utils.fetch_assets_prices(Subgrounds(), utils.get_max_records())

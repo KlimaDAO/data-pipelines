@@ -19,7 +19,7 @@ RENAME_MAP = {
 }
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_eth_moss_bridged_offsets_task():
     """Fetches Ethereum Moss bridged offsets"""
     sg = Subgrounds()
