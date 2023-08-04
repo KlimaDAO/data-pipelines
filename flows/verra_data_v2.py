@@ -1,10 +1,17 @@
 """ Raw Verra data flow """
 from prefect import task
+from functools import lru_cache
+import pycountry
 import pandas as pd
 import utils
 
 
 SLUG = "verra_data_v2"
+
+
+@lru_cache
+def get_country(country):
+    return pycountry.countries.search_fuzzy(country)[0].alpha_3
 
 
 @task()
@@ -43,6 +50,11 @@ def fetch_verra_data_v2_task():
     # Serial Number
     lst_sn = list(df_bridged_mco2["Serial Number"])
     df.loc[df["Serial Number"].isin(lst_sn), "Moss"] = True
+
+    # Country info
+    df["Country code"] = [
+        get_country(country) for country in df["Country"]
+    ]
 
     # Other stuff
     df["Quantity"] = df["Quantity Issued"]

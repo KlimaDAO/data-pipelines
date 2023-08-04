@@ -68,8 +68,8 @@ To launch an agent on the workpool dev-agent-pool for instance
 
 Some flows are created to manage artifacts stored on S3 (or localy):
 - `clean_up_latest_artifacts`: Deletes all artefacts whose names finishes by `-latest`
-- `clean_up_old_artifacts`: Deletes all artefacts created monre than one week ago (it is executed as a prefect scheduled task)
-- `fetch_s3_artifacts`: Copies all artefacts whose names finishes by `-latest` on S3 (or locally)
+- `clean_up_old_artifacts`: Deletes all artefacts created more than one week ago (it is executed as a prefect scheduled task)
+- `fetch_s3_artifacts`: Copies all artefacts whose names finishes by `-latest` on S3 (or localy)
 
 Those flows can be configured via environment variables or a .env file located in the flows directory
 ```

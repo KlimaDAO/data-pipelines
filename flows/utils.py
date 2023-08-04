@@ -283,6 +283,7 @@ def merge_verra_v2(slug, additionnal_merge_columns=[], additionnal_drop_columns=
         "name",
         "region",
         "country",
+        "country_code",
         "project_type",
         "methodology",
     ] + additionnal_merge_columns
