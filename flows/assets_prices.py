@@ -19,7 +19,7 @@ def fetch_assets_prices_task():
     # Replace latest entry
     latest_date = latest_assets_prices.iloc[0]["date"]
     df.drop(df[df["date"] == latest_date].index, inplace=True)
-    df = pd.concat([latest_assets_prices, df])
+    df = pd.concat([latest_assets_prices, df]).reset_index(drop=True)
 
     return utils.auto_rename_columns(df)
 
