@@ -46,7 +46,7 @@ def get_search_api_params():
     }
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_verra_data_task():
     """Fetches Verra data"""
     if utils.get_param("DRY_RUN"):

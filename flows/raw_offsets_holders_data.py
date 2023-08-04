@@ -17,7 +17,7 @@ RENAME_MAP = {
 }
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_offsets_holders_data_task():
     """Fetches offsets holders data"""
 

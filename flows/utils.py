@@ -14,6 +14,10 @@ from web3 import Web3
 from prefect.results import PersistedResultBlob
 from prefect.serializers import Serializer
 from typing_extensions import Literal
+from prefect.tasks import exponential_backoff
+from dotenv import load_dotenv
+load_dotenv()
+
 
 DATEFORMAT = "%Y_%m_%d__%H_%M_%S"
 S3_ENDPOINT = "https://nyc3.digitaloceanspaces.com/"
@@ -200,6 +204,18 @@ def run(flow):
     if isinstance(maybe_result, ValueError):
         logger = get_run_logger()
         logger.warn(f"flow {flow.__name__} failed")
+
+
+def task_with_backoff(func):
+    """ Decorates a task to add retries with exponential backoff"""
+    if get_param("RETRIES") == "false":
+        return task(func)
+    else:
+        return task(
+            retries=3,
+            retry_delay_seconds=exponential_backoff(backoff_factor=10),
+            retry_jitter_factor=1,
+            )(func)
 
 
 # Data manipulation utils
