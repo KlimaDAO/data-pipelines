@@ -46,7 +46,7 @@ def fetch_current_assets_prices_task():
             )
             df = pd.DataFrame(data["prices"], columns=["Date", f"{i}_Price"])
             df["Date"] = pd.to_datetime(df["Date"], unit="ms")
-            df["Date"] = df["Date"].dt.floor("D")
+            df["Date"] = df["Date"].dt.floor("D").dt.date
             if df_prices.empty:
                 df_prices = df
             else:
