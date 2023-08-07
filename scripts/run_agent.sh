@@ -14,7 +14,7 @@ test_env "AWS_ACCESS_KEY_ID" $AWS_ACCESS_KEY_ID
 test_env "AWS_SECRET_ACCESS_KEY" $AWS_SECRET_ACCESS_KEY
 
 if [[ -z "${ERROR}" ]]; then
-  prefect agent start -p $PREFECT_POOL
+  prefect agent start -p $PREFECT_POOL --limit 1
 else
   echo "Some environnement variables must be set:$ERROR"
 fi
