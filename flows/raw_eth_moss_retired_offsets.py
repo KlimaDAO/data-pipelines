@@ -8,13 +8,13 @@ import constants
 SLUG = "raw_eth_moss_retired_offsets"
 
 RENAME_MAP = {
-    "mossOffsets_value": "Quantity",
-    "mossOffsets_timestamp": "Date",
-    "mossOffsets_retiree": "Retiree",
-    "mossOffsets_receiptId": "Receipt ID",
-    "mossOffsets_onBehalfOf": "OnBehalf Of",
-    "mossOffsets_transaction_id": "Tx ID",
-    "mossOffsets_transaction_from": "Tx From Address",
+    "retires_id": "Id",
+    "retires_value": "Quantity",
+    "retires_timestamp": "Date",
+    "retires_retiree": "Retiree",
+    "retires_beneficiary": "Beneficiary",
+    "retires_transaction_id": "Tx ID",
+    "retires_transaction_from": "Tx From Address",
 }
 
 
@@ -22,20 +22,25 @@ RENAME_MAP = {
 def fetch_raw_eth_moss_retired_offsets_task():
     """Fetches Ethereum moss retired offsets"""
     sg = Subgrounds()
-    carbon_data = sg.load_subgraph(constants.CARBON_MOSS_ETH_TEST_SUBGRAPH_URL)
-    carbon_offsets = carbon_data.Query.mossOffsets(first=utils.get_max_records())
+    carbon_data = sg.load_subgraph(constants.CARBON_ETH_SUBGRAPH_URL)
+    carbon_offsets = carbon_data.Query.retires(
+        first=utils.get_max_records(),
+        orderBy=carbon_data.Retire.timestamp
+    )
 
-    return sg.query_df(
+    df = sg.query_df(
         [
+            carbon_offsets.id,
             carbon_offsets.value,
             carbon_offsets.timestamp,
             carbon_offsets.retiree,
-            carbon_offsets.receiptId,
-            carbon_offsets.onBehalfOf,
+            carbon_offsets.beneficiary,
             carbon_offsets.transaction.id,
             carbon_offsets.transaction._select("from"),
         ]
-    ).rename(columns=RENAME_MAP)
+    )
+    df = df.rename(columns=RENAME_MAP)
+    return df
 
 
 @task()
