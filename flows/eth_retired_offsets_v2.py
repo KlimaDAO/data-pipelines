@@ -13,13 +13,18 @@ def fetch_eth_retired_offsets_v2_task():
     df_tx = utils.get_latest_dataframe("raw_eth_moss_retired_offsets")
     df_tx = utils.auto_rename_columns(df_tx)
     df = df.merge(
-        df_tx,
+        df_tx[["tx_id", "retiree", "beneficiary"]],
         how="left",
         left_on="tx_id",
         right_on="tx_id",
         suffixes=("", "_moss"),
     )
-    df = df.rename(columns={"beneficiary": "retiree_moss"})
+    df.loc[
+        df["beneficiary"].isna(),
+        "beneficiary",
+    ] = df["retiree_moss"]
+
+    df = df.drop(columns=["retiree_moss"])
     df = utils.date_manipulations(df, "retirement_date")
 
     df = utils.vintage_manipulations(df)
