@@ -22,7 +22,7 @@ RENAME_MAP = {
 def fetch_raw_eth_moss_retired_offsets_task():
     """Fetches Ethereum moss retired offsets"""
     sg = Subgrounds()
-    carbon_data = sg.load_subgraph(constants.CARBON_ETH_SUBGRAPH_URL)
+    carbon_data = sg.load_subgraph("https://api.thegraph.com/subgraphs/name/klimadao/staging-ethereum-bridged-carbon")
     carbon_offsets = carbon_data.Query.retires(
         first=utils.get_max_records(),
         orderBy=carbon_data.Retire.timestamp
