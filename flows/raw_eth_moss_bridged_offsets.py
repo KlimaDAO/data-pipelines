@@ -19,11 +19,11 @@ RENAME_MAP = {
 }
 
 
-@task()
+@utils.task_with_backoff
 def fetch_raw_eth_moss_bridged_offsets_task():
     """Fetches Ethereum Moss bridged offsets"""
     sg = Subgrounds()
-    carbon_data = sg.load_subgraph(constants.CARBON_MOSS_ETH_SUBGRAPH_URL)
+    carbon_data = sg.load_subgraph(constants.CARBON_ETH_SUBGRAPH_URL)
     carbon_offsets = carbon_data.Query.batches(first=utils.get_max_records())
     df = sg.query_df(
         [

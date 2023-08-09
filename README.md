@@ -63,3 +63,32 @@ If you change the name of a deployment. The deployment with the previous name wi
 To launch an agent on the workpool dev-agent-pool for instance
 
 `prefect agent start -p dev-agent-pool`
+
+## Manage datasets
+
+Some flows are created to manage artifacts stored on S3 (or localy):
+- `clean_up_latest_artifacts`: Deletes all artefacts whose names finishes by `-latest`
+- `clean_up_old_artifacts`: Deletes all artefacts created more than one week ago (it is executed as a prefect scheduled task)
+- `fetch_s3_artifacts`: Copies all artefacts whose names finishes by `-latest` on S3 (or localy)
+
+Those flows can be configured via environment variables or a .env file located in the flows directory
+```
+AWS_ACCESS_KEY_ID # ID for S3 storage
+AWS_SECRET_ACCESS_KEY # Key for S3 storage
+AWS_STORAGE # the S3 environnement to clean artifacts from or to read artefact froms in fetch_s3_artifacts case
+DATA_PIPELINES_RESULT_STORAGE # Storage where to save the artifacts to in fetch_s3_artifacts case
+```
+
+## Move to production
+
+To move in production and avoid downtimes we can use the foloowing procedure.
+- Make sure that on staging the pipeline runs fine, the artifacts are good and the dash-app works.
+- replace the production artifacts with the staging artifacts using the fetch_s3_artifact flow and the following environment variables:
+```
+AWS_ACCESS_KEY_ID=xxx
+AWS_SECRET_ACCESS_KEY=xxx
+AWS_STORAGE=dev
+DATA_PIPELINES_RESULT_STORAGE=s3-bucket/prod
+```
+- Merge the staging branch of dash-app into the main branch
+- Merge the staging branch of data-pipelines into the main branch
