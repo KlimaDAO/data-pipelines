@@ -28,7 +28,7 @@ from celo_carbon_metrics import celo_carbon_metrics_flow
 from polygon_carbon_metrics import polygon_carbon_metrics_flow
 
 from raw_assets_prices import raw_assets_prices_flow
-from flows.current_assets_prices import current_assets_prices_flow
+from current_assets_prices import current_assets_prices_flow
 from assets_prices import assets_prices_flow
 
 
