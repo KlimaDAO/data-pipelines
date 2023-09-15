@@ -9,30 +9,41 @@ SLUG = "all_retirements"
 
 @task()
 def fetch_all_retirements_task():
-    """Builds Verra data"""
+    """Builds Merged Retirements data"""
     verra_df = utils.get_latest_dataframe("verra_retirements")
     klima_df = utils.get_latest_dataframe("polygon_klima_retirements")
+
     # Verra manipulation
     verra_df = verra_df[['retirement_beneficiary',
                          'retirement_date',
                          'serial_number',
+                         'bridge',
+                         'project_id',
                          'quantity']].copy()
     verra_df["quantity"] = verra_df["quantity"] / 1000
     verra_df = verra_df.rename(
         columns={
-            'retirement_beneficiary': 'beneficiary',
-            'serial_number': 'proof'
+            'retirement_beneficiary': 'beneficiary'
             })
     verra_df["origin"] = "Offchain"
+    verra_df["transaction_id"] = None
+    verra_df["token"] = None
 
     # Klima manipulation
+    klima_df["serial_number"] = None
     klima_df = klima_df[[
         "beneficiary",
         "retirement_date",
-        "proof",
+        "serial_number",
+        "bridge",
         "quantity",
-        "origin"
+        "origin",
+        "transaction_id",
+        "token",
+        "project_id"
     ]]
+    klima_df["serial_number"] = None
+
     df = pd.concat([verra_df, klima_df])
     df = df.sort_values(by="retirement_date", ascending=False).reset_index(drop=True)
     return utils.auto_rename_columns(df)
