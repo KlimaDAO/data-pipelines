@@ -1,5 +1,5 @@
-prefect==2.10.8
-prefect-aws==0.3.1
+prefect==2.13.1
+prefect-aws==0.3.7
 s3fs==2023.5.0
 requests==2.30.0
 flake8==6.0.0
