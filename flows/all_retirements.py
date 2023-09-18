@@ -20,7 +20,6 @@ def fetch_all_retirements_task():
                          'bridge',
                          'project_id',
                          'quantity']].copy()
-    verra_df["quantity"] = verra_df["quantity"] / 1000
     verra_df = verra_df.rename(
         columns={
             'retirement_beneficiary': 'beneficiary'
