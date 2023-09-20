@@ -25,6 +25,10 @@ RENMAE_MAP = {
     "retires_offset_totalRetired": "Total Quantity",
     "retires_transaction_id": "Tx ID",
     "retires_transaction_from": "Tx From Address",
+    "retires_offset_balanceBCT": "Offset BCT Quantity",
+    "retires_offset_balanceNCT": "Offset NCT Quantity",
+    "retires_offset_balanceUBO": "Offset UBO Quantity",
+    "retires_offset_balanceNBO": "Offset NBO Quantity",
 }
 
 
@@ -52,6 +56,10 @@ def fetch_raw_polygon_retired_offsets_task():
             carbon_offsets.offset.category,
             carbon_offsets.offset.name,
             carbon_offsets.offset.totalRetired,
+            carbon_offsets.offset.balanceBCT,
+            carbon_offsets.offset.balanceNCT,
+            carbon_offsets.offset.balanceUBO,
+            carbon_offsets.offset.balanceNBO,
             carbon_offsets.transaction.id,
             carbon_offsets.transaction._select("from"),
         ]
