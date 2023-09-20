@@ -28,6 +28,10 @@ def fetch_eth_retired_offsets_v2_task():
     df = utils.date_manipulations(df, "retirement_date")
 
     df = utils.vintage_manipulations(df)
+
+    # Adding this field to be homogeneous with polygon bridged offsets
+    df["mco2_quantity"] = df["total_quantity"]
+    
     return utils.auto_rename_columns(df)
 
 
