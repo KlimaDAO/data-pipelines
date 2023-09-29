@@ -223,7 +223,6 @@ def task_with_backoff(func):
 
 # Data manipulation utils
 
-
 def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[]):
     """ Merges verra data with an existing dataframe
 

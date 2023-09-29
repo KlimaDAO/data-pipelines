@@ -1,10 +1,9 @@
 """ Raw Verra data flow """
-import utils
-from utils import run
+from utils import run, flow_with_result_storage
 import os
 
 
-@utils.flow_with_result_storage
+@flow_with_result_storage
 def build_all_flow(result_storage=None):
     """Run all the build flows"""
     # set up environement for subflows
