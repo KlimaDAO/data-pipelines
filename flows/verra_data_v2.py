@@ -60,6 +60,11 @@ def fetch_verra_data_v2_task():
         get_country(country) for country in df["Country"]
     ]
 
+    # Country info
+    df["Country code"] = [
+        get_country(country) for country in df["Country"]
+    ]
+
     # Other stuff
     df["Quantity"] = df["Quantity Issued"]
     df["Moss"] = df["Moss"].fillna(False)
