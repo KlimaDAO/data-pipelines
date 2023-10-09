@@ -12,8 +12,9 @@ def fetch_eth_retired_offsets_v2_task():
     df = utils.merge_verra_v2("raw_eth_retired_offsets")
     df_tx = utils.get_latest_dataframe("raw_eth_moss_retired_offsets")
     df_tx = utils.auto_rename_columns(df_tx)
+    df_tx = df_tx.drop_duplicates(subset=['tx_id'])[["tx_id", "retiree", "beneficiary"]]
     df = df.merge(
-        df_tx[["tx_id", "retiree", "beneficiary"]],
+        df_tx,
         how="left",
         left_on="tx_id",
         right_on="tx_id",
