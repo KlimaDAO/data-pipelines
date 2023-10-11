@@ -32,6 +32,7 @@ def fetch_eth_retired_offsets_v2_task():
 
     # Adding this field to be homogeneous with polygon bridged offsets
     df["mco2_quantity"] = df["total_quantity"]
+    df["total_quantity"] = df["quantity"]
 
     return utils.auto_rename_columns(df)
 

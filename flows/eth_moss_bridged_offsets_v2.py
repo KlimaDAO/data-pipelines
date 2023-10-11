@@ -46,8 +46,9 @@ def fetch_eth_moss_bridged_offsets_v2_task():
     df = utils.date_manipulations(df, "bridged_date")
 
     df["quantity"] = df["quantity"].astype(int)
-    # Adding this field to be homogeneous with polygon bridged offsets
+    # Adding these field to be homogeneous with polygon bridged offsets
     df["mco2_quantity"] = df["quantity"]
+    df["total_quantity"] = df["quantity"]
     return utils.auto_rename_columns(df)
 
 
