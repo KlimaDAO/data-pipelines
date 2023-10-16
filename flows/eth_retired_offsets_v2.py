@@ -1,12 +1,10 @@
 """ Ethereum retired offsets flow """
-from prefect import task
 import utils
 
 
 SLUG = "eth_retired_offsets_v2"
 
 
-@task()
 def fetch_eth_retired_offsets_v2_task():
     """Merge raw Ethereum retired offsets with verra data"""
     df = utils.merge_verra_v2("raw_eth_retired_offsets")
@@ -37,7 +35,6 @@ def fetch_eth_retired_offsets_v2_task():
     return utils.auto_rename_columns(df)
 
 
-@task()
 def validate_eth_retired_offsets_v2_task(df):
     """Validates Ethereum retired offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)

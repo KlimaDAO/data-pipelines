@@ -1,5 +1,4 @@
 """ Raw offsets holders data flow """
-from prefect import task
 from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
@@ -41,7 +40,6 @@ def fetch_raw_offsets_holders_data_task():
     ).rename(columns=RENAME_MAP)
 
 
-@task()
 def validate_raw_offsets_holders_data_task(df):
     """Validates offsets holders data"""
     utils.validate_against_latest_dataframe(SLUG, df)

@@ -1,5 +1,4 @@
 """ Raw Polygon daily Klima retirements flow """
-from prefect import task
 from subgrounds.subgrounds import Subgrounds
 from subgrounds.subgraph import SyntheticField
 import utils
@@ -39,7 +38,6 @@ def fetch_raw_polygon_klima_retirements_daily_task():
     )
 
 
-@task()
 def validate_raw_polygon_klima_retirements_daily_task(df):
     """Validates Polygon daily Klima retirements"""
     utils.validate_against_latest_dataframe(SLUG, df)

@@ -1,5 +1,4 @@
 """ Raw Ethereum retired offsets flow """
-from prefect import task
 from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
@@ -56,7 +55,6 @@ def fetch_raw_eth_retired_offsets_task():
     ).rename(columns=RENAME_MAP)
 
 
-@task()
 def validate_raw_eth_retired_offsets_task(df):
     """Validates Ethereum retired offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)

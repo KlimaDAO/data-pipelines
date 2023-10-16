@@ -4,18 +4,20 @@ import os
 import s3fs
 import base64
 import json
+import backoff
+import requests
 from datetime import datetime
 from prefect.context import FlowRunContext
 from prefect.logging import get_run_logger
-from prefect import task, flow
+from prefect import flow
 import pandas as pd
 import constants
 from web3 import Web3
 from prefect.results import PersistedResultBlob
 from prefect.serializers import Serializer
 from typing_extensions import Literal
-from prefect.tasks import exponential_backoff
 from dotenv import load_dotenv
+import gc
 load_dotenv()
 
 
@@ -154,13 +156,12 @@ def validate_against_latest_dataframe(slug, df):
     return latest_df
 
 
-@task(persist_result=True,
-      result_serializer=DfSerializer())
-def store_raw_data_task(df):
-    """Stores data wihout modifying its content"""
-    if not isinstance(df, pd.DataFrame):
-        raise Exception("Trying to store something that is not a dataframe")
-    return df
+def store_raw_data(slug, df):
+    serializer = DfSerializer()
+    data = serializer.dumps(df)
+    blob = PersistedResultBlob(serializer=serializer, data=data)
+    bytes = blob.to_bytes()
+    get_storage_block().write_path(slug, bytes)
 
 
 def flow_with_result_storage(func, **decorator_kwargs):
@@ -193,8 +194,8 @@ def raw_data_flow(slug, fetch_data_task, validate_data_task, historize=True):
     df = fetch_data_task()
     validate_data_task(df)
     if historize:
-        store_raw_data_task.with_options(result_storage_key=f"{slug}-{now()}")(df)
-    store_raw_data_task.with_options(result_storage_key=f"{slug}-latest")(df)
+        store_raw_data(f"{slug}-{now()}", df)
+    store_raw_data(f"{slug}-latest", df)
 
 
 def run(flow):
@@ -204,18 +205,20 @@ def run(flow):
     if isinstance(maybe_result, ValueError):
         logger = get_run_logger()
         logger.warn(f"flow {flow.__name__} failed")
+    gc.collect()
 
 
 def task_with_backoff(func):
     """ Decorates a task to add retries with exponential backoff"""
     if get_param("RETRIES") == "false":
-        return task(func)
+        return func
     else:
-        return task(
-            retries=3,
-            retry_delay_seconds=exponential_backoff(backoff_factor=10),
-            retry_jitter_factor=1,
-            )(func)
+        return backoff.on_exception(
+            backoff.expo,
+            (requests.exceptions.Timeout, requests.exceptions.ConnectionError),
+            max_time=60,
+            max_tries=3,
+            jitter=backoff.full_jitter)(func)
 
 
 # Data manipulation utils

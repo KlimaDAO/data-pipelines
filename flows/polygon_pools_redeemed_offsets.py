@@ -1,12 +1,10 @@
 """ Raw Polygon pools redeemed offsets flow """
-from prefect import task
 import utils
 
 
 SLUG = "polygon_pools_redeemed_offsets"
 
 
-@task()
 def fetch_polygon_pools_redeemed_offsets_task():
     """Fetches Polygon pools redeemed offsets"""
     df = utils.get_latest_dataframe("raw_polygon_pools_redeemed_offsets")
@@ -15,7 +13,6 @@ def fetch_polygon_pools_redeemed_offsets_task():
     return utils.auto_rename_columns(df)
 
 
-@task()
 def validate_polygon_pools_redeemed_offsets_task(df):
     """Validates Polygon pools redeemed offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)

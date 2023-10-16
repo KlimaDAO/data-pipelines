@@ -56,7 +56,6 @@ from tokens_data_v2 import tokens_data_v2_flow
 @flow_with_result_storage
 def build_all_flow(result_storage=None):
     """Run all the build flows"""
-    """
     run(raw_verra_data_flow)
     run(raw_polygon_retired_offsets_flow)
     run(raw_polygon_pools_retired_offsets_flow)
@@ -74,7 +73,7 @@ def build_all_flow(result_storage=None):
     run(raw_celo_carbon_metrics_flow)
     run(raw_polygon_carbon_metrics_flow)
     run(raw_assets_prices_flow)
-    """
+
     run(current_assets_prices_flow)
     run(assets_prices_flow)
 

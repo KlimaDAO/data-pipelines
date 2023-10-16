@@ -14,7 +14,6 @@ def get_country(country):
     return pycountry.countries.search_fuzzy(country)[0].alpha_3
 
 
-@task()
 def fetch_verra_data_v2_task():
     """Builds Verra data"""
     df = utils.get_latest_dataframe("raw_verra_data")

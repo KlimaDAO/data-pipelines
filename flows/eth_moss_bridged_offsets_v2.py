@@ -1,12 +1,10 @@
 """ Raw Ethereum Moss bridged offsets flow """
-from prefect import task
 import utils
 
 
 SLUG = "eth_moss_bridged_offsets_v2"
 
 
-@task()
 def fetch_eth_moss_bridged_offsets_v2_task():
     """Merge raw Ethereum Moss bridged offsets with verra data"""
     df_tx = utils.get_latest_dataframe("raw_eth_bridged_offsets_transactions")
@@ -52,7 +50,6 @@ def fetch_eth_moss_bridged_offsets_v2_task():
     return utils.auto_rename_columns(df)
 
 
-@task()
 def validate_eth_moss_bridged_offsets_v2_task(df):
     """Validates Ethereum Moss bridged offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)

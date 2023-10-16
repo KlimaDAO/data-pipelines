@@ -1,5 +1,4 @@
 """ Raw Verra data flow """
-from prefect import task
 import pandas as pd
 import utils
 
@@ -7,7 +6,6 @@ import utils
 SLUG = "all_retirements"
 
 
-@task()
 def fetch_all_retirements_task():
     """Builds Merged Retirements data"""
     verra_df = utils.get_latest_dataframe("verra_retirements")
@@ -48,7 +46,6 @@ def fetch_all_retirements_task():
     return utils.auto_rename_columns(df)
 
 
-@task()
 def validate_all_retirements_task(df):
     """Validates Verra data"""
     utils.validate_against_latest_dataframe(SLUG, df)

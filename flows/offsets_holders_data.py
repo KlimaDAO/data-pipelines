@@ -1,12 +1,10 @@
 """ Raw offsets holders data flow """
-from prefect import task
 import utils
 
 
 SLUG = "offsets_holders_data"
 
 
-@task()
 def fetch_offsets_holders_data_task():
     """Fetches offsets holders data"""
     df = utils.get_latest_dataframe("raw_offsets_holders_data")
@@ -31,7 +29,6 @@ def fetch_offsets_holders_data_task():
     return utils.auto_rename_columns(df)
 
 
-@task()
 def validate_offsets_holders_data_task(df):
     """Validates offsets holders data"""
     utils.validate_against_latest_dataframe(SLUG, df)

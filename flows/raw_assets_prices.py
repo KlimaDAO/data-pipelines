@@ -1,5 +1,4 @@
 """ Raw assets prices flow """
-from prefect import task
 from subgrounds.subgrounds import Subgrounds
 import utils
 
@@ -13,7 +12,6 @@ def fetch_raw_assets_prices_task():
     return utils.fetch_assets_prices(Subgrounds(), utils.get_max_records())
 
 
-@task()
 def validate_raw_assets_prices_task(df):
     """Validates assets prices"""
     utils.validate_against_latest_dataframe(SLUG, df)

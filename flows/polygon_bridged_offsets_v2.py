@@ -1,12 +1,10 @@
 """ Raw Polygon bridged offsets flow """
-from prefect import task
 import utils
 
 
 SLUG = "polygon_bridged_offsets_v2"
 
 
-@task()
 def fetch_polygon_bridged_offsets_v2_task():
     """Merge raw Polygon bridged offsets with verra data"""
 
@@ -19,7 +17,6 @@ def fetch_polygon_bridged_offsets_v2_task():
     return utils.auto_rename_columns(df)
 
 
-@task()
 def validate_polygon_bridged_offsets_v2_task(df):
     """Validates Polygon bridged offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)

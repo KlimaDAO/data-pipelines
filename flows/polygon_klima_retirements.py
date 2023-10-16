@@ -1,6 +1,5 @@
 """ Raw Polygon Klima retirements flow """
 import pandas as pd
-from prefect import task
 import utils
 
 
@@ -17,7 +16,6 @@ RENAME_MAP = {
 }
 
 
-@task()
 def fetch_polygon_klima_retirements_task():
     """Fetches Polygon Klima retirements"""
     df = utils.get_latest_dataframe("raw_polygon_klima_retirements")
@@ -27,7 +25,6 @@ def fetch_polygon_klima_retirements_task():
     return utils.auto_rename_columns(df)
 
 
-@task()
 def validate_polygon_klima_retirements_task(df):
     """Validates Polygon Klima retirements"""
     utils.validate_against_latest_dataframe(SLUG, df)

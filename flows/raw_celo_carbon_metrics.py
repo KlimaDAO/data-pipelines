@@ -1,5 +1,4 @@
 """ Raw Celo carbon metrics flow """
-from prefect import task
 from subgrounds.subgrounds import Subgrounds
 from subgrounds.subgraph import SyntheticField
 import utils
@@ -44,7 +43,6 @@ def fetch_raw_celo_carbon_metrics_task():
     )
 
 
-@task()
 def validate_raw_celo_carbon_metrics_task(df):
     """Validates Celo carbon metrics"""
     utils.validate_against_latest_dataframe(SLUG, df)

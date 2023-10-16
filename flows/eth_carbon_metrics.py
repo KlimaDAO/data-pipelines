@@ -1,6 +1,5 @@
 """ Raw Ethereum carbon metrics flow """
 import pandas as pd
-from prefect import task
 import utils
 
 
@@ -16,7 +15,6 @@ RENAME_MAP = {
 }
 
 
-@task()
 def fetch_eth_carbon_metrics_task():
     """Fetches Ethereum carbon metrics"""
     df = utils.get_latest_dataframe("raw_eth_carbon_metrics")
@@ -26,7 +24,6 @@ def fetch_eth_carbon_metrics_task():
     return utils.auto_rename_columns(df)
 
 
-@task()
 def validate_eth_carbon_metrics_task(df):
     """Validates Ethereum carbon metrics"""
     utils.validate_against_latest_dataframe(SLUG, df)

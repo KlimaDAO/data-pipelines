@@ -1,5 +1,4 @@
 """ Raw Polygon retired offsets flow """
-from prefect import task
 from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
@@ -73,7 +72,6 @@ def fetch_raw_polygon_retired_offsets_task():
     return df.reset_index(drop=True)
 
 
-@task()
 def validate_raw_polygon_retired_offsets_task(df):
     """Validates Polygon retired offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)

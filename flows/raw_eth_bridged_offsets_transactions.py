@@ -1,5 +1,4 @@
 """ Raw Ethereum Moss bridged offsets transactions flow """
-from prefect import task
 from subgrounds.subgrounds import Subgrounds
 import utils
 import constants
@@ -28,7 +27,6 @@ def fetch_raw_eth_bridged_offsets_transactions_task():
     ).rename(columns=RENAME_MAP)
 
 
-@task()
 def validate_raw_eth_bridged_offsets_transactions_task(df):
     """Validates Ethereum Moss bridged offsets transactions"""
     utils.validate_against_latest_dataframe(SLUG, df)

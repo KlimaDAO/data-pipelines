@@ -1,5 +1,4 @@
 """ Raw Polygon pools retired offsets flow """
-from prefect import task
 import utils
 import constants
 from pycoingecko import CoinGeckoAPI
@@ -28,7 +27,6 @@ def klima_usdc_price(web3):
     return uni_v2_pool_price(web3, constants.KLIMA_USDC_ADDRESS, constants.USDC_DECIMALS - constants.KLIMA_DECIMALS)
 
 
-@task()
 def fetch_current_assets_prices_task():
     """Fetches latest asset prices"""
     cg = CoinGeckoAPI()
@@ -76,7 +74,6 @@ def fetch_current_assets_prices_task():
     return utils.auto_rename_columns(df_prices)
 
 
-@task()
 def validate_current_assets_prices_task(df):
     """Validates latest asset prices"""
     utils.validate_against_latest_dataframe(SLUG, df)

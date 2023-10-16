@@ -1,6 +1,5 @@
 """ Raw Polygon carbon metrics flow """
 import pandas as pd
-from prefect import task
 import utils
 
 
@@ -35,7 +34,6 @@ RENAME_MAP = {
 }
 
 
-@task()
 def fetch_polygon_carbon_metrics_task():
     """Fetches Polygon carbon metrics"""
     df = utils.get_latest_dataframe("raw_polygon_carbon_metrics")
@@ -45,7 +43,6 @@ def fetch_polygon_carbon_metrics_task():
     return utils.auto_rename_columns(df)
 
 
-@task()
 def validate_polygon_carbon_metrics_task(df):
     """Validates Polygon carbon metrics"""
     utils.validate_against_latest_dataframe(SLUG, df)

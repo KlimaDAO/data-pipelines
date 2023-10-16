@@ -1,6 +1,5 @@
 """ Raw Celo carbon metrics flow """
 import pandas as pd
-from prefect import task
 import utils
 
 SLUG = "celo_carbon_metrics"
@@ -17,7 +16,6 @@ RENAME_MAP = {
 }
 
 
-@task()
 def fetch_celo_carbon_metrics_task():
     """Fetches Celo carbon metrics"""
     df = utils.get_latest_dataframe("raw_celo_carbon_metrics")
@@ -27,7 +25,6 @@ def fetch_celo_carbon_metrics_task():
     return utils.auto_rename_columns(df)
 
 
-@task()
 def validate_celo_carbon_metrics_task(df):
     """Validates Celo carbon metrics"""
     utils.validate_against_latest_dataframe(SLUG, df)

@@ -6,7 +6,6 @@ import utils
 SLUG = "verra_retirements"
 
 
-@task()
 def fetch_verra_retirements_task():
     """Builds Verra retirements data"""
     df = utils.get_latest_dataframe("verra_data_v2")

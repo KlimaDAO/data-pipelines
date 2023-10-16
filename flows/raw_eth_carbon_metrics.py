@@ -1,5 +1,4 @@
 """ Raw Ethereum carbon metrics flow """
-from prefect import task
 from subgrounds.subgrounds import Subgrounds
 from subgrounds.subgraph import SyntheticField
 import utils
@@ -46,7 +45,6 @@ def fetch_raw_eth_carbon_metrics_task():
     return df
 
 
-@task()
 def validate_raw_eth_carbon_metrics_task(df):
     """Validates Ethereum carbon metrics"""
     utils.validate_against_latest_dataframe(SLUG, df)

@@ -1,5 +1,4 @@
 """ Raw Polygon pools retired offsets flow """
-from prefect import task
 import utils
 import pandas as pd
 
@@ -7,7 +6,6 @@ import pandas as pd
 SLUG = "assets_prices"
 
 
-@task()
 def fetch_assets_prices_task():
     """Fetches asset prices"""
 
@@ -24,7 +22,6 @@ def fetch_assets_prices_task():
     return utils.auto_rename_columns(df)
 
 
-@task()
 def validate_assets_prices_task(df):
     """Validates Polygon pools retired offsets"""
     utils.validate_against_latest_dataframe(SLUG, df)
