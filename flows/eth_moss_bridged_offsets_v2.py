@@ -42,11 +42,13 @@ def fetch_eth_moss_bridged_offsets_v2_task():
         != "0x0000000000000000000000000000000000000000000000000000000000000000",
         "date_new",
     ]
-    df = df.drop(columns=["tx_address", "date_new"])
+    df.drop(columns=["tx_address", "date_new"], inplace=True)
     df = utils.date_manipulations(df, "bridged_date")
 
-    # Manipulate project ID
     df["quantity"] = df["quantity"].astype(int)
+    # Adding these field to be homogeneous with polygon bridged offsets
+    df["mco2_quantity"] = df["quantity"]
+    df["total_quantity"] = df["quantity"]
     return utils.auto_rename_columns(df)
 
 

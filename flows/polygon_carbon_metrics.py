@@ -27,7 +27,7 @@ RENAME_MAP = {
     "carbonMetrics_nctKlimaRetired": "NCT Klima retired",
     "carbonMetrics_mco2KlimaRetired": "MCO2 Klima retired",
     "carbonMetrics_uboKlimaRetired": "UBO Klima retired",
-    "carbonMetrics_nboKlimaRetired": "NCO Klima retired",
+    "carbonMetrics_nboKlimaRetired": "NBO Klima retired",
     "carbonMetrics_totalKlimaRetirements": "Total Klima retirements",
     "carbonMetrics_tco2KlimaRetired": "TCO2 Klima retired",
     "carbonMetrics_c3tKlimaRetired": "C3T Klima retired",

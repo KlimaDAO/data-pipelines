@@ -4,6 +4,7 @@ import os
 import s3fs
 import base64
 import json
+import subprocess
 from datetime import datetime
 from prefect.context import FlowRunContext
 from prefect.logging import get_run_logger
@@ -199,11 +200,13 @@ def raw_data_flow(slug, fetch_data_task, validate_data_task, historize=True):
 
 def run(flow):
     """Runs a flow and log errors"""
-    state = flow(return_state=True)
-    maybe_result = state.result(raise_on_failure=False)
-    if isinstance(maybe_result, ValueError):
+    cwd = os.path.dirname(os.path.abspath(__file__))
+    proc = subprocess.Popen(["python", f"{flow}.py"], shell=False, cwd=cwd)
+    proc.communicate()
+
+    if proc.returncode:
         logger = get_run_logger()
-        logger.warn(f"flow {flow.__name__} failed")
+        logger.warn(f"flow {flow} failed")
 
 
 def task_with_backoff(func):
@@ -219,7 +222,6 @@ def task_with_backoff(func):
 
 
 # Data manipulation utils
-
 
 def merge_verra(slug, additionnal_merge_columns=[], additionnal_drop_columns=[]):
     """ Merges verra data with an existing dataframe

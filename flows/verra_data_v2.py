@@ -19,7 +19,6 @@ def fetch_verra_data_v2_task():
     """Builds Verra data"""
     df = utils.get_latest_dataframe("raw_verra_data")
     df_bridged_mco2 = utils.get_latest_dataframe("raw_eth_moss_bridged_offsets")
-
     # Dates
     df["Vintage"] = (
         pd.to_datetime(df["Vintage Start"]).dt.tz_localize(None).dt.year.astype(int)
@@ -37,19 +36,29 @@ def fetch_verra_data_v2_task():
     df.loc[df["Days to Retirement"] > 0, "Status"] = "Retired"
     df["Status"] = df["Status"].fillna("Available")
 
-    # Offset type
-    df.loc[
-        df["Retirement Details"].str.contains("TOUCAN").fillna(False), "Toucan"
-    ] = True
-    df["Toucan"] = df["Toucan"].fillna(False)
-    df.loc[
-        df["Retirement Details"].str.contains("C3T").fillna(False), "C3"
-    ] = True
-    df["C3"] = df["C3"].fillna(False)
-
-    # Serial Number
+    # Credit type
     lst_sn = list(df_bridged_mco2["Serial Number"])
-    df.loc[df["Serial Number"].isin(lst_sn), "Moss"] = True
+    ToucanRows = df["Retirement Details"].str.contains("TOUCAN").fillna(False)
+    C3Rows = df["Retirement Details"].str.contains("C3T").fillna(False)
+    MossRows = df["Serial Number"].isin(lst_sn)
+    df.loc[ToucanRows, "Toucan"] = True
+    df.loc[ToucanRows, "Bridge"] = "Toucan"
+
+    df.loc[C3Rows, "C3"] = True
+    df.loc[C3Rows, "Bridge"] = "C3"
+
+    df.loc[MossRows, "Moss"] = True
+    df.loc[MossRows, "Bridge"] = "Moss"
+
+    df["Toucan"] = df["Toucan"].fillna(False)
+    df["C3"] = df["C3"].fillna(False)
+    df["Moss"] = df["Moss"].fillna(False)
+    df["Bridge"] = df["Bridge"].fillna(pd.NA)
+
+    # Country info
+    df["Country code"] = [
+        get_country(country) for country in df["Country"]
+    ]
 
     # Country info
     df["Country code"] = [
@@ -59,6 +68,8 @@ def fetch_verra_data_v2_task():
     # Other stuff
     df["Quantity"] = df["Quantity Issued"]
     df["Moss"] = df["Moss"].fillna(False)
+
+    df["Project Id"] = "VCS-" + df["ID"]
 
     return utils.auto_rename_columns(df)
 

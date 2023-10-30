@@ -10,7 +10,21 @@ SLUG = "tokens_data_v2"
 def fetch_tokens_data_v2():
     """Builds Tokens data"""
     df = utils.get_latest_dataframe("tokens_data")
+    prices = utils.get_latest_dataframe("current_assets_prices").iloc[0]
+    prices_column = []
+    selective_cost_values_column = []
+    for _, row in df.iterrows():
+        price_column = f'{row["Name"].lower()}_price'
+        price = prices[price_column]
+        prices_column.append(price)
+        selective_cost_values_column.append(price * (1 + row["Fee Redeem Factor"]))
 
+    df["price"] = prices_column
+    df["selective_cost_value"] = selective_cost_values_column
+    df = df.drop(columns=["address"])
+    df = df.rename(columns={
+        "id": "chain"
+    })
     return utils.auto_rename_columns(df)
 
 
