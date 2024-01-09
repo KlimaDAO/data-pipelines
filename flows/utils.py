@@ -149,7 +149,7 @@ def validate_against_latest_dataframe(slug, df):
 
     if latest_df is not None:
         assert df.shape[0] >= latest_df.shape[0] * 0.99, "New dataframe has a low number of rows"
-        assert df.shape[1] == latest_df.shape[1], "New dataframe does not have the same number of colums"
+        assert df.shape[1] == latest_df.shape[1], "New dataframe does not have the same number of columns"
     else:
         logger.info("Latest dataframe cannot be read. Skipping validation")
     return latest_df
@@ -413,6 +413,7 @@ def flatten_pool_balances(df):
     # Convert quantities to tonnes
     convert_tons(df, [
                         "Total Quantity",
+                        "Quantity",
                         "pool_balance",
                         "pool_cross_chain_supply",
                         "pool_deposited",

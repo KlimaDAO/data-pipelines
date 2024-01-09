@@ -7,7 +7,7 @@ import constants
 
 
 RENAME_MAP = {
-    "klimaRetires_retire_hesh": "Transaction ID",
+    "klimaRetires_retire_hash": "Transaction ID",
     "klimaRetires_retire_beneficiaryAddress_id": "Beneficiary",
     "klimaRetires_retire_credit_project_projectID": "Project ID",
     "klimaRetires_retire_credit_bridgeProtocol": "Bridge",
