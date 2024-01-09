@@ -17,7 +17,6 @@ def build_all_flow(result_storage=None):
     run("raw_polygon_pools_redeemed_offsets")
     run("raw_polygon_pools_deposited_offsets")
     run("raw_polygon_klima_retirements")
-    run("raw_polygon_klima_retirements_daily")
     run("raw_polygon_bridged_offsets")
     run("raw_offsets_holders_data")
     run("raw_eth_retired_offsets")
@@ -52,7 +51,6 @@ def build_all_flow(result_storage=None):
     run("offsets_holders_data")
 
     run("polygon_klima_retirements")
-    run("polygon_klima_retirements_daily")
     run("all_retirements")
 
     run("eth_carbon_metrics")

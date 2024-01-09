@@ -9,15 +9,18 @@ SLUG = "raw_polygon_pools_retired_offsets"
 
 
 RENAME_MAP = {
-    "klimaRetires_amount": "Quantity",
-    "klimaRetires_timestamp": "Date",
-    "klimaRetires_pool": "Pool",
-    "klimaRetires_retiringAddress": "Retiring Address",
-    "klimaRetires_beneficiary": "Beneficiary",
-    "klimaRetires_beneficiaryAddress": "Beneficiary Address",
-    "klimaRetires_retirementMessage": "Retirement Message",
-    "klimaRetires_transaction_id": "Tx ID",
+    "klimaRetires_retire_amount": "Quantity",
+    "klimaRetires_retire_timestamp": "Date",
+    "klimaRetires_retire_pool_id": "Pool",
+    "klimaRetires_retire_retiringAddress": "Retiring Address",
+    "klimaRetires_retire_beneficiaryName": "Beneficiary",
+    "klimaRetires_retire_beneficiaryAddress": "Beneficiary Address",
+    "klimaRetires_retire_retirementMessage": "Retirement Message",
+    "klimaRetires_retire_hash": "Tx ID",
 }
+
+# TODO: This fetches almost the same data as the raw_polygon_klima_retirements task
+# We should merge those scripts
 
 
 @utils.task_with_backoff
@@ -27,18 +30,20 @@ def fetch_raw_polygon_pools_retired_offsets_task():
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
     klimaretires = carbon_data.Query.klimaRetires(first=utils.get_max_records())
 
-    return sg.query_df(
+    df = sg.query_df(
         [
-            klimaretires.timestamp,
-            klimaretires.pool,
-            klimaretires.amount,
-            klimaretires.retiringAddress,
-            klimaretires.beneficiary,
-            klimaretires.beneficiaryAddress,
-            klimaretires.retirementMessage,
-            klimaretires.transaction.id,
+            klimaretires.retire.timestamp,
+            klimaretires.retire.pool.id,
+            klimaretires.retire.hash,
+            klimaretires.retire.amount,
+            klimaretires.retire.retiringAddress,
+            klimaretires.retire.beneficiaryName,
+            klimaretires.retire.beneficiaryAddress,
+            klimaretires.retire.retirementMessage,
         ]
     ).rename(columns=RENAME_MAP)
+    utils.convert_tons(df, ["Quantity"])
+    return df
 
 
 @task()

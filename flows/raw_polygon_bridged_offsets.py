@@ -9,23 +9,24 @@ DEPENDENCIES = []
 SLUG = "raw_polygon_bridged_offsets"
 
 RENAME_MAP = {
-    "carbonOffsets_bridges_value": "Quantity",
-    "carbonOffsets_bridges_timestamp": "Date",
-    "carbonOffsets_bridge": "Bridge",
-    "carbonOffsets_region": "Region",
-    "carbonOffsets_vintage": "Vintage",
-    "carbonOffsets_projectID": "Project ID",
-    "carbonOffsets_standard": "Standard",
-    "carbonOffsets_methodology": "Methodology",
-    "carbonOffsets_country": "Country",
-    "carbonOffsets_category": "Project Type",
-    "carbonOffsets_name": "Name",
-    "carbonOffsets_tokenAddress": "Token Address",
-    "carbonOffsets_balanceBCT": "BCT Quantity",
-    "carbonOffsets_balanceNCT": "NCT Quantity",
-    "carbonOffsets_balanceUBO": "UBO Quantity",
-    "carbonOffsets_balanceNBO": "NBO Quantity",
-    "carbonOffsets_totalBridged": "Total Quantity",
+    "carbonCredits_bridged": "Total Quantity",
+    "carbonCredits_bridgeProtocol": "Bridge",
+    "carbonCredits_project_region": "Region",
+    "carbonCredits_vintage": "Vintage",
+    "carbonCredits_project_projectID": "Project ID",
+    "carbonCredits_project_methodology": "Methodology",
+    "carbonCredits_project_country": "Country",
+    "carbonCredits_project_category": "Project Type",
+    "carbonCredits_project_name": "Name",
+    "carbonCredits_id": "Token Address",
+    "carbonCredits_poolBalances_id": "pool_id",
+    "carbonCredits_poolBalances_balance": "pool_balance",
+    "carbonCredits_poolBalances_crossChainSupply": "pool_cross_chain_supply",
+    "carbonCredits_poolBalances_deposited": "pool_deposited",
+    "carbonCredits_poolBalances_redeemed": "pool_redeemed",
+    "carbonCredits_poolBalances_lastSnapshotDayID": "pool_last_snapshot_day",
+    "carbonCredits_poolBalances_nextSnapshotDayID": "pool_next_snapshot_day",
+    "carbonCredits_bridges_timestamp": "Date",
 }
 
 
@@ -34,33 +35,45 @@ def fetch_raw_polygon_bridged_offsets_task():
     """Fetches Polygon bridged offsets"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
-    carbon_offsets = carbon_data.Query.carbonOffsets(
-        orderBy=carbon_data.CarbonOffset.lastUpdate,
+    credits = carbon_data.Query.carbonCredits(
+        orderBy=carbon_data.CarbonCredit.lastBatchId,
         orderDirection="desc",
         first=utils.get_max_records(),
     )
 
-    return sg.query_df(
+    df = sg.query_df(
         [
-            carbon_offsets.tokenAddress,
-            carbon_offsets.bridge,
-            carbon_offsets.region,
-            carbon_offsets.vintage,
-            carbon_offsets.projectID,
-            carbon_offsets.standard,
-            carbon_offsets.methodology,
-            carbon_offsets.country,
-            carbon_offsets.category,
-            carbon_offsets.name,
-            carbon_offsets.balanceBCT,
-            carbon_offsets.balanceNCT,
-            carbon_offsets.balanceUBO,
-            carbon_offsets.balanceNBO,
-            carbon_offsets.totalBridged,
-            carbon_offsets.bridges.value,
-            carbon_offsets.bridges.timestamp,
+            credits.id,
+            credits.bridged,
+            credits.bridgeProtocol,
+            credits.project.region,
+            credits.vintage,
+            credits.project.projectID,
+            credits.project.methodologies,
+            credits.project.country,
+            credits.project.category,
+            credits.project.name,
+            credits.poolBalances,
+            credits.bridges(
+                first=1,
+                orderBy=carbon_data.Bridge.timestamp,
+                orderDirection="asc",
+            ),
         ]
-    ).rename(columns=RENAME_MAP)
+    )
+    credits_df = df[0].rename(columns=RENAME_MAP)
+    bridges_df = df[1].rename(columns=RENAME_MAP)
+
+    credits_df = utils.flatten_pool_balances(credits_df)
+
+    # Adds timestamp of the first bridging event
+    def get_timestamp(token_address):
+        row = bridges_df.loc[bridges_df['Token Address'] == token_address]
+        return row["Date"].iloc[0] if not row.empty else 0
+
+    credits_df["Timestamp"] = credits_df["Token Address"].apply(get_timestamp)
+
+    return credits_df.reset_index()
 
 
 @task()

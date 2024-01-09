@@ -1,4 +1,7 @@
 CARBON_SUBGRAPH_URL = (
+    "https://api.thegraph.com/subgraphs/name/klimadao/staging-polygon-digital-carbon"
+)
+CARBON_LEGACY_SUBGRAPH_URL = (
     "https://api.thegraph.com/subgraphs/name/klimadao/polygon-bridged-carbon"
 )
 CARBON_ETH_SUBGRAPH_URL = (

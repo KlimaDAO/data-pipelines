@@ -407,6 +407,41 @@ def fetch_assets_prices(sg, first):
     return df_prices
 
 
+def flatten_pool_balances(df):
+    df.drop(columns=["pool_last_snapshot_day", "pool_last_snapshot_day"], inplace=True)
+
+    # Convert quantities to tonnes
+    convert_tons(df, [
+                        "Total Quantity",
+                        "pool_balance",
+                        "pool_cross_chain_supply",
+                        "pool_deposited",
+                        "pool_redeemed",
+    ])
+
+    # TODO: flatten pool balances
+    def summary(df):
+        res_df = pd.DataFrame()
+        # keep all non pool columns
+        for column in df.columns:
+            if not column.startswith("pool"):
+                res_df[column] = [df[column].iloc[0]]
+        # compute pool balances columns
+        for token in constants.TOKENS:
+            row = df.loc[df['pool_id'].str[:42] == constants.TOKENS[token]["Token Address"]]
+            res_df[f"Offset {token} Quantity"] = [row["pool_balance"].iloc[0] if not row.empty else 0]
+        return res_df
+
+    df = df.groupby("Token Address", group_keys=False)
+    return df.apply(summary)
+
+
+def convert_tons(df, columns):
+    for column in columns:
+        df[column] = df[column] / pow(10, 18)
+    return df
+
+
 # Web3 utils
 
 

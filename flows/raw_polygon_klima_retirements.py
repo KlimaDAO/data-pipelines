@@ -6,6 +6,17 @@ import utils
 import constants
 
 
+RENAME_MAP = {
+    "klimaRetires_retire_hesh": "Transaction ID",
+    "klimaRetires_retire_beneficiaryAddress_id": "Beneficiary",
+    "klimaRetires_retire_credit_project_projectID": "Project ID",
+    "klimaRetires_retire_credit_bridgeProtocol": "Bridge",
+    "klimaRetires_retire_credit_tokenAddress": "Token",
+    "klimaRetires_retire_amount": "Quantity",
+    "klimaRetires_datetime": "Retirement Date",
+    "klimaRetires_proof": "Proof"
+}
+
 SLUG = "raw_polygon_klima_retirements"
 
 
@@ -19,33 +30,38 @@ def fetch_raw_polygon_klima_retirements_task():
     carbon_data.KlimaRetire.datetime = SyntheticField(
         utils.format_timestamp,
         SyntheticField.STRING,
-        carbon_data.KlimaRetire.timestamp,
+        carbon_data.KlimaRetire.retire.timestamp,
     )
-
     carbon_data.KlimaRetire.proof = SyntheticField(
         lambda tx_id: f'https://polygonscan.com/tx/{tx_id}',
         SyntheticField.STRING,
-        carbon_data.KlimaRetire.transaction.id,
+        carbon_data.KlimaRetire.retire.hash,
     )
 
-    klima_retirees = carbon_data.Query.klimaRetires(
-        orderBy=carbon_data.KlimaRetire.timestamp,
+    klima_retires = carbon_data.Query.klimaRetires(
+        orderBy=carbon_data.KlimaRetire.retire.timestamp,
         orderDirection="desc",
         first=utils.get_max_records()
     )
 
-    return sg.query_df(
+    df = sg.query_df(
         [
-            klima_retirees.transaction.id,
-            klima_retirees.beneficiaryAddress,
-            klima_retirees.offset.projectID,
-            klima_retirees.offset.bridge,
-            klima_retirees.token,
-            klima_retirees.datetime,
-            klima_retirees.amount,
-            klima_retirees.proof
+            klima_retires.retire.hash,
+            klima_retires.retire.beneficiaryAddress.id,
+            klima_retires.retire.credit.project.projectID,
+            klima_retires.retire.credit.bridgeProtocol,
+            klima_retires.retire.credit.tokenAddress,
+            klima_retires.datetime,
+            klima_retires.retire.amount,
+            klima_retires.proof
         ]
-    )
+    ).rename(columns=RENAME_MAP)
+
+    df = utils.convert_tons(df, [
+                    "Quantity",
+        ])
+
+    return df
 
 
 @task()

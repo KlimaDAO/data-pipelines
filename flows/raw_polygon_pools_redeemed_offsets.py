@@ -8,10 +8,10 @@ import constants
 SLUG = "raw_polygon_pools_redeemed_offsets"
 
 RENAME_MAP = {
-    "redeems_value": "Quantity",
-    "redeems_timestamp": "Date",
-    "redeems_pool": "Pool",
-    "redeems_offset_region": "Region",
+    "poolRedeems_amount": "Quantity",
+    "poolRedeems_timestamp": "Date",
+    "poolRedeems_pool_id": "Pool",
+    "poolRedeems_offset_region": "Region",
 }
 
 
@@ -20,15 +20,19 @@ def fetch_raw_polygon_pools_redeemed_offsets_task():
     """Fetches Polygon pools redeemed offsets"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
-    carbon_offsets = carbon_data.Query.redeems(first=utils.get_max_records())
+    redeems = carbon_data.Query.poolRedeems(first=utils.get_max_records())
 
-    return sg.query_df(
+    df = sg.query_df(
         [
-            carbon_offsets.value,
-            carbon_offsets.timestamp,
-            carbon_offsets.pool,
+            redeems.amount,
+            redeems.timestamp,
+            redeems.pool.id,
         ]
     ).rename(columns=RENAME_MAP)
+
+    utils.convert_tons(df, ["Quantity"])
+
+    return df
 
 
 @task()
