@@ -439,7 +439,8 @@ def flatten_pool_balances(df):
 
 def convert_tons(df, columns):
     for column in columns:
-        df[column] = df[column] / pow(10, 18)
+        if column in df:
+            df[column] = df[column] / pow(10, 18)
     return df
 
 
