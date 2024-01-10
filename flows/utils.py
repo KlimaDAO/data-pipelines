@@ -377,7 +377,7 @@ def flatten_pool_balances(df):
         # compute pool balances columns
         for token in constants.TOKENS:
             row = df.loc[df['pool_id'].str[:42] == constants.TOKENS[token]["Token Address"]]
-            res_df[f"Offset {token} Quantity"] = [row["pool_balance"].iloc[0] if not row.empty else 0]
+            res_df[f"Credit {token} Quantity"] = [row["pool_balance"].iloc[0] if not row.empty else 0]
         return res_df
 
     df = df.groupby("Token Address", group_keys=False)
@@ -389,7 +389,7 @@ def flatten_pool_balances(df):
 def pool_quantities_manipulations(df):
     for token in ["BCT", "NCT", "NBO", "UBO"]:
         colname = f"{token.lower()}_quantity"
-        offset_colname = f"offset_{token.lower()}_quantity"
+        offset_colname = f"credit_{token.lower()}_quantity"
         df[colname] = 0
         df.loc[df[offset_colname] != 0, colname] = df.quantity
 
