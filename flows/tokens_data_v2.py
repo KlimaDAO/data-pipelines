@@ -107,6 +107,7 @@ def tokens_data_v2_flow(result_storage=None):
         slug=SLUG,
         fetch_data_task=fetch_tokens_data_v2,
         validate_data_task=validate_tokens_data_v2,
+        historize=False
     )
 
 
