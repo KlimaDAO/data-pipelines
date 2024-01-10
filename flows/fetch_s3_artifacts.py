@@ -12,7 +12,7 @@ def fetch_s3_artifact(path):
     if not utils.get_param("DRY_RUN"):
         with s3.open(path, 'rb') as f:
             df = utils.read_df_from_bytes(f.read())
-            utils.store_raw_data_task.with_options(result_storage_key=filename)(df)
+            utils.store_raw_data(filename, df)
 
 
 @utils.flow_with_result_storage

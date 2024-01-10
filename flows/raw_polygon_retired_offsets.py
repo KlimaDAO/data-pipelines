@@ -1,6 +1,7 @@
 """ Raw Polygon retired offsets flow """
 from prefect import task
 from subgrounds.subgrounds import Subgrounds
+from subgrounds.pagination import ShallowStrategy
 import utils
 import constants
 
@@ -8,27 +9,30 @@ import constants
 SLUG = "raw_polygon_retired_offsets"
 
 
-RENMAE_MAP = {
-    "retires_value": "Quantity",
+RENAME_MAP = {
+    "retires_id": "ID",
+    "retires_amount": "Quantity",
     "retires_timestamp": "Date",
-    "retires_retiree": "Retiree",
-    "retires_offset_bridge": "Bridge",
-    "retires_offset_region": "Region",
-    "retires_offset_vintage": "Vintage",
-    "retires_offset_projectID": "Project ID",
-    "retires_offset_standard": "Standard",
-    "retires_offset_methodology": "Methodology",
-    "retires_offset_country": "Country",
-    "retires_offset_category": "Project Type",
-    "retires_offset_name": "Name",
-    "retires_offset_tokenAddress": "Token Address",
-    "retires_offset_totalRetired": "Total Quantity",
-    "retires_transaction_id": "Tx ID",
-    "retires_transaction_from": "Tx From Address",
-    "retires_offset_balanceBCT": "Offset BCT Quantity",
-    "retires_offset_balanceNCT": "Offset NCT Quantity",
-    "retires_offset_balanceUBO": "Offset UBO Quantity",
-    "retires_offset_balanceNBO": "Offset NBO Quantity",
+    "retires_retiringAddress_id": "Retiree",
+    "retires_credit_bridgeProtocol": "Bridge",
+    "retires_credit_project_region": "Region",
+    "retires_credit_vintage": "Vintage",
+    "retires_credit_project_id": "Project ID",
+    "retires_credit_project_methodologies": "Methodology",
+    "retires_credit_project_country": "Country",
+    "retires_credit_project_category": "Project Type",
+    "retires_credit_project_name": "Name",
+    "retires_credit_id": "Token Address",
+    "retires_credit_retired": "Total Quantity",
+    "retires_hash": "Tx ID",
+    "retires_credit_poolBalances_pool_id": "pool_id",
+    "retires_credit_poolBalances_credit_id": "credit_id",
+    "retires_credit_poolBalances_balance": "pool_balance",
+    "retires_credit_poolBalances_crossChainSupply": "pool_cross_chain_supply",
+    "retires_credit_poolBalances_deposited": "pool_deposited",
+    "retires_credit_poolBalances_redeemed": "pool_redeemed",
+    "retires_credit_poolBalances_lastSnapshotDayID": "pool_last_snapshot_day",
+    "retires_credit_poolBalances_nextSnapshotDayID": "pool_next_snapshot_day",
 }
 
 
@@ -37,37 +41,33 @@ def fetch_raw_polygon_retired_offsets_task():
     """Fetches Polygon retired offsets"""
     sg = Subgrounds()
     carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
-    carbon_offsets = carbon_data.Query.retires(first=utils.get_max_records())
+    retires = carbon_data.Query.retires(first=utils.get_max_records())
 
     df = sg.query_df(
         [
-            carbon_offsets.value,
-            carbon_offsets.timestamp,
-            carbon_offsets.retiree,
-            carbon_offsets.offset.tokenAddress,
-            carbon_offsets.offset.bridge,
-            carbon_offsets.offset.region,
-            carbon_offsets.offset.vintage,
-            carbon_offsets.offset.projectID,
-            carbon_offsets.offset.standard,
-            carbon_offsets.offset.methodology,
-            carbon_offsets.offset.standard,
-            carbon_offsets.offset.country,
-            carbon_offsets.offset.category,
-            carbon_offsets.offset.name,
-            carbon_offsets.offset.totalRetired,
-            carbon_offsets.offset.balanceBCT,
-            carbon_offsets.offset.balanceNCT,
-            carbon_offsets.offset.balanceUBO,
-            carbon_offsets.offset.balanceNBO,
-            carbon_offsets.transaction.id,
-            carbon_offsets.transaction._select("from"),
-        ]
-    ).rename(columns=RENMAE_MAP)
+            retires.id,
+            retires.amount,
+            retires.timestamp,
+            retires.retiringAddress.id,
+            retires.credit.id,
+            retires.credit.bridgeProtocol,
+            retires.credit.project.region,
+            retires.credit.vintage,
+            retires.credit.project.id,
+            retires.credit.project.methodologies,
+            retires.credit.project.country,
+            retires.credit.project.category,
+            retires.credit.project.name,
+            retires.credit.retired,
+            retires.credit.poolBalances,
+            retires.hash,
+        ], pagination_strategy=ShallowStrategy
+    ).rename(columns=RENAME_MAP)
 
-    # Remove DAO MultiSig Address
+    df = utils.flatten_pool_balances(df)
+
     df = df[
-        df["Tx From Address"] != "0x693ad12dba5f6e07de86faa21098b691f60a1bea"
+        df["Retiree"] != "0x693ad12dba5f6e07de86faa21098b691f60a1bea"
     ]
 
     return df.reset_index(drop=True)

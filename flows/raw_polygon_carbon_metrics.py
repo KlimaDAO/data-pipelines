@@ -14,7 +14,7 @@ def fetch_raw_polygon_carbon_metrics_task():
     """Fetches Polygon carbon metrics"""
 
     sg = Subgrounds()
-    carbon_data = sg.load_subgraph(constants.CARBON_SUBGRAPH_URL)
+    carbon_data = sg.load_subgraph(constants.CARBON_LEGACY_SUBGRAPH_URL)
 
     carbon_data.CarbonMetric.datetime = SyntheticField(
         utils.format_timestamp,

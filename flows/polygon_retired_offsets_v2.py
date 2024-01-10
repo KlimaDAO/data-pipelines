@@ -12,16 +12,8 @@ def fetch_polygon_retired_offsets_v2_task():
 
     df = utils.merge_verra_v2("raw_polygon_retired_offsets")
     df = utils.region_manipulations(df)
-    df = utils.vintage_manipulations(df)
     df = utils.date_manipulations(df, "retirement_date")
-
-    for token in ["BCT", "NCT", "NBO", "UBO"]:
-        colname = f"{token.lower()}_quantity"
-        offset_colname = f"offset_{token.lower()}_quantity"
-        df[colname] = 0
-        df.loc[df[offset_colname] != 0, colname] = df.quantity
-
-        df = df.drop(columns=[offset_colname])
+    df = utils.pool_quantities_manipulations(df)
 
     return utils.auto_rename_columns(df)
 
