@@ -4,6 +4,7 @@ import utils
 import constants
 from pycoingecko import CoinGeckoAPI
 import pandas as pd
+import time
 
 
 SLUG = "current_assets_prices"
@@ -34,9 +35,11 @@ def fetch_current_assets_prices_task():
     cg = CoinGeckoAPI()
     tokens_dict = constants.TOKENS
     current_price_only_token_list = ["UBO", "NBO"]
-    df_prices = pd.DataFrame()
+    df = pd.DataFrame()
     web3 = utils.get_polygon_web3()
-    prices = {}
+    prices = {
+        "Date": time.time()
+    }
     for i in tokens_dict.keys():
         if i not in current_price_only_token_list:
             data = cg.get_price(ids=tokens_dict[i]["cg_id"],
@@ -64,8 +67,14 @@ def fetch_current_assets_prices_task():
 
         prices[f"{i}_Price"] = price
 
-    df_prices = pd.DataFrame(prices, index=[0])
-    return utils.auto_rename_columns(df_prices)
+    df = pd.DataFrame(prices, index=[0])
+    df["Date"] = (
+        pd.to_datetime(df["Date"], unit="s")
+        .dt.tz_localize("UTC")
+        .dt.floor("D")
+        .dt.date
+    )
+    return utils.auto_rename_columns(df)
 
 
 @task()
