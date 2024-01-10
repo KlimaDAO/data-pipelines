@@ -9,8 +9,8 @@ SLUG = "tokens_data_v2"
 
 def filter_df_by_pool(df, pool_address):
     """Filter a dataframe on a pool address"""
-    df["Pool"] = df["Pool"].str.lower()
-    df = df[(df["Pool"] == pool_address)].reset_index()
+    df["pool"] = df["pool"].str.lower()
+    df = df[(df["pool"] == pool_address)].reset_index()
     return df
 
 
@@ -26,10 +26,10 @@ def filter_carbon_pool(pool_address, *dfs):
 @task()
 def fetch_tokens_data_v2():
     """Builds Tokens data"""
-    df_deposited = utils.get_latest_dataframe("raw_polygon_pools_deposited_offsets")
-    df_redeemed = utils.get_latest_dataframe("raw_polygon_pools_redeemed_offsets")
-    df_bridged_mco2 = utils.get_latest_dataframe("eth_moss_bridged_offsets")
-    df_retired_mco2 = utils.get_latest_dataframe("eth_retired_offsets")
+    df_deposited = utils.get_latest_dataframe("polygon_pools_deposited_offsets")
+    df_redeemed = utils.get_latest_dataframe("polygon_pools_redeemed_offsets")
+    df_bridged_mco2 = utils.get_latest_dataframe("eth_moss_bridged_offsets_v2")
+    df_retired_mco2 = utils.get_latest_dataframe("eth_retired_offsets_v2")
     prices = utils.get_latest_dataframe("current_assets_prices").iloc[0]
 
     tokens = constants.TOKENS.copy()
@@ -43,12 +43,12 @@ def fetch_tokens_data_v2():
                 token["address"], df_deposited, df_redeemed
             )
             token["Current Supply"] = (
-                deposited["Quantity"].sum() - redeemed["Quantity"].sum()
+                deposited["quantity"].sum() - redeemed["quantity"].sum()
             )
 
         elif key == "MCO2":
             token["Current Supply"] = (
-                df_bridged_mco2["Quantity"].sum() - df_retired_mco2["Quantity"].sum()
+                df_bridged_mco2["quantity"].sum() - df_retired_mco2["quantity"].sum()
             )
 
         # Compute Fee redeem_factors
