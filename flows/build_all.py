@@ -30,15 +30,9 @@ def build_all_flow(result_storage=None):
 
     run("current_assets_prices")
     run("assets_prices")
-    run("verra_data")
-    run("polygon_retired_offsets")
-    run("polygon_bridged_offsets")
     run("polygon_pools_retired_offsets")
     run("polygon_pools_redeemed_offsets")
     run("polygon_pools_deposited_offsets")
-
-    run("eth_moss_bridged_offsets")
-    run("eth_retired_offsets")
 
     run("verra_data_v2")
     run("verra_retirements")
@@ -47,7 +41,6 @@ def build_all_flow(result_storage=None):
     run("eth_moss_bridged_offsets_v2")
     run("eth_retired_offsets_v2")
 
-    run("tokens_data")
     run("offsets_holders_data")
 
     run("polygon_klima_retirements")
