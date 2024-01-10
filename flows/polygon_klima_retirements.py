@@ -2,6 +2,7 @@
 import pandas as pd
 from prefect import task
 import utils
+import constants
 
 
 SLUG = "polygon_klima_retirements"
@@ -13,6 +14,15 @@ def fetch_polygon_klima_retirements_task():
     df = utils.get_latest_dataframe("raw_polygon_klima_retirements")
     df["Retirement Date"] = pd.to_datetime(df["Retirement Date"], format="%Y-%m-%d %H:%M:%S")
     df["Origin"] = "Klima"
+
+    # Convert token addresses to names
+    def token_address_to_name(token_address):
+        for token in constants.TOKENS:
+            if constants.TOKENS[token]["Token Address"] == token_address:
+                return token
+
+    df["Token"] = df["Token"].apply(token_address_to_name)
+
     return utils.auto_rename_columns(df)
 
 

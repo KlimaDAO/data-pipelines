@@ -11,7 +11,7 @@ RENAME_MAP = {
     "klimaRetires_retire_beneficiaryAddress_id": "Beneficiary",
     "klimaRetires_retire_credit_project_projectID": "Project ID",
     "klimaRetires_retire_credit_bridgeProtocol": "Bridge",
-    "klimaRetires_retire_credit_tokenAddress": "Token",
+    "klimaRetires_retire_pool_id": "Token",
     "klimaRetires_retire_amount": "Quantity",
     "klimaRetires_datetime": "Retirement Date",
     "klimaRetires_proof": "Proof"
@@ -50,7 +50,7 @@ def fetch_raw_polygon_klima_retirements_task():
             klima_retires.retire.beneficiaryAddress.id,
             klima_retires.retire.credit.project.projectID,
             klima_retires.retire.credit.bridgeProtocol,
-            klima_retires.retire.credit.tokenAddress,
+            klima_retires.retire.pool.id,
             klima_retires.datetime,
             klima_retires.retire.amount,
             klima_retires.proof

@@ -354,6 +354,56 @@ def region_manipulations(df):
     return df
 
 
+def flatten_pool_balances(df):
+    df.drop(columns=["pool_last_snapshot_day", "pool_last_snapshot_day"], inplace=True)
+
+    # Convert quantities to tonnes
+    convert_tons(df, [
+                        "Total Quantity",
+                        "Quantity",
+                        "pool_balance",
+                        "pool_cross_chain_supply",
+                        "pool_deposited",
+                        "pool_redeemed",
+    ])
+
+    # TODO: flatten pool balances
+    def summary(df):
+        res_df = pd.DataFrame()
+        # keep all non pool columns
+        for column in df.columns:
+            if not column.startswith("pool"):
+                res_df[column] = [df[column].iloc[0]]
+        # compute pool balances columns
+        for token in constants.TOKENS:
+            row = df.loc[df['pool_id'].str[:42] == constants.TOKENS[token]["Token Address"]]
+            res_df[f"Offset {token} Quantity"] = [row["pool_balance"].iloc[0] if not row.empty else 0]
+        return res_df
+
+    df = df.groupby("Token Address", group_keys=False)
+    return df.apply(summary)
+
+
+# compute retired/bridged quantities per token by credit
+# FIXME: We assume that the credits were bridged via only one token type, which is false
+def pool_quantities_manipulations(df):
+    for token in ["BCT", "NCT", "NBO", "UBO"]:
+        colname = f"{token.lower()}_quantity"
+        offset_colname = f"offset_{token.lower()}_quantity"
+        df[colname] = 0
+        df.loc[df[offset_colname] != 0, colname] = df.quantity
+
+        df = df.drop(columns=[offset_colname])
+    return df
+
+
+def convert_tons(df, columns):
+    for column in columns:
+        if column in df:
+            df[column] = df[column] / pow(10, 18)
+    return df
+
+
 def fetch_assets_prices(sg, first):
     """Fetches assets prices"""
 
@@ -405,43 +455,6 @@ def fetch_assets_prices(sg, first):
         df_prices = df_prices.sort_values(by="Date", ascending=False)
 
     return df_prices
-
-
-def flatten_pool_balances(df):
-    df.drop(columns=["pool_last_snapshot_day", "pool_last_snapshot_day"], inplace=True)
-
-    # Convert quantities to tonnes
-    convert_tons(df, [
-                        "Total Quantity",
-                        "Quantity",
-                        "pool_balance",
-                        "pool_cross_chain_supply",
-                        "pool_deposited",
-                        "pool_redeemed",
-    ])
-
-    # TODO: flatten pool balances
-    def summary(df):
-        res_df = pd.DataFrame()
-        # keep all non pool columns
-        for column in df.columns:
-            if not column.startswith("pool"):
-                res_df[column] = [df[column].iloc[0]]
-        # compute pool balances columns
-        for token in constants.TOKENS:
-            row = df.loc[df['pool_id'].str[:42] == constants.TOKENS[token]["Token Address"]]
-            res_df[f"Offset {token} Quantity"] = [row["pool_balance"].iloc[0] if not row.empty else 0]
-        return res_df
-
-    df = df.groupby("Token Address", group_keys=False)
-    return df.apply(summary)
-
-
-def convert_tons(df, columns):
-    for column in columns:
-        if column in df:
-            df[column] = df[column] / pow(10, 18)
-    return df
 
 
 # Web3 utils

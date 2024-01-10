@@ -10,16 +10,17 @@ SLUG = "raw_polygon_bridged_offsets"
 
 RENAME_MAP = {
     "carbonCredits_bridged": "Total Quantity",
+    "carbonCredits_currentSupply": "Quantity",
     "carbonCredits_bridgeProtocol": "Bridge",
     "carbonCredits_project_region": "Region",
     "carbonCredits_vintage": "Vintage",
-    "carbonCredits_project_projectID": "Project ID",
+    "carbonCredits_project_id": "Project ID",
     "carbonCredits_project_methodology": "Methodology",
     "carbonCredits_project_country": "Country",
     "carbonCredits_project_category": "Project Type",
     "carbonCredits_project_name": "Name",
     "carbonCredits_id": "Token Address",
-    "carbonCredits_poolBalances_id": "pool_id",
+    "carbonCredits_poolBalances_pool_id": "pool_id",
     "carbonCredits_poolBalances_balance": "pool_balance",
     "carbonCredits_poolBalances_crossChainSupply": "pool_cross_chain_supply",
     "carbonCredits_poolBalances_deposited": "pool_deposited",
@@ -44,18 +45,18 @@ def fetch_raw_polygon_bridged_offsets_task():
     df = sg.query_df(
         [
             credits.id,
+            credits.currentSupply,
             credits.bridged,
             credits.bridgeProtocol,
             credits.project.region,
             credits.vintage,
-            credits.project.projectID,
+            credits.project.id,
             credits.project.methodologies,
             credits.project.country,
             credits.project.category,
             credits.project.name,
             credits.poolBalances,
             credits.bridges(
-                first=1,
                 orderBy=carbon_data.Bridge.timestamp,
                 orderDirection="asc",
             ),
@@ -71,7 +72,7 @@ def fetch_raw_polygon_bridged_offsets_task():
         row = bridges_df.loc[bridges_df['Token Address'] == token_address]
         return row["Date"].iloc[0] if not row.empty else 0
 
-    credits_df["Timestamp"] = credits_df["Token Address"].apply(get_timestamp)
+    credits_df["Date"] = credits_df["Token Address"].apply(get_timestamp)
 
     return credits_df.reset_index()
 
