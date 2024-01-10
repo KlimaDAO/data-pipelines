@@ -36,22 +36,14 @@ def fetch_current_assets_prices_task():
     current_price_only_token_list = ["UBO", "NBO"]
     df_prices = pd.DataFrame()
     web3 = utils.get_polygon_web3()
+    prices = {}
     for i in tokens_dict.keys():
         if i not in current_price_only_token_list:
-            data = cg.get_coin_market_chart_from_contract_address_by_id(
-                id=tokens_dict[i]["id"],
-                vs_currency="usd",
-                contract_address=tokens_dict[i]["Token Address"],
-                days=1,
-            )
-            df = pd.DataFrame(data["prices"], columns=["Date", f"{i}_Price"])
-            df["Date"] = pd.to_datetime(df["Date"], unit="ms")
-            df["Date"] = df["Date"].dt.floor("D").dt.date
-            if df_prices.empty:
-                df_prices = df
-            else:
-                df_prices = df_prices.merge(df, how="outer", on="Date")
-            df_prices = df_prices.sort_values(by="Date", ascending=False)
+            data = cg.get_price(ids=tokens_dict[i]["cg_id"],
+                                vs_currencies="usd"
+                                )
+            price = data[tokens_dict[i]["cg_id"]]["usd"]
+            prices[f"{i}_Price"] = price
     for i in current_price_only_token_list:
         if i == "UBO":
             klima_price = klima_usdc_price(web3)
@@ -70,9 +62,9 @@ def fetch_current_assets_prices_task():
             )
             price = token_price * klima_price
 
-        df_prices[f"{i}_Price"] = price
+        prices[f"{i}_Price"] = price
 
-    df_prices = df_prices.head(1)
+    df_prices = pd.DataFrame(prices, index=[0])
     return utils.auto_rename_columns(df_prices)
 
 
