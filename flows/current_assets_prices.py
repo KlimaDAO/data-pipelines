@@ -35,11 +35,8 @@ def fetch_current_assets_prices_task():
     prices = {
         "Date": time.time()
     }
-    klima_price = get_pair_price(df, constants.KLIMA_USDC_ADDRESS)
     for i in tokens_dict.keys():
         price = get_pair_price(df, tokens_dict[i]["Pair Address"])
-        if tokens_dict[i]["Is Klima Pair"]:
-            price *= klima_price
         prices[f"{i}_Price"] = price
 
     df = pd.DataFrame(prices, index=[0])

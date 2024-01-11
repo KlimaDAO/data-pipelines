@@ -47,7 +47,6 @@ USDC_DECIMALS = 12
 TOKENS = {
     "BCT": {
         "Pair Address": BCT_USDC_ADDRESS,
-        "Is Klima Pair": False,
         "Token Address": BCT_ADDRESS,
         "address": BCT_ADDRESS,
         "Full Name": "Base Carbon Tonne",
@@ -56,7 +55,6 @@ TOKENS = {
     },
     "NCT": {
         "Pair Address": NCT_USDC_ADDRESS,
-        "Is Klima Pair": False,
         "Token Address": NCT_ADDRESS,
         "address": NCT_ADDRESS,
         "Full Name": "Nature Carbon Tonne",
@@ -65,7 +63,6 @@ TOKENS = {
     },
     "MCO2": {
         "Pair Address": KLIMA_MCO2_ADDRESS,
-        "Is Klima Pair": True,
         "Token Address": MCO2_ADDRESS,
         "address": MCO2_ADDRESS,
         "Full Name": "Moss Carbon Credit",
@@ -74,7 +71,6 @@ TOKENS = {
     },
     "UBO": {
         "Pair Address": KLIMA_UBO_ADDRESS,
-        "Is Klima Pair": True,
         "Token Address": UBO_ADDRESS,
         "address": UBO_ADDRESS,
         "Full Name": "Universal Basic Offset",
@@ -83,7 +79,6 @@ TOKENS = {
     },
     "NBO": {
         "Pair Address": KLIMA_NBO_ADDRESS,
-        "Is Klima Pair": True,
         "Token Address": NBO_ADDRESS,
         "address": NBO_ADDRESS,
         "Full Name": "Nature Based Offset",
