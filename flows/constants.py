@@ -63,8 +63,8 @@ TOKENS = {
     },
     "MCO2": {
         "Pair Address": KLIMA_MCO2_ADDRESS,
-        "Token Address": MCO2_ADDRESS,
-        "address": MCO2_ADDRESS,
+        "Token Address": MCO2_ADDRESS_MATIC,
+        "address": MCO2_ADDRESS_MATIC,
         "Full Name": "Moss Carbon Credit",
         "Bridge": "Moss",
         "Decimals": MCO2_DECIMALS,
