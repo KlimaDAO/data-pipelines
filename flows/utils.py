@@ -149,7 +149,7 @@ def validate_against_latest_dataframe(slug, df):
 
     if latest_df is not None:
         assert df.shape[0] >= latest_df.shape[0] * 0.99, "New dataframe has a low number of rows"
-        assert df.shape[1] == latest_df.shape[1], "New dataframe does not have the same number of colums"
+        assert df.shape[1] == latest_df.shape[1], "New dataframe does not have the same number of columns"
     else:
         logger.info("Latest dataframe cannot be read. Skipping validation")
     return latest_df
@@ -351,6 +351,56 @@ def region_manipulations(df):
     df[columnn] = df[columnn].replace("Latin America", "Belize")
     df[columnn] = df[columnn].replace("Oceania", "Indonesia")
     df[columnn] = df[columnn].replace("Asia", "Cambodia")
+    return df
+
+
+def flatten_pool_balances(df):
+    df.drop(columns=["pool_last_snapshot_day", "pool_last_snapshot_day"], inplace=True)
+
+    # Convert quantities to tonnes
+    convert_tons(df, [
+                        "Total Quantity",
+                        "Quantity",
+                        "pool_balance",
+                        "pool_cross_chain_supply",
+                        "pool_deposited",
+                        "pool_redeemed",
+    ])
+
+    # TODO: flatten pool balances
+    def summary(df):
+        res_df = pd.DataFrame()
+        # keep all non pool columns
+        for column in df.columns:
+            if not column.startswith("pool"):
+                res_df[column] = [df[column].iloc[0]]
+        # compute pool balances columns
+        for token in constants.TOKENS:
+            row = df.loc[df['pool_id'].str[:42] == constants.TOKENS[token]["Token Address"]]
+            res_df[f"Credit {token} Quantity"] = [row["pool_balance"].iloc[0] if not row.empty else 0]
+        return res_df
+
+    df = df.groupby("Token Address", group_keys=False)
+    return df.apply(summary)
+
+
+# compute retired/bridged quantities per token by credit
+# FIXME: We assume that the credits were bridged via only one token type, which is false
+def pool_quantities_manipulations(df):
+    for token in ["BCT", "NCT", "NBO", "UBO"]:
+        colname = f"{token.lower()}_quantity"
+        offset_colname = f"credit_{token.lower()}_quantity"
+        df[colname] = 0
+        df.loc[df[offset_colname] != 0, colname] = df.quantity
+
+        df = df.drop(columns=[offset_colname])
+    return df
+
+
+def convert_tons(df, columns):
+    for column in columns:
+        if column in df:
+            df[column] = df[column] / pow(10, 18)
     return df
 
 

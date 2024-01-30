@@ -1,4 +1,7 @@
 CARBON_SUBGRAPH_URL = (
+    "https://api.thegraph.com/subgraphs/name/klimadao/staging-polygon-digital-carbon"
+)
+CARBON_LEGACY_SUBGRAPH_URL = (
     "https://api.thegraph.com/subgraphs/name/klimadao/polygon-bridged-carbon"
 )
 CARBON_ETH_SUBGRAPH_URL = (
@@ -46,7 +49,6 @@ TOKENS = {
         "Pair Address": BCT_USDC_ADDRESS,
         "Token Address": BCT_ADDRESS,
         "address": BCT_ADDRESS,
-        "id": "polygon-pos",
         "Full Name": "Base Carbon Tonne",
         "Bridge": "Toucan",
         "Decimals": BCT_DECIMALS,
@@ -55,16 +57,14 @@ TOKENS = {
         "Pair Address": NCT_USDC_ADDRESS,
         "Token Address": NCT_ADDRESS,
         "address": NCT_ADDRESS,
-        "id": "polygon-pos",
         "Full Name": "Nature Carbon Tonne",
         "Bridge": "Toucan",
         "Decimals": NCT_DECIMALS,
     },
     "MCO2": {
         "Pair Address": KLIMA_MCO2_ADDRESS,
-        "Token Address": MCO2_ADDRESS,
-        "address": MCO2_ADDRESS,
-        "id": "ethereum",
+        "Token Address": MCO2_ADDRESS_MATIC,
+        "address": MCO2_ADDRESS_MATIC,
         "Full Name": "Moss Carbon Credit",
         "Bridge": "Moss",
         "Decimals": MCO2_DECIMALS,
