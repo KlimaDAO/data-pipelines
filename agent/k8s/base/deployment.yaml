@@ -50,3 +50,8 @@ spec:
                 secretKeyRef:
                   name: data-pipelines-secrets
                   key: WEB3_INFURA_PROJECT_ID
+            - name: GRAPH_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: data-pipelines-secrets
+                  key: GRAPH_API_KEY
