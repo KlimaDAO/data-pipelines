@@ -79,6 +79,7 @@ jobs:
     env:
       PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
       PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
+      GRAPH_API_KEY: ${{ secrets.GRAPH_API_KEY }}
       AWS_ACCESS_KEY_ID: ${{ secrets.DIGITALOCEAN_SPACES_API_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DIGITALOCEAN_SPACES_API_SECRET }}
       WEB3_INFURA_PROJECT_ID: ${{ secrets.WEB3_INFURA_PROJECT_ID }}
@@ -114,7 +115,7 @@ jobs:
       - name: Update deployment file with image
         run: sed -i 's|<IMAGE>|'${DOCKER_IMAGE}'|' $GITHUB_WORKSPACE/agent/k8s/base/deployment.yaml
       - name: Write secrets file
-        run: $GITHUB_WORKSPACE/scripts/properties_from_env.sh PREFECT_API_KEY PREFECT_API_URL AWS_SECRET_ACCESS_KEY AWS_ACCESS_KEY_ID PREFECT_POOL WEB3_INFURA_PROJECT_ID > $GITHUB_WORKSPACE/agent/k8s/secret.properties
+        run: $GITHUB_WORKSPACE/scripts/properties_from_env.sh PREFECT_API_KEY PREFECT_API_URL AWS_SECRET_ACCESS_KEY AWS_ACCESS_KEY_ID PREFECT_POOL WEB3_INFURA_PROJECT_ID GRAPH_API_KEY > $GITHUB_WORKSPACE/agent/k8s/secret.properties
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.DIGITALOCEAN_CLUSTER_NAME }}
       - name: Deploy to DigitalOcean Kubernetes
