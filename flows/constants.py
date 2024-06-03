@@ -5,6 +5,13 @@ GRAPH_BASE_URL = f'https://gateway-arbitrum.network.thegraph.com/api/{GRAPH_API_
 GRAPH_DEV_BASE_URL = 'https://api.studio.thegraph.com/query/71975/'
 GRAPH_VERSION_SUFFIX = '/version/latest'
 
+CARBON_SG_ID = '5WCNJmuBbejEU3jqL5Hswde5Vkn2yrQWfeJrhUSRGp8J'
+CARBON_LEGACY_SG_ID = '2z66bx6cRCMHrkBcd5ZhN2Z6JgCtntgHFemgtte3qr82'
+CARBON_ETH_SG_ID = '4krJ9sutnjfZgKUjfKcnnukRqwsAycfXKvdApHbKf8zf'
+CARBON_CELO_SG_ID = 'Cv1ZbYYcWp9oKEdaygT8ui9yzgMLLJjdhWeVRmD6yTfA'
+CARBON_HOLDERS_SG_ID = 'DAd5YXDcVuHtYYAcqViqWDqE1hSRCrVULvcBWQHojCxD'
+PAIRS_SG_ID = 'Fd2ydz1RopNrgtH9eoHeVrsCPjg7ACWxyLKJKSVeHjW6'
+
 if os.environ.get('ENV') == 'production':
     CARBON_SUBGRAPH_URL = (
         "https://api.thegraph.com/subgraphs/name/klimadao/polygon-digital-carbon"
@@ -24,25 +31,33 @@ if os.environ.get('ENV') == 'production':
     PAIRS_SUBGRAPH_URL = (
         "https://api.thegraph.com/subgraphs/name/klimadao/klimadao-pairs"
     )
+
 else:
-    CARBON_SUBGRAPH_URL = (
-        GRAPH_DEV_BASE_URL + "staging-polygon-digital-carbon" + GRAPH_VERSION_SUFFIX
-    )
-    CARBON_LEGACY_SUBGRAPH_URL = (
-        GRAPH_DEV_BASE_URL + "staging-polygon-bridged-carbon" + GRAPH_VERSION_SUFFIX
-    )
-    CARBON_ETH_SUBGRAPH_URL = (
-        GRAPH_DEV_BASE_URL + "staging-ethereum-bridged-carbon" + GRAPH_VERSION_SUFFIX
-    )
-    CARBON_CELO_SUBGRAPH_URL = (
-        GRAPH_DEV_BASE_URL + "staging-celo-bridged-carbon" + GRAPH_VERSION_SUFFIX
-    )
-    CARBON_HOLDERS_SUBGRAPH_URL = (
-        GRAPH_DEV_BASE_URL + "staging-klimadao-user-carbon" + GRAPH_VERSION_SUFFIX
-    )
-    PAIRS_SUBGRAPH_URL = (
-        GRAPH_DEV_BASE_URL + "staging-klimadao-pairs" + GRAPH_VERSION_SUFFIX
-    )
+    CARBON_SUBGRAPH_URL = GRAPH_BASE_URL + CARBON_SG_ID
+    CARBON_LEGACY_SUBGRAPH_URL = GRAPH_BASE_URL + CARBON_LEGACY_SG_ID
+    CARBON_ETH_SUBGRAPH_URL = GRAPH_BASE_URL + CARBON_ETH_SG_ID
+    CARBON_CELO_SUBGRAPH_URL = GRAPH_BASE_URL + CARBON_CELO_SG_ID
+    CARBON_HOLDERS_SUBGRAPH_URL = GRAPH_BASE_URL + CARBON_HOLDERS_SG_ID
+    PAIRS_SUBGRAPH_URL = GRAPH_BASE_URL + PAIRS_SG_ID
+
+    # CARBON_SUBGRAPH_URL = (
+    #     GRAPH_DEV_BASE_URL + "staging-polygon-digital-carbon" + GRAPH_VERSION_SUFFIX
+    # )
+    # CARBON_LEGACY_SUBGRAPH_URL = (
+    #     GRAPH_DEV_BASE_URL + "staging-polygon-bridged-carbon" + GRAPH_VERSION_SUFFIX
+    # )
+    # CARBON_ETH_SUBGRAPH_URL = (
+    #     GRAPH_DEV_BASE_URL + "staging-ethereum-bridged-carbon" + GRAPH_VERSION_SUFFIX
+    # )
+    # CARBON_CELO_SUBGRAPH_URL = (
+    #     GRAPH_DEV_BASE_URL + "staging-celo-bridged-carbon" + GRAPH_VERSION_SUFFIX
+    # )
+    # CARBON_HOLDERS_SUBGRAPH_URL = (
+    #     GRAPH_DEV_BASE_URL + "staging-klimadao-user-carbon" + GRAPH_VERSION_SUFFIX
+    # )
+    # PAIRS_SUBGRAPH_URL = (
+    #     GRAPH_DEV_BASE_URL + "staging-klimadao-pairs" + GRAPH_VERSION_SUFFIX
+    # )
 
 BCT_ADDRESS = "0x2f800db0fdb5223b3c3f354886d907a671414a7f"
 NCT_ADDRESS = "0xd838290e877e0188a4a44700463419ed96c16107"
