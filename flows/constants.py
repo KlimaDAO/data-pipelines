@@ -2,7 +2,7 @@ import os
 
 GRAPH_API_KEY = os.environ.get('GRAPH_API_KEY')
 GRAPH_BASE_URL = f'https://gateway-arbitrum.network.thegraph.com/api/{GRAPH_API_KEY}/subgraphs/id/'
-GRAPH_DEV_BASE_URL = 'https://api.studio.thegraph.com/query/71975/'
+GRAPH_DEV_BASE_URL = 'https://api.studio.thegraph.com/query/78559/'
 GRAPH_VERSION_SUFFIX = '/version/latest'
 
 CARBON_SG_ID = 'ECLEwJKgujmiRCW1XbfbbUbpae2igeHa2KJ6BXNSWrZF'
