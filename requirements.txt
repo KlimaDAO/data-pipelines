@@ -9,3 +9,4 @@ subgrounds==1.6.0
 web3==6.4.0
 pycoingecko==3.1.0
 pycountry==22.3.5
+numpy==1.26.4
